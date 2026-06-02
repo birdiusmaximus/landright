@@ -700,7 +700,10 @@ export default function Home() {
               LANDRIGHT
             </span>
           </div>
-          <Tag variant="outline" size="xs">v{APP_VERSION}</Tag>
+          {/* Links to the onboarding flow for testing (V0.1 button). */}
+          <a href="/onboarding" style={{ textDecoration: "none" }} aria-label="View onboarding">
+            <Tag variant="outline" size="xs">v{APP_VERSION}</Tag>
+          </a>
         </div>
 
         {/* ═══ Hero ═══ */}
