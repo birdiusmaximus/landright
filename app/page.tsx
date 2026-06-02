@@ -323,6 +323,7 @@ function OptionCard({
   isChosen,
   otherChosen,
   onChoose,
+  autoDemo = false,
 }: {
   index: string;
   label: string;
@@ -333,13 +334,22 @@ function OptionCard({
   isChosen: boolean;
   otherChosen: boolean;
   onChoose: () => void;
+  autoDemo?: boolean;
 }) {
   const [hovered, setHovered] = useState<number | null>(null);
   // Distance the end marker travels = ~20% of the highlight's last line width.
   const trackRef = useRef(0);
+  const paraRef = useRef<HTMLParagraphElement | null>(null);
   const hiRef = useRef<HTMLSpanElement | null>(null);
   const endRef = useRef<HTMLSpanElement | null>(null);
   const animSeq = useRef(0);
+  // Set true once the user interacts, so the auto-demo (guided highlight sweep)
+  // stops immediately and never fights a real hover/tap.
+  const demoCancelled = useRef(false);
+  // True while the guided sweep is playing. Passive hover events (e.g. the card
+  // scrolling under a stationary cursor) are ignored while this is true; only a
+  // deliberate tap / pointer-down cancels the demo.
+  const demoRunning = useRef(false);
   // True on real hover devices (mouse). On touch, hover is ignored so the
   // emulated mouseenter can't fight the tap (which used to flash then clear it).
   const canHover = useRef(true);
@@ -347,9 +357,21 @@ function OptionCard({
     canHover.current = window.matchMedia?.("(hover: hover)").matches ?? true;
   }, []);
 
+  // End-marker travel = ~20% of the highlight's last line width.
+  const travelFromRects = (rects: DOMRectList) =>
+    rects.length ? Math.round(rects[rects.length - 1].width * 0.2) : 0;
+
+  // Measure a segment's highlight span directly (used by the auto-demo, which has
+  // no pointer event to read the element from).
+  const travelForIndex = (i: number) => {
+    const wrapper = paraRef.current?.children[i] as HTMLElement | undefined;
+    const hl = wrapper?.firstElementChild as HTMLElement | undefined;
+    return hl ? travelFromRects(hl.getClientRects()) : 0;
+  };
+
   const onHover = (i: number, el: HTMLElement) => {
-    const rects = el.getClientRects();
-    trackRef.current = rects.length ? Math.round(rects[rects.length - 1].width * 0.2) : 0;
+    if (demoRunning.current) return; // ignore passive hover while the demo plays
+    trackRef.current = travelFromRects(el.getClientRects());
     animSeq.current += 1; // bump so the effect re-runs even on the same index
     setHovered(i);
   };
@@ -382,6 +404,47 @@ function OptionCard({
       ? [{ text: fullText, note: "" }]
       : [];
 
+  // Guided highlight sweep: on first appearance, auto-play the highlight through
+  // each beat in sequence, then clear — so the user sees the affordance and
+  // realises they can hover/tap too. Cancels the instant they interact, and
+  // respects reduced-motion. Runs once on mount (only for the lead card).
+  useEffect(() => {
+    if (!autoDemo || segs.length === 0) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    demoCancelled.current = false;
+    demoRunning.current = true;
+    const startDelay = 480;
+    const stepMs = 640;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    // A deliberate tap / pointer-down anywhere hands control to the user.
+    const onUserAbort = () => { demoCancelled.current = true; demoRunning.current = false; };
+    window.addEventListener("pointerdown", onUserAbort, { once: true });
+
+    segs.forEach((_, i) => {
+      timers.push(setTimeout(() => {
+        if (demoCancelled.current) return;
+        // Measure the segment so the end marker rides the box edge as it settles,
+        // exactly like a real hover does.
+        trackRef.current = travelForIndex(i);
+        animSeq.current += 1;          // replay the settle on each beat
+        setHovered(i);
+      }, startDelay + i * stepMs));
+    });
+    // Clear the highlight at the end and release control to normal hover.
+    timers.push(setTimeout(() => {
+      demoRunning.current = false;
+      if (!demoCancelled.current) setHovered(null);
+    }, startDelay + segs.length * stepMs + 120));
+
+    return () => {
+      demoRunning.current = false;
+      timers.forEach(clearTimeout);
+      window.removeEventListener("pointerdown", onUserAbort);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div
       className="surface-dark"
@@ -393,7 +456,7 @@ function OptionCard({
       }}
     >
       {/* Header band */}
-      <div style={{ display: "flex", alignItems: "stretch", borderBottom: `2px solid ${LIME}` }}>
+      <div style={{ position: "relative", display: "flex", alignItems: "stretch", borderBottom: `2px solid ${LIME}` }}>
         <div
           style={{
             borderRight: "2px solid rgba(255,255,255,0.16)",
@@ -437,7 +500,7 @@ function OptionCard({
       {/* Body */}
       <div style={{ padding: "clamp(22px, 5vw, 32px)" }}>
         {/* Paragraph rendered as hoverable segments */}
-        <p style={{ fontFamily: BODY, fontSize: "1.05rem", lineHeight: 1.85, color: "#FFFFFF", marginBottom: 20 }}>
+        <p ref={paraRef} style={{ fontFamily: BODY, fontSize: "1.05rem", lineHeight: 1.85, color: "#FFFFFF", marginBottom: 12 }}>
           {segs.map((seg, i) => {
             const text = seg.text;
             const firstSp = text.indexOf(" ");
@@ -474,7 +537,7 @@ function OptionCard({
                   ref={on ? hiRef : undefined}
                   onMouseEnter={e => { if (canHover.current) onHover(i, e.currentTarget); }}
                   onMouseLeave={() => { if (canHover.current) setHovered(null); }}
-                  onClick={e => { if (hovered === i) { setHovered(null); } else { onHover(i, e.currentTarget); } }}
+                  onClick={e => { demoCancelled.current = true; demoRunning.current = false; if (hovered === i) { setHovered(null); } else { onHover(i, e.currentTarget); } }}
                   style={{
                     position: "relative",
                     color: on ? INK : "#FFFFFF",
@@ -498,22 +561,23 @@ function OptionCard({
           })}
         </p>
 
-        {/* Near-text interactive line: a prompt that becomes the hovered beat's note */}
-        <div style={{ minHeight: 22, marginTop: 2 }}>
+        {/* Fixed-height slot: shows the hover/tap hint at rest, and the hovered
+            beat's note on hover — reserved height so nothing shifts. */}
+        <div style={{ minHeight: 42, marginBottom: 4 }}>
           {hovered !== null ? (
             <span style={{ fontFamily: BODY, fontSize: "0.85rem", lineHeight: 1.5, color: "#FFFFFF" }}>
               <span style={{ color: LIME, fontWeight: 600 }}>Beat {hovered + 1}/{segs.length} — </span>
               {segs[hovered].note}
             </span>
           ) : (
-            <span style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#7E8470" }}>
-              Hover or tap the text for more
+            <span style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", color: LIME }}>
+              Hover or tap the text
             </span>
           )}
         </div>
 
         {/* Credibility (origin/principle) + the actual beat-by-beat flow */}
-        <div style={{ borderTop: "2px solid rgba(255,255,255,0.16)", paddingTop: 16, marginTop: 18 }}>
+        <div style={{ borderTop: "2px solid rgba(255,255,255,0.16)", paddingTop: 16, marginTop: 14 }}>
           {origin && (
             <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 10 }}>
               <span style={{ width: 9, height: 9, backgroundColor: LIME, display: "inline-block", flexShrink: 0 }} />
@@ -704,7 +768,7 @@ export default function Home() {
         </div>
 
         {/* ═══ Hero ═══ */}
-        <section style={{ marginBottom: "clamp(32px, 7vw, 52px)" }}>
+        <section style={{ marginBottom: "clamp(18px, 3.5vw, 28px)" }}>
           <h1
             style={{
               fontFamily: DISPLAY,
@@ -722,16 +786,17 @@ export default function Home() {
             <Mark>land right.</Mark>
           </h1>
           <p style={{ fontFamily: BODY, fontWeight: 500, fontSize: "1.05rem", lineHeight: 1.55, color: INK }}>
-            Grounded in decades of psychology research, LANDRIGHT elevates your
-            message to help ease defensiveness and allow the person you care
-            about to stay open to what you have to say.
+            Grounded in decades of psychology research, LANDRIGHT helps you say
+            it clearly, calmly, and without turning what you feel into something
+            they have to defend against. For apologies, boundaries, needs,
+            repair, and the conversations that feel too important to improvise.
           </p>
         </section>
 
         {/* ═══ Input ═══ */}
         <section style={{ marginBottom: "clamp(28px, 6vw, 44px)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-            <Tag variant="solid">What do you want to say?</Tag>
+            <Tag variant="solid">What do you need to say?</Tag>
             <span style={{ fontFamily: COND, fontWeight: 600, fontSize: "0.85rem", color: MUTED, fontVariantNumeric: "tabular-nums" }}>
               {rawInput.length}/500
             </span>
@@ -753,7 +818,7 @@ export default function Home() {
               onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) startGenerate(); }}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
-              placeholder="Write the rough thing you actually want to say…"
+              placeholder="Write the rough version. Messy is fine."
               rows={4}
               maxLength={500}
               style={{
@@ -776,7 +841,7 @@ export default function Home() {
 
           {/* Audience */}
           <div style={{ marginBottom: 12 }}>
-            <Tag variant="solid">Who&apos;s this for?</Tag>
+            <Tag variant="solid">Who needs to hear this?</Tag>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 30 }}>
             {AUDIENCES.map(a => {
@@ -808,13 +873,13 @@ export default function Home() {
           </div>
 
           <Button onClick={startGenerate} disabled={!canGenerate} variant="primary" full>
-            {isGenerating ? "Composing…" : "Generate two options →"}
+            {isGenerating ? "Composing…" : "Make it land →"}
           </Button>
 
           {appState === "loading" && <LoadingBar />}
           {!isGenerating && (
-            <p style={{ textAlign: "center", marginTop: 12, fontFamily: COND, fontWeight: 600, fontSize: "0.78rem", letterSpacing: "0.1em", color: MUTED, textTransform: "uppercase" }}>
-              ⌘ Enter to generate
+            <p style={{ textAlign: "center", marginTop: 12, fontFamily: COND, fontWeight: 600, fontSize: "0.82rem", letterSpacing: "0.03em", color: MUTED, lineHeight: 1.4 }}>
+              Line-by-line reasoning. Rooted in relationship communication principles.
             </p>
           )}
         </section>
@@ -851,6 +916,7 @@ export default function Home() {
                   isChosen={result.chosen === "a"}
                   otherChosen={result.chosen === "b"}
                   onChoose={() => handleChoose("a")}
+                  autoDemo
                 />
               )}
               {result.b ? (
@@ -864,6 +930,7 @@ export default function Home() {
                   isChosen={result.chosen === "b"}
                   otherChosen={result.chosen === "a"}
                   onChoose={() => handleChoose("b")}
+                  autoDemo
                 />
               ) : (
                 <PendingCard index={pad2(result.baseNum + 1)} error={result.bError} />
