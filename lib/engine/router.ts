@@ -418,90 +418,73 @@ function inferTask(raw: string): RelationshipTask {
   return "truth_telling";
 }
 
-// Candidate stacks per task (docs/relationship_stack_library.md §4 — single
-// source of truth). The engine picks a distinct A/B pair from the matching row;
-// rotation walks the rest of the row on "Two more options".
-const TASK_STACKS: Record<RelationshipTask, string[]> = {
-  request: [
-    "Owned Feeling → Concrete Example → Request",
-    "Demand → Willing Request",
-    "Question + Centre of Gravity",
-    "Headline-First → Brief Why",
-  ],
-  repair: [
-    "Accountability-First Repair",
-    "Accountability + Reassurance",
-    "Felt Understanding → Motive Clarity → Ask",
-    "Perspective + Reframe",
-    "Accusation Audit → Label → Calibrated Ask",
-  ],
-  apology: [
-    "Impact Apology",
-    "Accountability-First Repair",
-    "Accountability + Reassurance",
-    "Negative Acknowledgment → Clarification → Humane Path",
-  ],
-  reassurance: [
-    "Continuity → Challenge → Next Step",
-    "Future-Scene → Contrast → Invitation",
-    "Perspective + Reframe",
-  ],
-  boundary: [
-    "Clean Boundary",
-    "Boundary with Relational Continuity",
-    "Direct-but-Gentle",
-  ],
-  pause: [
-    "Clean Boundary",
-    "Gentle Startup → Clear Point",
-  ],
-  truth_telling: [
-    "Direct-but-Gentle",
-    "Warmer-with-Runway",
-    "Plain-Language Reset",
-    "Headline-First → Brief Why",
-    "Negative Acknowledgment → Clarification → Humane Path",
-  ],
-  appreciation: [
-    "Appreciation Story",
-    "Visceral Triptych → Plain Landing",
-    "Artifact + Insight",
-    "Reflective Wisdom",
-  ],
-  future_conversation: [
-    "Future-Scene → Contrast → Invitation",
-    "Earned",
-    "Permission-Gate → Runway → Reveal",
-    "Continuity → Challenge → Next Step",
-  ],
-  express_need: [
-    "Protest → Vulnerable Need",
-    "Owned Feeling → Concrete Example → Request",
-    "Permission-Gate → Runway → Reveal",
-  ],
-  correction: [
-    "Coaching-Forward Correction",
-    "Humane Tension Release",
-    "Gentle Startup → Clear Point",
-    "Accusation Audit → Label → Calibrated Ask",
-  ],
-  distance_reconnect: [
-    "Shared Problem → De-personalise → Collaborative Question",
-    "Reflective Question Ladder",
-    "Question + Centre of Gravity",
-  ],
+// Per task, stacks are split into two pools (docs/relationship_stack_library.md §4):
+//   clear  — grounded, plain, direct: the safe, hearable version (always Option A)
+//   flair  — more elaborate / crafted / expressive: imagery, reflection, staging,
+//            reveal — the option with a bit more flair (always Option B)
+// This guarantees every pair offers one clean take and one more interesting take.
+const TASK_PAIRS: Record<RelationshipTask, { clear: string[]; flair: string[] }> = {
+  request: {
+    clear: ["Owned Feeling → Concrete Example → Request", "Demand → Willing Request", "Headline-First → Brief Why"],
+    flair: ["Question + Centre of Gravity", "Felt Understanding → Motive Clarity → Ask"],
+  },
+  repair: {
+    clear: ["Accountability-First Repair", "Impact Apology"],
+    flair: ["Felt Understanding → Motive Clarity → Ask", "Perspective + Reframe", "Accusation Audit → Label → Calibrated Ask", "Accountability + Reassurance"],
+  },
+  apology: {
+    clear: ["Impact Apology", "Accountability-First Repair"],
+    flair: ["Accountability + Reassurance", "Negative Acknowledgment → Clarification → Humane Path"],
+  },
+  reassurance: {
+    clear: ["Perspective + Reframe", "Continuity → Challenge → Next Step"],
+    flair: ["Future-Scene → Contrast → Invitation", "Permission-Gate → Runway → Reveal"],
+  },
+  boundary: {
+    clear: ["Clean Boundary", "Direct-but-Gentle"],
+    flair: ["Boundary with Relational Continuity", "Humane Tension Release"],
+  },
+  pause: {
+    clear: ["Clean Boundary", "Gentle Startup → Clear Point"],
+    flair: ["Felt Understanding → Motive Clarity → Ask", "Humane Tension Release"],
+  },
+  truth_telling: {
+    clear: ["Direct-but-Gentle", "Plain-Language Reset", "Headline-First → Brief Why"],
+    flair: ["Warmer-with-Runway", "Negative Acknowledgment → Clarification → Humane Path", "Reflective Wisdom"],
+  },
+  appreciation: {
+    clear: ["Appreciation Story", "Plain-Language Reset"],
+    flair: ["Visceral Triptych → Plain Landing", "Artifact + Insight", "Reflective Wisdom"],
+  },
+  future_conversation: {
+    clear: ["Continuity → Challenge → Next Step", "Headline-First → Brief Why"],
+    flair: ["Future-Scene → Contrast → Invitation", "Earned", "Permission-Gate → Runway → Reveal"],
+  },
+  express_need: {
+    clear: ["Owned Feeling → Concrete Example → Request", "Protest → Vulnerable Need"],
+    flair: ["Permission-Gate → Runway → Reveal", "Visceral Triptych → Plain Landing", "Earned"],
+  },
+  correction: {
+    clear: ["Gentle Startup → Clear Point", "Coaching-Forward Correction"],
+    flair: ["Humane Tension Release", "Accusation Audit → Label → Calibrated Ask"],
+  },
+  distance_reconnect: {
+    clear: ["Question + Centre of Gravity", "Owned Feeling → Concrete Example → Request"],
+    flair: ["Shared Problem → De-personalise → Collaborative Question", "Reflective Question Ladder", "Future-Scene → Contrast → Invitation"],
+  },
 };
 
 function selectStacksByTask(
   task: RelationshipTask,
   rotation: number
 ): { stackA: string; stackB: string } {
-  const list = TASK_STACKS[task] ?? TASK_STACKS.truth_telling;
-  const n = list.length;
+  const pools = TASK_PAIRS[task] ?? TASK_PAIRS.truth_telling;
   const r = Math.max(0, Math.floor(rotation || 0));
-  const a = list[(2 * r) % n];
-  let b = list[(2 * r + 1) % n];
-  if (b === a) b = list[(2 * r + 2) % n] ?? list[(r + 1) % n];
+  // A = the grounded/clear take; B = the more elaborate/expressive take.
+  // Each pool rotates independently so "Two more" cycles both sides.
+  const a = pools.clear[r % pools.clear.length];
+  let b = pools.flair[r % pools.flair.length];
+  if (b === a) b = pools.flair[(r + 1) % pools.flair.length];
   return { stackA: a, stackB: b };
 }
 

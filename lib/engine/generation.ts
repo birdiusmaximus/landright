@@ -71,6 +71,8 @@ Target length: ${brief.target_length} paragraph
 Stack A (Option A must use this architecture): ${brief.stack_a}
 Stack B (Option B must use this architecture): ${brief.stack_b}
 
+A/B INTENT: Option A is the clear, grounded take — say it plainly and well. Option B is the more elevated, expressive take — lean into craft and a little flair: a sharper image, a more memorable turn of phrase, a more interesting shape. Make B genuinely more vivid and impressive than A, while still respecting the directness rule and forbidden moves (never let flair undermine a boundary, an apology's ownership, or honesty).
+
 Directness rule: ${brief.directness_rule}
 
 Forbidden moves (never do these):
