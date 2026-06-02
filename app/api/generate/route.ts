@@ -4,6 +4,7 @@ import { AUDIENCE_GUIDANCE } from "@/lib/types";
 import { buildGenerationBrief } from "@/lib/engine/router";
 import { buildSourcePacket, getSourcePacketIds } from "@/lib/engine/retrieval";
 import { generateOne } from "@/lib/engine/generation";
+import { screenInput } from "@/lib/engine/guard";
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,8 +21,22 @@ export async function POST(req: NextRequest) {
     // Landright is relationships-only. Domain is locked server-side.
     const domain: Domain = "relationships";
 
-    // Sanitise input
-    const rawInput = body.raw_input.trim().slice(0, 500);
+    // Sanitise input. Strip the prompt fence tokens so a user can't close our
+    // «raw_input» block early and inject instructions after it.
+    const rawInput = body.raw_input
+      .replace(/«\/?raw_input»/gi, "")
+      .trim()
+      .slice(0, 500);
+
+    // Guardrail: block clear prompt-injection / jailbreak attempts before we
+    // spend a model call. Tuned not to trip on sincere emotional messages.
+    const screen = screenInput(rawInput);
+    if (!screen.ok) {
+      return NextResponse.json<GenerateResponse>(
+        { success: false, error: screen.reason ?? "That input can't be processed." },
+        { status: 400 }
+      );
+    }
 
     // Resolve optional "who's this for" context (validated audience code).
     const audienceCode = body.audience as Audience | undefined;
