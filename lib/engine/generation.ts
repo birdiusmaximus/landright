@@ -2,9 +2,15 @@ import OpenAI from "openai";
 import type { GenerationBrief, GenerationOutput, SourcePacket, Audience } from "@/lib/types";
 import { AUDIENCE_GUIDANCE } from "@/lib/types";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazily instantiate so the build never depends on the API key being present
+// at module-load time (only created when an actual request comes in).
+let _client: OpenAI | null = null;
+function getClient(): OpenAI {
+  if (!_client) {
+    _client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return _client;
+}
 
 // ─── Prompt builder ───────────────────────────────────────────────────────────
 
@@ -194,7 +200,7 @@ export async function generateOptions(
   // Some newer models only accept the default temperature (1).
   const supportsCustomTemp = /^gpt-5\.4|^gpt-4o|^gpt-5-/.test(model);
 
-  const completion = await client.chat.completions.create({
+  const completion = await getClient().chat.completions.create({
     model,
     messages: [
       { role: "system", content: systemPrompt },
