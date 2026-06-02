@@ -1,0 +1,137 @@
+[
+  {
+    "rule_id": "SR-001",
+    "domain": "all",
+    "trigger_type": "any",
+    "blocked_move": "Pressure hidden inside warmth — using care or intimacy language to coerce",
+    "required_move": "Separate warmth from request; make sure any ask is genuinely optional",
+    "severity": "hard_block",
+    "rationale": "Core anti-manipulation principle across all domains"
+  },
+  {
+    "rule_id": "SR-002",
+    "domain": "all",
+    "trigger_type": "any",
+    "blocked_move": "Fabricated authenticity — constructing emotional closeness that isn't earned",
+    "required_move": "Plain language; do not simulate depth that the input doesn't support",
+    "severity": "hard_block",
+    "rationale": "Fake intimacy is a form of manipulation"
+  },
+  {
+    "rule_id": "SR-003",
+    "domain": "all",
+    "trigger_type": "any",
+    "blocked_move": "False promises — implying outcomes the communication cannot guarantee",
+    "required_move": "Conditional or honest language about outcomes",
+    "severity": "hard_block",
+    "rationale": "False promises erode trust and misrepresent the engine's role"
+  },
+  {
+    "rule_id": "SR-004",
+    "domain": "all",
+    "trigger_type": "any",
+    "blocked_move": "Pseudo-therapy — simulating therapeutic authority or clinical language",
+    "required_move": "Keep outputs in lay communication register; do not diagnose or treat",
+    "severity": "hard_block",
+    "rationale": "The engine is a communication enhancer, not a therapist"
+  },
+  {
+    "rule_id": "SR-005",
+    "domain": "all",
+    "trigger_type": "any",
+    "blocked_move": "Ornamental inflation — elaborate language detached from the communication job",
+    "required_move": "If the safest version is plain, keep it plain — even plain can be intentional",
+    "severity": "required",
+    "rationale": "Ornamentation without function is a form of deception"
+  },
+  {
+    "rule_id": "SR-006",
+    "domain": "relationships",
+    "trigger_type": "intimate_question",
+    "blocked_move": "Coercion disguised as romance — building pressure toward a yes",
+    "required_move": "Agency-protecting mode: protect receiver freedom explicitly",
+    "severity": "hard_block",
+    "rationale": "Intimate questions must be genuinely open"
+  },
+  {
+    "rule_id": "SR-007",
+    "domain": "relationships",
+    "trigger_type": "apology",
+    "blocked_move": "Self-exonerating story — explanation before ownership",
+    "required_move": "Lead with ownership and impact; explanation may follow briefly if needed",
+    "severity": "required",
+    "rationale": "Apologies that explain first undermine the ownership"
+  },
+  {
+    "rule_id": "SR-008",
+    "domain": "parenting",
+    "trigger_type": "harmful_behavior",
+    "blocked_move": "Delayed boundary — orbiting the problem without stating the limit",
+    "required_move": "Firm landing required — boundary must be clearly stated even with warm entry",
+    "severity": "hard_block",
+    "rationale": "Children need clarity on limits, especially for harmful behavior"
+  },
+  {
+    "rule_id": "SR-009",
+    "domain": "parenting",
+    "trigger_type": "high_stakes_truth",
+    "blocked_move": "Story or metaphor before the fact on safety-critical or high-stakes topics",
+    "required_move": "Direct fact first — then comfort — then questions",
+    "severity": "hard_block",
+    "rationale": "Misunderstanding on death, illness, safety, or major change harms the child"
+  },
+  {
+    "rule_id": "SR-010",
+    "domain": "parenting",
+    "trigger_type": "correction",
+    "blocked_move": "Shame framing — labeling the child rather than the behavior",
+    "required_move": "Name the behavior, not the person; repair move available",
+    "severity": "required",
+    "rationale": "Shame-based correction damages child self-concept without improving behavior"
+  },
+  {
+    "rule_id": "SR-011",
+    "domain": "parenting",
+    "trigger_type": "teen",
+    "blocked_move": "Didactic or moralizing tone",
+    "required_move": "Collaborative, autonomy-respecting mode; end with ownership question not instruction",
+    "severity": "required",
+    "rationale": "Teens disengage from lecture; autonomy-respecting communication lands better"
+  },
+  {
+    "rule_id": "SR-012",
+    "domain": "business",
+    "trigger_type": "executive_communication",
+    "blocked_move": "Slow throat-clearing before the main point",
+    "required_move": "Answer first — always for executive audiences",
+    "severity": "required",
+    "rationale": "Executive audiences are time-constrained; front-loading wastes credibility"
+  },
+  {
+    "rule_id": "SR-013",
+    "domain": "all",
+    "trigger_type": "safety_critical",
+    "blocked_move": "Any softening, runway, or story-first approach",
+    "required_move": "Direct fact first, unambiguous, then support",
+    "severity": "hard_block",
+    "rationale": "Safety-critical communication must be immediately clear"
+  },
+  {
+    "rule_id": "SR-014",
+    "domain": "all",
+    "trigger_type": "any",
+    "blocked_move": "Mixed or piled unrelated metaphors",
+    "required_move": "One controlling image is better than many unrelated images",
+    "severity": "advisory",
+    "rationale": "Multiple competing images fragment attention and weaken the point"
+  },
+  {
+    "rule_id": "SR-015",
+    "domain": "leadership",
+    "trigger_type": "feedback",
+    "blocked_move": "Feedback that attacks the person rather than the work",
+    "required_move": "Name the work or behavior specifically; preserve the person's dignity",
+    "severity": "required",
+    "rationale": "Personal attacks destroy the relationship without improving the work"
+  }
+]

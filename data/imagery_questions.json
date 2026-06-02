@@ -1,0 +1,122 @@
+[
+  {
+    "item_id": "IQ-001",
+    "type": "imagery",
+    "family_name": "Arena / Effort under pressure",
+    "best_jobs": ["Courage", "Fear of criticism", "Resilience"],
+    "misuse_risk": "Can dismiss valid critique if used carelessly",
+    "domains": ["leadership", "business", "relationships"],
+    "content": "The arena imagery: the person in the arena, face marred with dust and sweat — actor vs critic contrast",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-002",
+    "type": "imagery",
+    "family_name": "Seasons / Timing as judgment",
+    "best_jobs": ["Patience without evasion", "Timing decisions", "Not-yet framing"],
+    "misuse_risk": "Can rationalise avoidance",
+    "domains": ["leadership", "parenting", "relationships"],
+    "content": "Seasonal framing: a time for every purpose — not all timing is within our control, but readiness can be cultivated",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-003",
+    "type": "imagery",
+    "family_name": "Ship / Journey / Navigation",
+    "best_jobs": ["Change communication", "Direction-setting", "Uncertainty"],
+    "misuse_risk": "Overused in corporate contexts — needs a fresh angle to land",
+    "domains": ["business", "leadership"],
+    "content": "Navigation imagery: steering toward something, adjusting course — not certainty but direction",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-004",
+    "type": "imagery",
+    "family_name": "Light / Visibility",
+    "best_jobs": ["Honesty", "Clarity", "Trust"],
+    "misuse_risk": "Can feel preachy",
+    "domains": ["relationships", "leadership", "parenting"],
+    "content": "Truth-with-angle: tell all the truth but tell it slant — honesty as angle, pacing, dose",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-005",
+    "type": "imagery",
+    "family_name": "Stewardship / Ownership vs Holding",
+    "best_jobs": ["Parenting values", "Mentoring", "Letting go"],
+    "misuse_risk": "Can justify distance or detachment",
+    "domains": ["parenting", "leadership"],
+    "content": "Stewardship frame: your children are not your children — ownership to stewardship reframe",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-006",
+    "type": "question",
+    "family_name": "Shared humanity question",
+    "best_jobs": ["Dehumanisation gaps", "Empathy building", "Conflict"],
+    "misuse_risk": "Context sensitivity — must be appropriate to stakes",
+    "domains": ["relationships", "leadership", "business"],
+    "content": "Question stack that forces shared humanity: 'If you were in their position, what would you need to hear?'",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-007",
+    "type": "question",
+    "family_name": "Perception limits question",
+    "best_jobs": ["Blind-spot reframing", "Entrenched assumptions", "Coaching"],
+    "misuse_risk": "Patronising if misused — audience must be open to the insight",
+    "domains": ["leadership", "business", "relationships"],
+    "content": "What would I need to believe for this to make sense to someone else? What am I not seeing?",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-008",
+    "type": "question",
+    "family_name": "Calibrated refusal / feasibility",
+    "best_jobs": ["Pushback without escalation", "Negotiation", "Boundary-setting"],
+    "misuse_risk": "Sarcasm risk — must be genuinely curious not rhetorical",
+    "domains": ["business", "leadership", "relationships"],
+    "content": "'How am I supposed to do that?' — refuse by inquiry, not collision",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-009",
+    "type": "line_pattern",
+    "family_name": "Belonging reassurance",
+    "best_jobs": ["Reassurance", "Belonging", "Parenting correction"],
+    "misuse_risk": "Therapy-speak drift — keep grounded",
+    "domains": ["relationships", "parenting"],
+    "content": "Non-corporate belonging language: 'You don't have to be anything other than what you are. There is a place for you here.'",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-010",
+    "type": "line_pattern",
+    "family_name": "Unfinished work / duty line",
+    "best_jobs": ["Purpose reset after difficulty", "Post-setback motivation"],
+    "misuse_risk": "Ordinary stakes can feel pompous",
+    "domains": ["leadership", "business"],
+    "content": "Pattern: concrete sacrifice/cost → shared unfinished work → forward duty — from specific ground, upward pivot, duty line",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-011",
+    "type": "line_pattern",
+    "family_name": "Hard truth with retained dignity",
+    "best_jobs": ["Crisis communication", "Difficult news", "Layoffs"],
+    "misuse_risk": "Can still feel cold if care is thin",
+    "domains": ["leadership", "business"],
+    "content": "Plain ownership before administration: state the hard fact, own it fully, then care logistics — not the reverse",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  },
+  {
+    "item_id": "IQ-012",
+    "type": "imagery",
+    "family_name": "Clarity as ethics",
+    "best_jobs": ["Anti-fluff QA", "Business writing", "Simplification"],
+    "misuse_risk": "Over-simplification risk",
+    "domains": ["business", "leadership"],
+    "content": "Orwell's clarity principle: clarity is an ethical act — the enemy of clear language is insincerity",
+    "source_doc": "Inspiration Corpus Structured Analysis"
+  }
+]

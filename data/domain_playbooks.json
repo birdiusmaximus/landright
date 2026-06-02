@@ -1,0 +1,156 @@
+[
+  {
+    "domain": "business",
+    "subtype": "general",
+    "core_principles": [
+      "Lead with the answer, not the reasoning — executive audiences need clarity first",
+      "Make consequence legible: what happens if this is ignored or accepted",
+      "Preserve credibility by showing judgment, not just information",
+      "Structure-led or hybrid outputs default; story supports structure, doesn't replace it",
+      "Use one controlling idea per output — avoid fragmented complexity",
+      "Actionability is a requirement, not a bonus"
+    ],
+    "when_story_helps": [
+      "Change communication where meaning and continuity are at risk",
+      "Client persuasion where a pattern or case makes the point land better",
+      "Internal alignment where a shared situation needs naming",
+      "Teaching or explanation inside business — mini-case over abstract principle"
+    ],
+    "when_directness_leads": [
+      "Executive recommendations — answer first, always",
+      "Any output where the reader is time-constrained",
+      "Safety or risk communication where ambiguity is dangerous",
+      "Feedback where softening would obscure the message"
+    ],
+    "guardrails": [
+      "No slow throat-clearing before the main point",
+      "No decorative story detached from the business job",
+      "No generic professionalism or over-polished filler",
+      "No dense prose written for the eye rather than the ear",
+      "No false urgency or manufactured stakes",
+      "Avoid complexity without hierarchy"
+    ],
+    "source_doc": "Business Communication Master Reference v2.0"
+  },
+  {
+    "domain": "relationships",
+    "subtype": "general",
+    "core_principles": [
+      "Hearability comes first — even accurate things fail if they can't be received",
+      "Validation is not agreement: felt understanding reduces defensiveness without simulating consent",
+      "Owned language reduces accusation and increases the chance of being heard",
+      "Boundaries can be firm without abandoning care or dignity",
+      "Repair requires ownership of impact, not just intent",
+      "Authenticity cannot be fabricated — plain is better than ornate false intimacy"
+    ],
+    "when_story_helps": [
+      "Tender or intimate expression where a small scene creates emotional resonance",
+      "Difficult honesty where a reframe or perspective first reduces defensiveness",
+      "Explaining feelings through a pattern or recurring experience",
+      "Building anticipation in intimate questions without pressure"
+    ],
+    "when_directness_leads": [
+      "Apologies — lead with ownership, not explanation",
+      "Boundaries — a soft entry is fine but the limit must land clearly",
+      "Requests — owned feeling then concrete ask, no case-file evidence dump",
+      "High emotional intensity situations where clarity matters more than elegance"
+    ],
+    "guardrails": [
+      "No manipulation — pressure hidden inside warmth is forbidden",
+      "No pseudo-therapy — do not simulate therapeutic language or authority",
+      "No fabricated authenticity — plain beats ornate false closeness",
+      "No false promises or manufactured emotional safety",
+      "No coercion disguised as romance or care",
+      "No accusatory framing even in soft language"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0"
+  },
+  {
+    "domain": "parenting",
+    "subtype": "general",
+    "core_principles": [
+      "Age-banded logic is mandatory — what works for a teen fails a young child",
+      "Co-regulation before correction: contain the emotional state first",
+      "One main point per output — children do not absorb complex layered arguments",
+      "Shame-free correction: name the behavior, not the child",
+      "Participation and choice increase buy-in without negotiating the non-negotiable",
+      "High-stakes truths must lead with direct fact, not narrative runway"
+    ],
+    "when_story_helps": [
+      "Routines, courage, kindness, everyday transitions — story-world is safe here",
+      "Habits and effort for older children and pre-teens",
+      "Reframing emotions through a small scene or image",
+      "Light metaphor or future framing for teens on non-urgent topics"
+    ],
+    "when_directness_leads": [
+      "Safety topics — immediate, unambiguous, no story first",
+      "Harmful behavior — firm boundary must land even if entry is warm",
+      "Death, illness, divorce, major family change — direct fact then comfort",
+      "Body facts — clarity over metaphor always"
+    ],
+    "guardrails": [
+      "No adult abstraction or psychological jargon aimed at children",
+      "No piled or mixed metaphors — one image only",
+      "No long explanations before the point",
+      "No vague reassurance on serious topics",
+      "No moralizing tone, especially with teens",
+      "No delayed boundary on harmful behavior"
+    ],
+    "age_band_rules": {
+      "young_child": [
+        "Short and concrete — one image, one point, one action",
+        "High emotional containment — co-regulate first",
+        "Tiny choice to restore agency",
+        "Playful tone where appropriate",
+        "Avoid: adult abstraction, piled metaphor, long explanation"
+      ],
+      "older_child_preteen": [
+        "Short reflection and fairness or value framing",
+        "Participation and choice still matter",
+        "A little more consequence logic is appropriate",
+        "Avoid: didactic speech, vague reassurance"
+      ],
+      "teen": [
+        "Collaborative and autonomy-respecting — not babying",
+        "Perspective-first; name their reality before asking for change",
+        "Own-consequence framing over lecture",
+        "Ownership question at the end, not instruction",
+        "Avoid: didactic story, moralizing, patronising tone"
+      ]
+    },
+    "source_doc": "Parenting Storytelling Master Reference v2.0"
+  },
+  {
+    "domain": "leadership",
+    "subtype": "general",
+    "core_principles": [
+      "Speakability: outputs should be easy to hear, remember, and repeat",
+      "Explainability before advocacy — help the audience think, not just agree",
+      "Coaching stance: reflective questions over prescriptive answers",
+      "Leadership continuity: acknowledge before asking for change",
+      "Public speaking is oral design — rhythm, callback, and three-beat structure matter",
+      "Feedback must balance honesty with dignity — challenge the work, respect the person"
+    ],
+    "when_story_helps": [
+      "Vision and change communication — future scene creates aspiration",
+      "Coaching conversations where insight needs to arrive, not be handed",
+      "Teaching — mini-case or analogy makes principles transferable",
+      "Speeches — narrative support makes ideas memorable"
+    ],
+    "when_directness_leads": [
+      "Performance feedback where softening would mislead",
+      "Crisis communication where clarity is safety",
+      "Decisions that need to land as decisions, not invitations",
+      "When the audience needs the point, not the journey"
+    ],
+    "guardrails": [
+      "No empty inspiration detached from the actual situation",
+      "No moralizing — leaders do not lecture, they orient",
+      "No hype or manufactured urgency",
+      "No feedback that attacks the person rather than the work",
+      "No coaching that circles without landing",
+      "No speechcraft that dazzles without communicating"
+    ],
+    "source_doc": "Leadership Coaching Teaching Speaking Master Reference v2.0"
+  }
+]

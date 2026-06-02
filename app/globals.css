@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── The Green-inspired palette ── */
+  --lime: #C6F634;
+  --lime-deep: #B4E61E;
+  --ink: #111110;
+  --ground: #E4E4DF;
+  --ground-2: #DBDBD5;
+  --ground-3: #D2D2CB;
+  --muted: #6E6E66;
+  --line: #111110;
+
+  /* ── Adobe Fonts (Typekit project abe4vwg) ── */
+  --font-display: "neue-haas-grotesk-display", "Helvetica Neue", Arial, sans-serif;
+  --font-cond: "acumin-pro-extra-condensed", "Arial Narrow", sans-serif;
+  --font-body: "neue-haas-grotesk-text", -apple-system, "Helvetica Neue", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background-color: var(--ground);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+/* ── Light noise texture over the whole ground ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+#__next, main {
+  position: relative;
+  z-index: 1;
+}
+
+::selection {
+  background-color: var(--lime);
+  color: var(--ink);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--ground-2); }
+::-webkit-scrollbar-thumb { background: var(--ink); }
+
+textarea:focus,
+button:focus-visible {
+  outline: none;
+}
+
+/* ── Dark grain surfaces (inverted text boxes) ── */
+.surface-dark {
+  position: relative;
+  background-color: #1A1A17;
+  color: #FFFFFF;
+  isolation: isolate;
+}
+.surface-dark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.surface-dark > * {
+  position: relative;
+  z-index: 1;
+}
+.dark-input::placeholder {
+  color: #7E7E76;
+}
+
+/* ── Vertical edge label ── */
+.vrail {
+  display: none;
+}
+@media (min-width: 1200px) {
+  .vrail {
+    display: block;
+    position: fixed;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%) rotate(180deg);
+    writing-mode: vertical-rl;
+    z-index: 2;
+  }
 }

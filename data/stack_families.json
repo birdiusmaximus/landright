@@ -1,0 +1,703 @@
+[
+  {
+    "stack_name": "Reflective Wisdom",
+    "friendly_label": "Step back and see it",
+    "origin": "Reframing & perspective-taking",
+    "citation": "Cognitive reframing & perspective-taking research",
+    "rationale": "Frames your point as a bigger truth, so it lands as insight rather than criticism — and stays with them afterward.",
+    "allowed_domains": [
+      "business",
+      "leadership",
+      "relationships"
+    ],
+    "core_sequence": "Pattern or truth → elevated meaning → earned recommendation",
+    "primary_effect": "Interpretive, wise, memorable — gives the audience a new frame for something familiar",
+    "failure_mode": "Can over-sermonise or feel detached from practical reality if the truth is too abstract",
+    "overlays": [
+      "Principle-first",
+      "Symbolic frame",
+      "Line of record"
+    ],
+    "source_doc": "Elevated Inspiration Playbook v0.1"
+  },
+  {
+    "stack_name": "Perspective + Reframe",
+    "friendly_label": "See it their way first",
+    "origin": "Reframing & perspective-taking",
+    "citation": "Cognitive reframing & perspective-taking research",
+    "rationale": "Names their likely worry first, so they feel understood before the reframe — which lowers defensiveness and keeps them open.",
+    "allowed_domains": [
+      "business",
+      "relationships",
+      "leadership"
+    ],
+    "core_sequence": "Likely concern → humane validation → reframe → ask",
+    "primary_effect": "Disarming, accurate, non-reactive — reduces defensiveness before making the point",
+    "failure_mode": "Can become agreement theatre if the validation is too thick and the reframe too soft",
+    "overlays": [
+      "Perspective-first",
+      "Question-led reflection"
+    ],
+    "source_doc": "Elevated Inspiration Playbook v0.1"
+  },
+  {
+    "stack_name": "Artifact + Insight",
+    "friendly_label": "Use a real example",
+    "origin": "Narrative & staged delivery",
+    "citation": "Green & Brock (narrative transportation); Chen & Bell (2022)",
+    "rationale": "Anchors your point to one concrete thing, so it's vivid and easy to grasp — and harder to brush off than an abstract claim.",
+    "allowed_domains": [
+      "business",
+      "leadership",
+      "relationships"
+    ],
+    "core_sequence": "Object or image → interpretation → practical consequence",
+    "primary_effect": "Concrete, imagistic, sticky — makes the point land through something physical or visual",
+    "failure_mode": "Can feel precious or theatrical if the image is forced or too ornate",
+    "overlays": [
+      "Artifact/object-led",
+      "Symbolic frame"
+    ],
+    "source_doc": "Elevated Inspiration Playbook v0.1"
+  },
+  {
+    "stack_name": "Future Echo",
+    "allowed_domains": [
+      "leadership",
+      "business"
+    ],
+    "core_sequence": "Future residue → present tradeoff → action",
+    "primary_effect": "Aspirational, motivating, time-aware — makes the present choice feel consequential",
+    "failure_mode": "Can drift into hype or generic inspiration if the future scene is vague",
+    "overlays": [
+      "Future-scene",
+      "Aspirational reframing"
+    ],
+    "source_doc": "Elevated Inspiration Playbook v0.1"
+  },
+  {
+    "stack_name": "Question + Centre of Gravity",
+    "friendly_label": "Ask what matters",
+    "origin": "Coaching practice",
+    "citation": "Coaching literature; question-led reflection (CIPD)",
+    "rationale": "Draws them into the thinking with a question, so the conclusion feels shared rather than imposed on them.",
+    "allowed_domains": [
+      "leadership",
+      "relationships",
+      "parenting"
+    ],
+    "core_sequence": "Reflective question → what matters most → recommendation",
+    "primary_effect": "Participatory, clarifying, humane — draws the audience into the thinking before landing a point",
+    "failure_mode": "Can become evasive if the recommendation never clearly arrives",
+    "overlays": [
+      "Question-led reflection",
+      "Perspective-first"
+    ],
+    "source_doc": "Elevated Inspiration Playbook v0.1"
+  },
+  {
+    "stack_name": "Humane Tension Release",
+    "friendly_label": "Ease the pressure",
+    "origin": "Reframing & perspective-taking",
+    "citation": "Non-blaming / systems reframing",
+    "rationale": "Names the hard situation without blaming anyone, so the pressure drops and you can move forward together instead of fighting.",
+    "allowed_domains": [
+      "business",
+      "relationships",
+      "leadership",
+      "parenting"
+    ],
+    "core_sequence": "Acknowledge pressure → release accusation → systems view → path forward",
+    "primary_effect": "Firm but non-punitive — names a hard situation without blame, then moves forward",
+    "failure_mode": "Can become vague if the path forward is too soft or the acknowledgement too long",
+    "overlays": [
+      "Perspective-first",
+      "Pattern-led"
+    ],
+    "source_doc": "Elevated Inspiration Playbook v0.1"
+  },
+  {
+    "stack_name": "Doctrine Line + Operating Rules",
+    "allowed_domains": [
+      "leadership",
+      "business"
+    ],
+    "core_sequence": "Compressed memorable line → short expansion → implication",
+    "primary_effect": "Memorable, repeatable, scalable — creates a phrase people carry out of the room",
+    "failure_mode": "Can become a slogan without substance if the expansion doesn't earn the line",
+    "overlays": [
+      "Principle-first",
+      "Line of record"
+    ],
+    "source_doc": "Elevated Inspiration Playbook v0.1"
+  },
+  {
+    "stack_name": "Symbolic Lift + Practical Close",
+    "allowed_domains": [
+      "business",
+      "leadership"
+    ],
+    "core_sequence": "Image or quote fragment → widened frame → grounded ask",
+    "primary_effect": "Elevated but usable — lifts the thinking then returns to practical ground",
+    "failure_mode": "Can become empty rhetoric if the grounded ask doesn't follow through",
+    "overlays": [
+      "Symbolic frame",
+      "Aspirational reframing"
+    ],
+    "source_doc": "Elevated Inspiration Playbook v0.1"
+  },
+  {
+    "stack_name": "Direct-but-Gentle",
+    "friendly_label": "Kind but clear",
+    "origin": "The Gottman Method",
+    "citation": "Gottman & Levenson; Gottman Institute (gentle startup)",
+    "rationale": "Says the hard thing clearly but opens softly, so the point fully lands without putting them on the defensive.",
+    "allowed_domains": [
+      "relationships",
+      "parenting"
+    ],
+    "core_sequence": "Gentle startup → owned feeling → clear direct point → next step",
+    "primary_effect": "Honest without triggering defensiveness — the point lands fully but softly",
+    "failure_mode": "Can feel cold if the gentleness is stripped, or weak if the directness is",
+    "overlays": [
+      "Owned-feeling request",
+      "Direct-first"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0"
+  },
+  {
+    "stack_name": "Owned Feeling → Concrete Example → Request",
+    "friendly_label": "Feeling, then ask",
+    "origin": "Nonviolent Communication",
+    "citation": "Rosenberg, Nonviolent Communication",
+    "rationale": "Turns a vague complaint into an owned feeling, a clear example and a doable ask — so they can actually hear it and act.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Owned feeling → concrete example → request",
+    "primary_effect": "Turns vague frustration or accusation into something hearable and actionable",
+    "failure_mode": "Can become a case-file evidence dump if the example section is too long",
+    "overlays": [
+      "NVC-adjacent",
+      "Perspective-first"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0"
+  },
+  {
+    "stack_name": "Accountability-First Repair",
+    "friendly_label": "Own it first",
+    "origin": "The Gottman Method",
+    "citation": "Gottman Institute (repair attempts)",
+    "rationale": "Leads with ownership instead of excuses, so the apology feels real and the repair can actually begin.",
+    "allowed_domains": [
+      "relationships",
+      "parenting"
+    ],
+    "core_sequence": "Ownership → impact named → apology → repair step",
+    "primary_effect": "Apology feels real and non-self-protective — leads with the effect not the excuse",
+    "failure_mode": "Can become self-exonerating if explanation creeps before ownership",
+    "overlays": [
+      "Accountability-first"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0"
+  },
+  {
+    "stack_name": "Visceral Triptych → Plain Landing",
+    "friendly_label": "Paint it, then say it",
+    "origin": "Narrative & staged delivery",
+    "citation": "Green & Brock, narrative transportation",
+    "rationale": "Builds feeling with vivid images, then lands on one plain phrase — so something tender hits with real emotional weight.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Three related sensory images → bridge sentence → plain key phrase",
+    "primary_effect": "Sensory, vivid, emotionally alive — for love, longing, proposal, or devotion",
+    "failure_mode": "Mixed emotional universes or an over-complicated landing destroy the effect",
+    "overlays": [
+      "Symbolic frame",
+      "Earned",
+      "Revealed"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0"
+  },
+  {
+    "stack_name": "Feeling Mirror → Boundary → Replacement Move",
+    "allowed_domains": [
+      "parenting"
+    ],
+    "core_sequence": "Name feeling → state rule clearly → safe alternative or next move",
+    "primary_effect": "Softens the entry without softening the limit — regulation first, correction second",
+    "failure_mode": "Boundary becomes unclear if feeling-mirror section is too long",
+    "overlays": [
+      "Co-regulate first",
+      "Direct boundary"
+    ],
+    "source_doc": "Parenting Storytelling Master Reference v2.0"
+  },
+  {
+    "stack_name": "Direct Fact → Comfort → Questions",
+    "allowed_domains": [
+      "parenting"
+    ],
+    "core_sequence": "State fact clearly → offer comfort → invite questions",
+    "primary_effect": "Gives children accurate information with emotional safety — no misunderstanding risk",
+    "failure_mode": "Comfort before fact on high-stakes truths creates confusion",
+    "overlays": [
+      "Direct-first",
+      "Age-appropriate comfort"
+    ],
+    "source_doc": "Parenting Storytelling Master Reference v2.0"
+  },
+  {
+    "stack_name": "Answer-First + Narrative Support",
+    "allowed_domains": [
+      "business"
+    ],
+    "core_sequence": "Answer or recommendation first → brief narrative support → next step",
+    "primary_effect": "Executive-ready clarity with enough context to make the recommendation credible",
+    "failure_mode": "Narrative support becomes throat-clearing if it precedes the answer",
+    "overlays": [
+      "Answer-first",
+      "Structure-led"
+    ],
+    "source_doc": "Business Communication Master Reference v2.0"
+  },
+  {
+    "stack_name": "Shared Continuity → Change → Next Step",
+    "allowed_domains": [
+      "business",
+      "leadership"
+    ],
+    "core_sequence": "Shared continuity → challenge or change → why-now → next step",
+    "primary_effect": "Creates meaning and coherence under change — acknowledges what was before asking for what's next",
+    "failure_mode": "Generic inspiration detached from the specific reality of the change",
+    "overlays": [
+      "Future-scene",
+      "Perspective-first"
+    ],
+    "source_doc": "Business Communication Master Reference v2.0"
+  },
+  {
+    "stack_name": "Mini-Case → Principle",
+    "allowed_domains": [
+      "business",
+      "leadership"
+    ],
+    "core_sequence": "Mini-case or example → extracted principle → application",
+    "primary_effect": "Makes the principle transferable and credible — grounded before it rises to abstraction",
+    "failure_mode": "Case too long, principle too vague, or application too prescriptive",
+    "overlays": [
+      "Mini-case",
+      "Analogy with limits"
+    ],
+    "source_doc": "Business Communication Master Reference v2.0"
+  },
+  {
+    "stack_name": "Recognition → Tiny Question → Guidance → Action",
+    "allowed_domains": [
+      "parenting"
+    ],
+    "core_sequence": "Recognize resistance → child-sized question or choice → guidance → next step",
+    "primary_effect": "Uses participation without negotiating the non-negotiable — child feels heard and directed",
+    "failure_mode": "Question becomes negotiation if the point is not clearly reached",
+    "overlays": [
+      "Co-regulate first",
+      "Choice-based"
+    ],
+    "source_doc": "Parenting Storytelling Master Reference v2.0"
+  },
+  {
+    "stack_name": "Perspective → Collaborative Frame → Consequence → Ownership Question",
+    "allowed_domains": [
+      "parenting"
+    ],
+    "core_sequence": "Perspective-first → collaborative frame → practical consequence → ownership question",
+    "primary_effect": "Teen-safe: autonomous, non-babying, consequence-aware, participation-inviting",
+    "failure_mode": "Becomes a lecture if perspective-first collapses into moralising",
+    "overlays": [
+      "Teen mode",
+      "Autonomy-respecting"
+    ],
+    "source_doc": "Parenting Storytelling Master Reference v2.0"
+  },
+  {
+    "stack_name": "Earned",
+    "friendly_label": "Build up to it",
+    "origin": "Narrative & staged delivery",
+    "citation": "Staged narrative reveal (storytelling research)",
+    "rationale": "Builds the emotional ground first, so the key line arrives feeling earned and moving rather than dropped cold.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Build emotional truth → land phrase → optional echo",
+    "primary_effect": "Deep, moving, reflective — phrase arrives after the audience has been prepared",
+    "failure_mode": "Runway becomes too long and the landing loses impact",
+    "overlays": [
+      "Runway",
+      "Revealed"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0"
+  },
+  {
+    "stack_name": "Warmer-with-Runway",
+    "friendly_label": "Ease into it",
+    "origin": "Narrative & staged delivery",
+    "citation": "Emotional runway / staged delivery",
+    "rationale": "Eases in with a little context before the hard truth, so it's received instead of triggering a shutdown.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Soft context → emotional truth → clear point",
+    "primary_effect": "Prepares a hard truth so it can be heard — runway lowers abruptness before the point lands",
+    "failure_mode": "Padding buries the point; the runway becomes avoidance",
+    "overlays": [
+      "Runway",
+      "Owned-feeling"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0 (App.B: abrupt truth → runway + truth)"
+  },
+  {
+    "stack_name": "Gentle Startup → Clear Point",
+    "friendly_label": "Soft start, clear point",
+    "origin": "The Gottman Method",
+    "citation": "Gottman & Levenson (soft startup)",
+    "rationale": "Opens calmly to set the tone, because the first sentence largely decides whether the talk goes well or turns defensive.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Soft opening (importance + calm intent) → the point",
+    "primary_effect": "Lowers the defensive trajectory of a hard conversation — the opening sets the tone",
+    "failure_mode": "Over-padded opening that buries or delays the actual point",
+    "overlays": [
+      "Gentle startup",
+      "Direct-first"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0 (App.B: harsh → gentle startup, §8)"
+  },
+  {
+    "stack_name": "Protest → Vulnerable Need",
+    "friendly_label": "Show what's underneath",
+    "origin": "Emotionally Focused Therapy (EFT)",
+    "citation": "Johnson; Rathgeber et al. (2019) meta-analysis",
+    "rationale": "Trades attack-language for the fear underneath, so they meet your need instead of defending against a criticism.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Name the reaction → underlying fear → what you are needing",
+    "primary_effect": "Converts attack-shaped language into owned vulnerability the other person can meet",
+    "failure_mode": "Tips into needy pressure if the need becomes a demand for reassurance",
+    "overlays": [
+      "Attachment-informed",
+      "Owned-feeling"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0 (§4, App.B: protest → vulnerable need)"
+  },
+  {
+    "stack_name": "Demand → Willing Request",
+    "friendly_label": "Ask, don't demand",
+    "origin": "Nonviolent Communication",
+    "citation": "Rosenberg, NVC (requests vs demands)",
+    "rationale": "Asks instead of demands, so they can say yes freely — which makes real cooperation far more likely.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Observation → specific doable ask → “would you be willing…”",
+    "primary_effect": "Cooperative and non-coercive — a request that leaves the other person free to say yes",
+    "failure_mode": "Too soft when a firm non-negotiable limit is actually required",
+    "overlays": [
+      "NVC-adjacent",
+      "Request not demand"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0 (App.B: demand → request)"
+  },
+  {
+    "stack_name": "Impact Apology",
+    "friendly_label": "A real apology",
+    "origin": "Effective-apology research",
+    "citation": "Lewicki et al. (2016), apology components",
+    "rationale": "Centres the apology on how it affected them, not on your guilt — so it reads as real remorse and they feel understood.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "“I’m sorry” → specific impact named → understanding of why it hurt",
+    "primary_effect": "Remorse centred on the other person, not on the speaker's guilt",
+    "failure_mode": "Self-focused apology drift (“I feel awful, I hate myself”) that makes them comfort you",
+    "overlays": [
+      "Accountability-first",
+      "Impact-first"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0 (App.B: self-focused → impact apology)"
+  },
+  {
+    "stack_name": "Accountability + Reassurance",
+    "friendly_label": "Own it, reassure them",
+    "origin": "Perceived Partner Responsiveness",
+    "citation": "Laurenceau et al. (1998); Arican-Dinc et al. (2023)",
+    "rationale": "Owns the mistake and steadies the bond at once, so they hear the repair without fearing the relationship is in question.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Own it → impact → apology → reassurance of care and continuity",
+    "primary_effect": "Repairs the rupture and steadies the bond at the same time",
+    "failure_mode": "Reassurance softens or dilutes the accountability it is paired with",
+    "overlays": [
+      "Accountability-first",
+      "Relational continuity"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0 (output-pair logic)"
+  },
+  {
+    "stack_name": "Clean Boundary",
+    "friendly_label": "Hold the line kindly",
+    "origin": "Boundary-setting",
+    "citation": "Boundary-communication practice",
+    "rationale": "States the limit without guilt or over-explaining, so it stays firm and clear instead of getting talked out of.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Guilt-stripped limit → what you will/won’t do → next step",
+    "primary_effect": "Firm and dignified — the limit lands without self-blame or apology weakening it",
+    "failure_mode": "Can read cold if no warmth is present at all",
+    "overlays": [
+      "Clean boundary",
+      "Direct-first"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0 (App.B: boundary-with-guilt → clean boundary)"
+  },
+  {
+    "stack_name": "Boundary with Relational Continuity",
+    "friendly_label": "A limit, with love",
+    "origin": "Boundary-setting",
+    "citation": "Boundary-communication practice",
+    "rationale": "Holds the limit while signalling care, so a 'no' doesn't feel like rejection or abandonment.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Boundary → care and continuity → next move",
+    "primary_effect": "Sets a limit without signalling abandonment — the relationship survives the no",
+    "failure_mode": "Over-explaining the care weakens the limit",
+    "overlays": [
+      "Clean boundary",
+      "Relational continuity"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0 (output-pair logic)"
+  },
+  {
+    "stack_name": "Plain-Language Reset",
+    "friendly_label": "Just say it plainly",
+    "origin": "Plain-language authenticity",
+    "citation": "Plain-language & authenticity practice",
+    "rationale": "Swaps borrowed therapy-speak for plain, honest words, so it sounds like you — and lands as sincere, not performed.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Strip therapy-speak → plain, owned statement",
+    "primary_effect": "Authentic and un-performative — replaces borrowed clinical diction with real words",
+    "failure_mode": "Can feel blunt if stripped so far that warmth is lost",
+    "overlays": [
+      "Plain language",
+      "Owned-feeling"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0 (App.B: over-therapized → plain)"
+  },
+  {
+    "stack_name": "Appreciation Story",
+    "friendly_label": "A specific thank you",
+    "origin": "Gratitude research",
+    "citation": "Algoe (gratitude, find-remind-bind); specificity effects",
+    "rationale": "Ties thanks to a specific moment, so gratitude feels real and memorable instead of generic and forgettable.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Specific moment → what it meant → why it mattered",
+    "primary_effect": "Concrete, memorable gratitude — specificity makes thanks land instead of sounding generic",
+    "failure_mode": "Inflates a small thing into something it wasn't",
+    "overlays": [
+      "Specificity",
+      "Artifact/object-led"
+    ],
+    "source_doc": "Relationship Communication Master Reference v2.0 (App.B: generic → appreciation story)"
+  },
+  {
+    "stack_name": "Felt Understanding → Motive Clarity → Ask",
+    "friendly_label": "Get them, then ask",
+    "origin": "Crucial Conversations",
+    "citation": "Patterson et al., Crucial Conversations (Start with Heart)",
+    "rationale": "Shows you get why it's hard and makes your good intent visible, so a braced listener relaxes enough to hear the ask.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "“I can see why this is hard” → “what I want here is…” → “could we…”",
+    "primary_effect": "Disarms a braced listener — validation and visible motive restore safety before the ask",
+    "failure_mode": "The motive line becomes a cover for control if it doesn't match behaviour",
+    "overlays": [
+      "Perspective-first",
+      "Motive clarity"
+    ],
+    "source_doc": "Inspiration Corpus Structured Analysis (recipe 1) + Source Pack (Start with Heart)"
+  },
+  {
+    "stack_name": "Shared Problem → De-personalise → Collaborative Question",
+    "friendly_label": "Us vs the problem",
+    "origin": "Getting to Yes",
+    "citation": "Fisher & Ury, Getting to Yes",
+    "rationale": "Frames it as the two of you versus the problem, so it becomes joint problem-solving instead of an accusation.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Name the shared issue → separate identity from the issue → “how do we solve this?”",
+    "primary_effect": "Turns conflict into joint problem-solving — it's us vs the problem, not us vs each other",
+    "failure_mode": "Can feel cold or over-rational if the emotional reality is skipped",
+    "overlays": [
+      "De-personalise",
+      "Collaborative close"
+    ],
+    "source_doc": "Inspiration Corpus Structured Analysis (recipe 4)"
+  },
+  {
+    "stack_name": "Future-Scene → Contrast → Invitation",
+    "friendly_label": "Picture us ahead",
+    "origin": "Future-self framing",
+    "citation": "Vision / future-self framing",
+    "rationale": "Paints a hopeful shared future and invites them toward it, so a hard conversation points somewhere good.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Vivid shared future → gap with the present → “let’s…”",
+    "primary_effect": "Mobilising and hopeful — makes a desired direction feel real and reachable together",
+    "failure_mode": "Drifts into pressure or hype if the future scene is idealised",
+    "overlays": [
+      "Future-scene",
+      "Invitation"
+    ],
+    "source_doc": "Inspiration Corpus Structured Analysis (recipe 5)"
+  },
+  {
+    "stack_name": "Negative Acknowledgment → Clarification → Humane Path",
+    "friendly_label": "Hard news, said kindly",
+    "origin": "Humane bad-news delivery",
+    "citation": "Procedural-justice bad-news communication",
+    "rationale": "Admits there's no easy way to say it, then offers a dignified next step — so hard news lands with care, not coldness.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "“There’s no easy way to say this” → clarify the reality → dignified next step",
+    "primary_effect": "Delivers hard news with dignity — names the difficulty honestly, then offers a path",
+    "failure_mode": "Reaches for meaning or consolation too soon and instrumentalises the pain",
+    "overlays": [
+      "Acknowledgement-before-consolation",
+      "Humane path"
+    ],
+    "source_doc": "Inspiration Corpus Structured Analysis (recipe 7) + Source Pack (Bixby/Stripe/Airbnb)"
+  },
+  {
+    "stack_name": "Coaching-Forward Correction",
+    "friendly_label": "Point it out kindly",
+    "origin": "Coaching practice",
+    "citation": "CIPD feedback reviews; coaching literature",
+    "rationale": "Leads with an observation, not a verdict, so feedback about a habit lands as help rather than an attack.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Observation (not a verdict) → reflective bridge → name the behaviour → its consequence → requested change",
+    "primary_effect": "Feedback on a recurring behaviour without it landing as an attack",
+    "failure_mode": "Too many beats; can feel managed or clinical",
+    "overlays": [
+      "Observation-first",
+      "Coaching mode"
+    ],
+    "source_doc": "Leadership / Coaching / Teaching / Speaking Master Reference v2.0 (feedback best-mode)"
+  },
+  {
+    "stack_name": "Reflective Question Ladder",
+    "friendly_label": "Let them get there",
+    "origin": "Coaching practice",
+    "citation": "Coaching literature (question-led reflection)",
+    "rationale": "Asks rather than tells, so they arrive at the insight themselves — which sticks far better than being lectured.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Open question → reflection → ownership question",
+    "primary_effect": "Lets the other person self-generate the insight rather than being told",
+    "failure_mode": "Becomes evasive if the speaker withholds their own position entirely",
+    "overlays": [
+      "Coaching mode",
+      "Question-led reflection"
+    ],
+    "source_doc": "Leadership / Coaching / Teaching / Speaking Master Reference v2.0 (coaching mode)"
+  },
+  {
+    "stack_name": "Continuity → Challenge → Next Step",
+    "friendly_label": "We've got this, here's next",
+    "origin": "Change & continuity framing",
+    "citation": "Change-communication (continuity under uncertainty)",
+    "rationale": "Anchors what you've built before naming the hard change, so it steadies you both through a rough patch.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Anchor what you’ve built / are → name the hard change → next move together",
+    "primary_effect": "Steadies the relationship during change or conflict by leading with continuity",
+    "failure_mode": "Continuity is used to dodge or soften the hard point",
+    "overlays": [
+      "Continuity-under-uncertainty",
+      "Future-scene"
+    ],
+    "source_doc": "Leadership / Coaching / Teaching / Speaking Master Reference v2.0 (context → continuity → challenge), adapted"
+  },
+  {
+    "stack_name": "Permission-Gate → Runway → Reveal",
+    "friendly_label": "Ask first, then share",
+    "origin": "Narrative & staged delivery",
+    "citation": "Staged delivery (permission & reveal) — practitioner / hypothesis",
+    "rationale": "Asks before sharing something tender, so they're ready to receive it — which makes a sensitive reveal feel safe.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Ask to say something → brief emotional runway → land the key phrase",
+    "primary_effect": "Stages a tender or sensitive reveal so the other person is ready to receive it",
+    "failure_mode": "Ceremony weakens impact; overuse makes ordinary messages feel theatrical",
+    "overlays": [
+      "Permission-first",
+      "Reveal",
+      "Runway"
+    ],
+    "source_doc": "Storytelling Master Reference v2.0 (staging operators) + Elevated Inspiration Playbook"
+  },
+  {
+    "stack_name": "Accusation Audit → Label → Calibrated Ask",
+    "friendly_label": "Name it before they do",
+    "origin": "Tactical empathy (Chris Voss)",
+    "citation": "Voss, Never Split the Difference",
+    "rationale": "Names their likely reaction before they feel it, which disarms defensiveness and opens a real conversation.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "Pre-name their likely reaction → label the emotion → no-pressure “how do we…” question",
+    "primary_effect": "Defuses defensiveness by naming the negative first and inviting collaboration",
+    "failure_mode": "Reads as sarcasm or manipulation if mistimed or under-set-up",
+    "overlays": [
+      "Accusation audit",
+      "Labeling",
+      "Calibrated question"
+    ],
+    "source_doc": "Inspiration Corpus Source Pack (D4: Voss calibrated question / labeling)"
+  },
+  {
+    "stack_name": "Headline-First → Brief Why",
+    "friendly_label": "Say it, then why",
+    "origin": "Answer-first (Minto Pyramid)",
+    "citation": "Minto, The Pyramid Principle (BLUF)",
+    "rationale": "Says the actual point first, then a line of why — so an anxious over-explainer gets heard instead of lost in preamble.",
+    "allowed_domains": [
+      "relationships"
+    ],
+    "core_sequence": "State the point or ask first → one line of context",
+    "primary_effect": "Anti-throat-clearing clarity — says the thing plainly for an anxious over-explainer",
+    "failure_mode": "Can feel abrupt for tender or high-emotion topics",
+    "overlays": [
+      "Answer-first",
+      "Headline-first"
+    ],
+    "source_doc": "Business Communication Master Reference v2.0 (answer-first / BLUF), adapted"
+  }
+]
