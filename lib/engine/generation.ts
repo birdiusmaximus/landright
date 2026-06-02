@@ -14,10 +14,16 @@ function getClient(): OpenAI {
 
 // ─── Prompt builder ───────────────────────────────────────────────────────────
 
-function buildSystemPrompt(): string {
+function buildSystemPrompt(which?: "a" | "b"): string {
+  const jobLine =
+    which === "b"
+      ? `Your job is to write ONE elevated, expressive paragraph — the version that impresses. Lean into craft: a sharper controlling image, a more memorable turn of phrase, a more interesting shape. This is the option people will want to copy because it says the hard thing *beautifully*. You are NOT a generic rewriting tool, and you are NOT writing the plain version — another writer handles that. Reach higher here.`
+      : which === "a"
+        ? `Your job is to write ONE clear, grounded paragraph — say the hard thing plainly and well, with warmth and zero clutter. You are NOT a generic rewriting tool.`
+        : `Your job is to write two strategically distinct, multilayered paragraph options that help the user's message land more effectively. You are NOT a generic rewriting tool.`;
   return `You are Landright's lead writer: a seasoned communication expert who helps people say the hard, tender, or awkward things to the people they love, in a way the other person can actually hear. Your craft is grounded in relationship science and conflict-communication practice — the Gottman method, Nonviolent Communication, Emotionally Focused Therapy, tactical empathy, and narrative delivery — but you never sound clinical, coachy, or like a textbook. You write the way an emotionally intelligent, plain-spoken friend would: warm, specific, and real.
 
-Your job is to write two strategically distinct, multilayered paragraph options that help the user's message land more effectively. You are NOT a generic rewriting tool.
+${jobLine}
 
 WHOSE MESSAGE THIS IS (critical):
 - The "raw input" is the USER's own rough draft of what THEY want to say to the other person.
@@ -48,13 +54,46 @@ CORE RULES:
 - One controlling image is better than many unrelated images
 - The default is multilayered and intentionally staged
 
-You will receive a generation brief and source packet. Follow them precisely.
+${
+    which === "b"
+      ? `THIS OPTION SPECIFICALLY (the elevated one):
+- Do not play it safe. The plain version already exists — your job is to be more vivid, more crafted, more memorable, while staying true and never manipulative.
+- Earn one strong controlling image or one striking, specific turn of phrase. Let rhythm and a slightly more deliberate shape do real work.
+- "Restraint is strength" still holds against FILLER and cliché — but here, do not strip out genuine eloquence. Ornament that serves the feeling is welcome.
+- It must still obey the directness rule and every forbidden move: never let flair undermine a boundary, an apology's ownership, or plain honesty.
+
+`
+      : which === "a"
+        ? `THIS OPTION SPECIFICALLY (the clear one):
+- Plain and warm beats clever here. Short, honest, unmistakable. No ornament for its own sake.
+
+`
+        : ""
+  }You will receive a generation brief and source packet. Follow them precisely.
 
 Respond ONLY with valid JSON in the exact schema provided. No prose before or after.`;
 }
 
-function buildUserPrompt(brief: GenerationBrief, packet: SourcePacket): string {
+function buildUserPrompt(
+  brief: GenerationBrief,
+  packet: SourcePacket,
+  which?: "a" | "b"
+): string {
   const sections: string[] = [];
+
+  const stackForMode =
+    which === "a"
+      ? `Stack (your single option MUST use this architecture): ${brief.stack_a}`
+      : which === "b"
+        ? `Stack (your single option MUST use this architecture): ${brief.stack_b}`
+        : `Stack A (Option A must use this architecture): ${brief.stack_a}\nStack B (Option B must use this architecture): ${brief.stack_b}`;
+
+  const intentForMode =
+    which === "a"
+      ? `INTENT: This is the CLEAR, grounded option. Say it plainly and well — warm, direct, no clutter.`
+      : which === "b"
+        ? `INTENT: This is the ELEVATED, expressive option — the one meant to impress. Be genuinely more vivid and crafted: a sharper controlling image, a more memorable turn of phrase, a more interesting shape. Reach higher than a plain rewrite would, while still respecting the directness rule and forbidden moves (never let flair undermine a boundary, an apology's ownership, or honesty).`
+        : `A/B INTENT: Option A is the clear, grounded take — say it plainly and well. Option B is the more elevated, expressive take — lean into craft and a little flair: a sharper image, a more memorable turn of phrase, a more interesting shape. Make B genuinely more vivid and impressive than A, while still respecting the directness rule and forbidden moves (never let flair undermine a boundary, an apology's ownership, or honesty).`;
 
   // Generation brief
   sections.push(`## GENERATION BRIEF
@@ -68,10 +107,9 @@ Likely barrier to landing: ${brief.likely_barrier.replace(/_/g, " ")}
 Lead engine: ${brief.lead_engine.replace(/_/g, " ")}
 Target length: ${brief.target_length} paragraph
 
-Stack A (Option A must use this architecture): ${brief.stack_a}
-Stack B (Option B must use this architecture): ${brief.stack_b}
+${stackForMode}
 
-A/B INTENT: Option A is the clear, grounded take — say it plainly and well. Option B is the more elevated, expressive take — lean into craft and a little flair: a sharper image, a more memorable turn of phrase, a more interesting shape. Make B genuinely more vivid and impressive than A, while still respecting the directness rule and forbidden moves (never let flair undermine a boundary, an apology's ownership, or honesty).
+${intentForMode}
 
 Directness rule: ${brief.directness_rule}
 
@@ -110,17 +148,19 @@ Guardrails: ${pb.guardrails.slice(0, 3).join("; ")}${
   }
 
   // Stack definitions
-  if (packet.stack_a_def) {
+  const showA = which === undefined || which === "a";
+  const showB = which === undefined || which === "b";
+  if (showA && packet.stack_a_def) {
     const s = packet.stack_a_def;
-    sections.push(`## STACK A: ${s.stack_name}
+    sections.push(`## STACK${which ? "" : " A"}: ${s.stack_name}
 Sequence: ${s.core_sequence}
 Primary effect: ${s.primary_effect}
 Failure to avoid: ${s.failure_mode}`);
   }
 
-  if (packet.stack_b_def && packet.stack_b_def.stack_name !== packet.stack_a_def?.stack_name) {
+  if (showB && packet.stack_b_def && (which === "b" || packet.stack_b_def.stack_name !== packet.stack_a_def?.stack_name)) {
     const s = packet.stack_b_def;
-    sections.push(`## STACK B: ${s.stack_name}
+    sections.push(`## STACK${which ? "" : " B"}: ${s.stack_name}
 Sequence: ${s.core_sequence}
 Primary effect: ${s.primary_effect}
 Failure to avoid: ${s.failure_mode}`);
@@ -150,7 +190,27 @@ ${packet.imagery.map(i =>
 ).join("\n\n")}`);
   }
 
-  // Output contract
+  // Output contract — single-option mode
+  if (which) {
+    sections.push(`## OUTPUT CONTRACT
+Return ONLY this JSON object, no other text:
+
+{
+  "breakdown": [
+    { "text": "The first clause or sentence, exactly as written.", "note": "what this part is doing (max 12 words)" },
+    { "text": "The next clause or sentence.", "note": "its communicative function" }
+  ],
+  "safety_flags": []
+}
+
+RULES FOR THE BREAKDOWN:
+- "breakdown" is your single paragraph option split into 3–6 ordered segments. Reading the "text" fields in order, joined by single spaces, must form the complete, natural paragraph. Do NOT include a separate full paragraph — the segments ARE the paragraph.
+- Each segment is one clause or sentence — a meaningful beat of the message, not a single word.
+- Each "note" explains, in plain language (max 12 words), what that beat is doing communicatively.`);
+    return sections.join("\n\n");
+  }
+
+  // Output contract — both-options mode (legacy)
   sections.push(`## OUTPUT CONTRACT
 Return ONLY this JSON object, no other text:
 
@@ -271,4 +331,96 @@ export async function generateOptions(
   if (!Array.isArray(parsed.safety_flags)) parsed.safety_flags = [];
 
   return runQA(parsed, brief);
+}
+
+// ─── Single-option generation (hybrid: A on a fast model, B on an eloquent one) ──
+
+export interface OptionOutput {
+  stack_label: string;
+  origin?: string;
+  citation?: string;
+  rationale?: string;
+  breakdown: { text: string; note: string }[];
+  option: string;
+  safety_flags: string[];
+}
+
+// Per-option model routing. Option A is the fast, clear take; Option B is the
+// slower, more eloquent "impress" take generated by a stronger model.
+const MODEL_A = "gpt-5.4-mini";
+const MODEL_B = "gpt-5.5";
+
+export async function generateOne(
+  brief: GenerationBrief,
+  packet: SourcePacket,
+  which: "a" | "b"
+): Promise<OptionOutput> {
+  const systemPrompt = buildSystemPrompt(which);
+  const userPrompt = buildUserPrompt(brief, packet, which);
+
+  const model = which === "a" ? MODEL_A : MODEL_B;
+  // Some newer models only accept the default temperature (1).
+  const supportsCustomTemp = /^gpt-5\.4|^gpt-4o|^gpt-5-/.test(model);
+
+  // The model occasionally returns truncated/empty JSON. Try once more before
+  // surfacing an error so a single hiccup never leaves the user with a dead card.
+  const attempt = async () => {
+    const completion = await getClient().chat.completions.create({
+      model,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      ...(supportsCustomTemp ? { temperature: which === "a" ? 0.7 : 0.85 } : {}),
+      response_format: { type: "json_object" },
+      max_completion_tokens: 1500,
+    });
+    const rawContent = completion.choices[0]?.message?.content;
+    if (!rawContent) throw new Error("No content returned from OpenAI");
+    const parsed = JSON.parse(rawContent) as { breakdown?: unknown; safety_flags?: unknown };
+    const segs = Array.isArray(parsed.breakdown)
+      ? parsed.breakdown
+          .map(s => ({
+            text: typeof (s as { text?: unknown }).text === "string" ? (s as { text: string }).text.trim() : "",
+            note: typeof (s as { note?: unknown }).note === "string" ? (s as { note: string }).note.trim() : "",
+          }))
+          .filter(s => s.text.length > 0)
+      : [];
+    if (segs.length === 0) throw new Error("Breakdown had no usable segments");
+    return { segs, safety_flags: parsed.safety_flags };
+  };
+
+  let result: { segs: { text: string; note: string }[]; safety_flags: unknown };
+  try {
+    result = await attempt();
+  } catch {
+    result = await attempt(); // one retry
+  }
+  const breakdown = result.segs;
+  const parsed = { safety_flags: result.safety_flags };
+
+  const stackDef = which === "a" ? packet.stack_a_def : packet.stack_b_def;
+  const option = breakdown.map(s => s.text).join(" ");
+
+  // Light forbidden-pattern QA (same rules as the dual path)
+  const flags: string[] = Array.isArray(parsed.safety_flags)
+    ? (parsed.safety_flags as unknown[]).filter((f): f is string => typeof f === "string")
+    : [];
+  const forbidden: Array<[RegExp, string]> = [
+    [/\bi promise\b/i, "false-promise language detected"],
+    [/\bi guarantee\b/i, "false-promise language detected"],
+    [/\byou should feel\b/i, "pseudo-therapy language detected"],
+    [/\bwhat you need to do is\b/i, "prescriptive therapy framing detected"],
+  ];
+  for (const [re, flag] of forbidden) if (re.test(option)) flags.push(flag);
+
+  return {
+    stack_label: stackDef?.friendly_label ?? (which === "a" ? brief.stack_a : brief.stack_b),
+    origin: stackDef?.origin,
+    citation: stackDef?.citation,
+    rationale: stackDef?.rationale,
+    breakdown,
+    option,
+    safety_flags: flags,
+  };
 }

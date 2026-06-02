@@ -1,15 +1,27 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import type { GenerationOutput, Audience, Segment } from "@/lib/types";
+import type { Audience, Segment } from "@/lib/types";
 import { APP_VERSION } from "@/lib/version";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type AppState = "idle" | "loading" | "results" | "error";
 
+// One generated option (matches the API's OptionOutput).
+interface OptionData {
+  stack_label: string;
+  breakdown: Segment[];
+  option: string;
+  origin?: string;
+  rationale?: string;
+  safety_flags: string[];
+}
+
 interface ResultState {
-  output: GenerationOutput;
+  a: OptionData | null; // fast/clear option (arrives first)
+  b: OptionData | null; // eloquent option (arrives a few seconds later)
+  bError?: string | null;
   eventId: string;
   brief: { inferred_goal: string; stack_a: string; stack_b: string };
   audience: Audience | null;
@@ -221,21 +233,24 @@ function LogoMark({ size = 26 }: { size?: number }) {
 // results usually arrive, then crawls slowly if a request runs long so it never
 // stalls full or jumps early.
 const GEN_EXPECTED_MS = 2700;
+// Option B is written by the stronger model (gpt-5.5) — slower but more eloquent.
+// Median ≈ 10s in-browser; the bar paces to that so it lands near-full on arrival.
+const GEN_EXPECTED_MS_B = 10000;
 
-function LoadingBar() {
+function LoadingBar({ expectedMs = GEN_EXPECTED_MS }: { expectedMs?: number }) {
   const [pct, setPct] = useState(0);
   useEffect(() => {
     const start = performance.now();
     const id = setInterval(() => {
       const t = performance.now() - start;
       const p =
-        t < GEN_EXPECTED_MS
-          ? 0.9 * (t / GEN_EXPECTED_MS)
-          : 0.9 + 0.085 * (1 - Math.exp(-(t - GEN_EXPECTED_MS) / 2200));
+        t < expectedMs
+          ? 0.9 * (t / expectedMs)
+          : 0.9 + 0.085 * (1 - Math.exp(-(t - expectedMs) / 2200));
       setPct(p);
     }, 50);
     return () => clearInterval(id);
-  }, []);
+  }, [expectedMs]);
 
   return (
     <div style={{ marginTop: 18, height: 12, overflow: "hidden", backgroundColor: INK, border: `2px solid ${INK}` }}>
@@ -532,6 +547,53 @@ function OptionCard({
   );
 }
 
+// ─── Pending card (the eloquent option, still being written) ──────────────────
+
+function PendingCard({ index, error }: { index: string; error?: string | null }) {
+  return (
+    <div className="surface-dark" style={{ border: `2px solid ${INK}` }}>
+      {/* Header band — mirrors OptionCard, but the number is hollow and the label muted */}
+      <div style={{ display: "flex", alignItems: "stretch", borderBottom: `2px solid ${LIME}` }}>
+        <div style={{ borderRight: "2px solid rgba(255,255,255,0.16)", padding: "12px 22px", display: "flex", alignItems: "center" }}>
+          <span
+            style={{
+              fontFamily: DISPLAY,
+              fontWeight: 900,
+              fontSize: "clamp(40px, 10vw, 60px)",
+              lineHeight: 0.8,
+              color: "transparent",
+              WebkitTextStroke: `2px ${LIME}`,
+            }}
+          >
+            {index}
+          </span>
+        </div>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 20px" }}>
+          <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(1.15rem, 4.5vw, 1.6rem)", letterSpacing: "-0.01em", textTransform: "uppercase", color: DARK_MUTED, lineHeight: 1.02 }}>
+            {error ? "Couldn’t finish this one" : "Crafting the expressive take…"}
+          </span>
+        </div>
+      </div>
+
+      {/* Body */}
+      <div style={{ padding: "clamp(22px, 5vw, 32px)" }}>
+        {error ? (
+          <p style={{ fontFamily: BODY, fontSize: "0.95rem", lineHeight: 1.6, color: "#FFFFFF" }}>
+            {error}
+          </p>
+        ) : (
+          <>
+            <LoadingBar expectedMs={GEN_EXPECTED_MS_B} />
+            <p style={{ fontFamily: BODY, fontSize: "0.86rem", lineHeight: 1.6, color: "#B9BBAE", marginTop: 16, maxWidth: 520 }}>
+              Taking extra care to draft something really meaningful — just a few more seconds. Have a read of option {pad2(Number(index) - 1)} while you wait.
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function Home() {
@@ -556,21 +618,40 @@ export default function Home() {
     setResult(null);
 
     const currentAudience = audience;
-    try {
-      const res = await fetch("/api/generate", {
+    const rotation = rotationRef.current;
+    const baseNum = rotation * 2 + 1;
+    const call = (which: "a" | "b") =>
+      fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ raw_input: rawInput.trim(), audience: currentAudience ?? undefined, rotation: rotationRef.current }),
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error || "Generation failed");
+        body: JSON.stringify({ raw_input: rawInput.trim(), audience: currentAudience ?? undefined, rotation, which }),
+      }).then(r => r.json());
 
-      setResult({ output: data.result, eventId: data.event_id, brief: data.brief, audience: currentAudience, baseNum: rotationRef.current * 2 + 1 });
+    // Hybrid: fire both at once. Option A (fast model) renders immediately; option
+    // B (eloquent model) fills in underneath when it's ready.
+    const pa = call("a");
+    const pb = call("b");
+
+    try {
+      const da = await pa;
+      if (!da.success) throw new Error(da.error || "Generation failed");
+      setResult({ a: da.option, b: null, bError: null, eventId: da.event_id, brief: da.brief, audience: currentAudience, baseNum });
       setAppState("results");
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setAppState("error");
+      setIsGenerating(false);
+      return;
+    }
+
+    // Option B continues in the background.
+    try {
+      const db = await pb;
+      if (!db.success) throw new Error(db.error || "Generation failed");
+      setResult(prev => (prev ? { ...prev, b: db.option } : prev));
+    } catch (err) {
+      setResult(prev => (prev ? { ...prev, bError: err instanceof Error ? err.message : "Couldn’t craft the second option" } : prev));
     } finally {
       setIsGenerating(false);
     }
@@ -730,7 +811,7 @@ export default function Home() {
             {isGenerating ? "Composing…" : "Generate two options →"}
           </Button>
 
-          {isGenerating && <LoadingBar />}
+          {appState === "loading" && <LoadingBar />}
           {!isGenerating && (
             <p style={{ textAlign: "center", marginTop: 12, fontFamily: COND, fontWeight: 600, fontSize: "0.78rem", letterSpacing: "0.1em", color: MUTED, textTransform: "uppercase" }}>
               ⌘ Enter to generate
@@ -759,35 +840,44 @@ export default function Home() {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 30 }}>
-              <OptionCard
-                index={pad2(result.baseNum)}
-                label={result.output.stack_a_label}
-                segments={result.output.breakdown_a}
-                fullText={result.output.option_a}
-                origin={result.output.stack_a_origin}
-                rationale={result.output.stack_a_rationale}
-                isChosen={result.chosen === "a"}
-                otherChosen={result.chosen === "b"}
-                onChoose={() => handleChoose("a")}
-              />
-              <OptionCard
-                index={pad2(result.baseNum + 1)}
-                label={result.output.stack_b_label}
-                segments={result.output.breakdown_b}
-                fullText={result.output.option_b}
-                origin={result.output.stack_b_origin}
-                rationale={result.output.stack_b_rationale}
-                isChosen={result.chosen === "b"}
-                otherChosen={result.chosen === "a"}
-                onChoose={() => handleChoose("b")}
-              />
+              {result.a && (
+                <OptionCard
+                  index={pad2(result.baseNum)}
+                  label={result.a.stack_label}
+                  segments={result.a.breakdown}
+                  fullText={result.a.option}
+                  origin={result.a.origin}
+                  rationale={result.a.rationale}
+                  isChosen={result.chosen === "a"}
+                  otherChosen={result.chosen === "b"}
+                  onChoose={() => handleChoose("a")}
+                />
+              )}
+              {result.b ? (
+                <OptionCard
+                  index={pad2(result.baseNum + 1)}
+                  label={result.b.stack_label}
+                  segments={result.b.breakdown}
+                  fullText={result.b.option}
+                  origin={result.b.origin}
+                  rationale={result.b.rationale}
+                  isChosen={result.chosen === "b"}
+                  otherChosen={result.chosen === "a"}
+                  onChoose={() => handleChoose("b")}
+                />
+              ) : (
+                <PendingCard index={pad2(result.baseNum + 1)} error={result.bError} />
+              )}
             </div>
 
-            {result.output.safety_flags?.length > 0 && (
-              <div style={{ border: `2px solid ${INK}`, borderLeft: `6px solid ${LIME}`, padding: "14px 18px", marginBottom: 28, fontFamily: BODY, fontWeight: 600, fontSize: "0.74rem", color: MUTED }}>
-                {result.output.safety_flags.join("; ")}
-              </div>
-            )}
+            {(() => {
+              const flags = [...(result.a?.safety_flags ?? []), ...(result.b?.safety_flags ?? [])];
+              return flags.length > 0 ? (
+                <div style={{ border: `2px solid ${INK}`, borderLeft: `6px solid ${LIME}`, padding: "14px 18px", marginBottom: 28, fontFamily: BODY, fontWeight: 600, fontSize: "0.74rem", color: MUTED }}>
+                  {flags.join("; ")}
+                </div>
+              ) : null;
+            })()}
 
             <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
               <Button onClick={handleRegenerate} disabled={isGenerating} variant="outline">

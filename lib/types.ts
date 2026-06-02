@@ -249,6 +249,7 @@ export interface GenerateRequest {
   age_band?: AgeBand;
   audience?: Audience;
   rotation?: number; // increments on "Two more options" to rotate the stack pair
+  which?: "a" | "b"; // hybrid: which single option to generate (a = fast/clear, b = eloquent)
 }
 
 export interface GenerateResponse {

@@ -3,7 +3,7 @@ import type { GenerateRequest, GenerateResponse, GenerationBrief, Domain, Audien
 import { AUDIENCE_GUIDANCE } from "@/lib/types";
 import { buildGenerationBrief } from "@/lib/engine/router";
 import { buildSourcePacket, getSourcePacketIds } from "@/lib/engine/retrieval";
-import { generateOptions } from "@/lib/engine/generation";
+import { generateOne } from "@/lib/engine/generation";
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,6 +31,10 @@ export async function POST(req: NextRequest) {
     // Rotation index for "Two more options" — walks the task's stack pool.
     const rotation = Number.isFinite(body.rotation) ? Math.max(0, Math.floor(body.rotation as number)) : 0;
 
+    // Which option to generate. Hybrid: "a" = fast/clear model, "b" = eloquent model.
+    // Each call is independent; the brief is deterministic so both stay in sync.
+    const which: "a" | "b" = body.which === "b" ? "b" : "a";
+
     // Build generation brief (decision engine)
     const briefPartial = buildGenerationBrief(rawInput, domain, undefined, rotation);
 
@@ -41,15 +45,17 @@ export async function POST(req: NextRequest) {
     const sourcePacketIds = getSourcePacketIds(packet);
     brief.source_packet_ids = sourcePacketIds;
 
-    // Generate options (OpenAI)
-    const result = await generateOptions(brief, packet);
+    // Generate the requested single option (OpenAI)
+    const option = await generateOne(brief, packet, which);
 
     // Stateless: nothing is stored. The id is just a client-side handle.
     const eventId = crypto.randomUUID();
 
-    return NextResponse.json<GenerateResponse & { event_id: string }>({
+    return NextResponse.json({
       success: true,
-      result,
+      which,
+      option,
+      // Brief tags (deterministic) — the client uses these from the "a" response.
       brief: {
         domain: brief.domain,
         age_band: brief.age_band,
