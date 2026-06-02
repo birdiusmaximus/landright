@@ -325,6 +325,12 @@ function OptionCard({
   const hiRef = useRef<HTMLSpanElement | null>(null);
   const endRef = useRef<HTMLSpanElement | null>(null);
   const animSeq = useRef(0);
+  // True on real hover devices (mouse). On touch, hover is ignored so the
+  // emulated mouseenter can't fight the tap (which used to flash then clear it).
+  const canHover = useRef(true);
+  useEffect(() => {
+    canHover.current = window.matchMedia?.("(hover: hover)").matches ?? true;
+  }, []);
 
   const onHover = (i: number, el: HTMLElement) => {
     const rects = el.getClientRects();
@@ -451,8 +457,8 @@ function OptionCard({
               <span key={i}>
                 <span
                   ref={on ? hiRef : undefined}
-                  onMouseEnter={e => onHover(i, e.currentTarget)}
-                  onMouseLeave={() => setHovered(null)}
+                  onMouseEnter={e => { if (canHover.current) onHover(i, e.currentTarget); }}
+                  onMouseLeave={() => { if (canHover.current) setHovered(null); }}
                   onClick={e => { if (hovered === i) { setHovered(null); } else { onHover(i, e.currentTarget); } }}
                   style={{
                     position: "relative",
@@ -486,7 +492,7 @@ function OptionCard({
             </span>
           ) : (
             <span style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#7E8470" }}>
-              ↪ Hover or tap the text for more
+              Hover or tap the text for more
             </span>
           )}
         </div>
