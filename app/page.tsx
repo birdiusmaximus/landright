@@ -495,24 +495,6 @@ function OptionCard({
             {label}
           </span>
         </div>
-        {/* Hover/tap hint, top-right just above the lime line */}
-        <span
-          aria-hidden
-          style={{
-            position: "absolute",
-            right: 16,
-            bottom: 7,
-            fontFamily: COND,
-            fontWeight: 700,
-            fontSize: "0.62rem",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            color: LIME,
-            pointerEvents: "none",
-          }}
-        >
-          Hover or tap the text
-        </span>
       </div>
 
       {/* Body */}
@@ -579,15 +561,20 @@ function OptionCard({
           })}
         </p>
 
-        {/* Hovered beat's note (only while hovering/tapping; hint lives in the header) */}
-        {hovered !== null && (
-          <div style={{ marginBottom: 4 }}>
+        {/* Fixed-height slot: shows the hover/tap hint at rest, and the hovered
+            beat's note on hover — reserved height so nothing shifts. */}
+        <div style={{ minHeight: 42, marginBottom: 4 }}>
+          {hovered !== null ? (
             <span style={{ fontFamily: BODY, fontSize: "0.85rem", lineHeight: 1.5, color: "#FFFFFF" }}>
               <span style={{ color: LIME, fontWeight: 600 }}>Beat {hovered + 1}/{segs.length} — </span>
               {segs[hovered].note}
             </span>
-          </div>
-        )}
+          ) : (
+            <span style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", color: LIME }}>
+              Hover or tap the text
+            </span>
+          )}
+        </div>
 
         {/* Credibility (origin/principle) + the actual beat-by-beat flow */}
         <div style={{ borderTop: "2px solid rgba(255,255,255,0.16)", paddingTop: 16, marginTop: 14 }}>
