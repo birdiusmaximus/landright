@@ -229,13 +229,13 @@ const MOMENT_ORDER: Moment[] = [
 // Grounded paraphrases of established ideas (not verbatim quotes), attributed to
 // the tradition they come from.
 const WHY_EVIDENCE: Record<Moment, string> = {
-  apology_without_self_defence: "In apology research, clearly owning the impact repairs trust more than the explanation that follows.",
-  need_without_pressure: "A core idea in Nonviolent Communication: a request leaves the other person free to say yes, where a demand makes them defend their freedom.",
-  hurt_without_blame: "In the Gottman tradition, naming the impact without reading motive keeps a complaint from turning into an attack.",
-  boundary_without_coldness: "Boundary work holds that a limit is received as care when the relationship stays visible beside it.",
-  reconnect_after_distance: "From Getting to Yes: separating the people from the problem is what reopens a stuck conversation.",
-  pause_before_escalation: "Gottman’s work on emotional flooding: a clear pause with a return point protects a conversation better than pushing through it.",
-  truth_without_attack: "Staged delivery holds that a hard truth is easier to hear when the delivery carries less threat.",
+  apology_without_self_defence: "In research on what makes an apology work, the strongest ingredient is a clear acknowledgment of responsibility. It restores trust more than the explanation, the justification, or even an offer to make it right. When context arrives before that ownership, the other person hears it as a defence, and the repair never fully lands.",
+  need_without_pressure: "Nonviolent Communication draws a sharp line between a request and a demand. A request says what you would like and leaves the other person genuinely free to say no, while a demand carries an unspoken threat of blame if they refuse. People move toward a request, and brace against a demand, even when the words are almost the same.",
+  hurt_without_blame: "Gottman’s research on conflict finds that a complaint framed as a character attack, the ‘you always’ version, reliably triggers defensiveness. The same hurt raised as a specific feeling about a specific moment can actually be heard. Naming the impact without guessing at motive keeps it about what happened, not about who they are.",
+  boundary_without_coldness: "Boundary work separates the limit from the relationship. A clear limit protects you, but when warmth disappears alongside it, the other person reacts to the perceived withdrawal rather than the request itself. Keeping care visible is what lets a boundary read as ‘this matters to me,’ not ‘I am done with you.’",
+  reconnect_after_distance: "A central idea in Getting to Yes is to separate the people from the problem. When the distance itself becomes the shared thing to solve, rather than a fault to assign, both people can turn toward it instead of defending themselves. An opening that invites the other person’s reality reopens a conversation that pressure would only close.",
+  pause_before_escalation: "Gottman’s work on emotional flooding shows that once we are physiologically overwhelmed, we literally cannot take in what the other person is saying, so pushing on only makes it worse. A pause that names the overwhelm and commits to a clear return point protects the conversation. On its own, ‘I can’t talk’ reads as stonewalling.",
+  truth_without_attack: "Hard truths are rarely rejected for being true. They are rejected for the threat wrapped around them. Plain language and a staged opening remove that extra charge, the blame and the suddenness, so the real point has room to be heard rather than defended against.",
 };
 
 // ─── Shared content ───────────────────────────────────────────────────────────

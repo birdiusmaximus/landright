@@ -31,6 +31,22 @@ interface ResultState {
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
+// Word-bigram (shingle) Jaccard similarity — used to catch when the two options
+// come back too alike so we can re-craft the second one to genuinely differ.
+function similarity(a: string, b: string): number {
+  const grams = (s: string) => {
+    const w = s.toLowerCase().replace(/[^a-z0-9\s]/g, "").split(/\s+/).filter(Boolean);
+    const set = new Set<string>();
+    for (let i = 0; i < w.length - 1; i++) set.add(w[i] + " " + w[i + 1]);
+    return set;
+  };
+  const A = grams(a), B = grams(b);
+  if (!A.size || !B.size) return 0;
+  let inter = 0;
+  for (const g of A) if (B.has(g)) inter++;
+  return inter / (A.size + B.size - inter);
+}
+
 // ─── Brand tokens ─────────────────────────────────────────────────────────────
 
 const LIME = "#C6F634";
@@ -954,11 +970,11 @@ export default function Home() {
     const currentAudience = audience;
     const rotation = rotationRef.current;
     const baseNum = rotation * 2 + 1;
-    const call = (which: "a" | "b") =>
+    const call = (which: "a" | "b", divergeFrom?: string) =>
       fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ raw_input: rawInput.trim(), audience: currentAudience ?? undefined, rotation, which }),
+        body: JSON.stringify({ raw_input: rawInput.trim(), audience: currentAudience ?? undefined, rotation, which, diverge_from: divergeFrom }),
       }).then(r => r.json());
 
     // Hybrid: fire both at once. Option A (fast model) renders immediately; option
@@ -966,9 +982,11 @@ export default function Home() {
     const pa = call("a");
     const pb = call("b");
 
+    let aOption: OptionData | null = null;
     try {
       const da = await pa;
       if (!da.success) throw new Error(da.error || "Generation failed");
+      aOption = da.option;
       setResult({ a: da.option, b: null, bError: null, eventId: da.event_id, brief: da.brief, audience: currentAudience, baseNum });
       setAppState("results");
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
@@ -983,7 +1001,17 @@ export default function Home() {
     try {
       const db = await pb;
       if (!db.success) throw new Error(db.error || "Generation failed");
-      setResult(prev => (prev ? { ...prev, b: db.option } : prev));
+      let bOption: OptionData = db.option;
+      // Safety net: if the two options came back too alike, re-craft B so the
+      // user gets two genuinely different approaches, not two versions of one.
+      if (aOption && similarity(aOption.option, bOption.option) > 0.45) {
+        setResult(prev => (prev ? { ...prev, b: null } : prev));
+        try {
+          const db2 = await call("b", aOption.option);
+          if (db2.success && db2.option) bOption = db2.option;
+        } catch { /* keep the original B */ }
+      }
+      setResult(prev => (prev ? { ...prev, b: bOption } : prev));
     } catch (err) {
       setResult(prev => (prev ? { ...prev, bError: err instanceof Error ? err.message : "Couldn’t craft the second option" } : prev));
     } finally {

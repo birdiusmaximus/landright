@@ -60,8 +60,12 @@ export async function POST(req: NextRequest) {
     const sourcePacketIds = getSourcePacketIds(packet);
     brief.source_packet_ids = sourcePacketIds;
 
+    // Optional: steer this option away from an already-generated counterpart that
+    // came back too similar (used by the client's "not too alike" safety net).
+    const divergeFrom = typeof body.diverge_from === "string" ? body.diverge_from.slice(0, 1500) : undefined;
+
     // Generate the requested single option (OpenAI)
-    const option = await generateOne(brief, packet, which);
+    const option = await generateOne(brief, packet, which, divergeFrom);
 
     // Stateless: nothing is stored. The id is just a client-side handle.
     const eventId = crypto.randomUUID();
