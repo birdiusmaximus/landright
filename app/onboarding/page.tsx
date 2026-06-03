@@ -238,7 +238,7 @@ const RECOGNITION = {
       { msg: "You always do this…", reply: "Always? So now I’m the bad guy." },
       { msg: "You embarrassed me in front of everyone…", reply: "You’re overreacting. I didn’t do anything." },
     ] },
-    { line: "You draw a line, and it lands as rejection.", examples: [
+    { line: "You set a boundary, and it lands as rejection.", examples: [
       { msg: "I can’t keep doing this…", reply: "So you’re just giving up on us?" },
       { msg: "I need some space…", reply: "Fine. Don’t bother coming back then." },
     ] },
