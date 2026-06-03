@@ -145,13 +145,39 @@ function LoadingDots() {
   );
 }
 
-// Oscillating lime bars shown in the window while dictation is listening.
-function Waveform() {
+// Lime bars in the window while dictating. Driven by real mic amplitude when an
+// analyser is available; falls back to a gentle CSS animation otherwise.
+function LiveWaveform({ analyser }: { analyser: AnalyserNode | null }) {
+  const N = 9;
+  const barsRef = useRef<(HTMLSpanElement | null)[]>([]);
+  useEffect(() => {
+    if (!analyser) return;
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    const step = Math.max(1, Math.floor(data.length / N));
+    let raf = 0;
+    const tick = () => {
+      analyser.getByteFrequencyData(data);
+      for (let i = 0; i < N; i++) {
+        let sum = 0;
+        for (let j = 0; j < step; j++) sum += data[i * step + j] || 0;
+        const avg = sum / step / 255;
+        const scale = Math.min(1, 0.16 + avg * 1.25);
+        const el = barsRef.current[i];
+        if (el) el.style.transform = `scaleY(${scale.toFixed(3)})`;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [analyser]);
   return (
     <div aria-hidden style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 5, height: 44 }}>
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-          <span key={i} style={{ width: 5, height: 44, backgroundColor: LIME, transformOrigin: "center", animation: `lr-wave 0.9s ease-in-out ${(i % 5 * 0.11).toFixed(2)}s infinite` }} />
+        {Array.from({ length: N }).map((_, i) => (
+          <span key={i} ref={el => { barsRef.current[i] = el; }}
+            style={{ width: 5, height: 44, backgroundColor: LIME, transformOrigin: "center", transform: "scaleY(0.16)",
+              transition: "transform 0.06s linear",
+              animation: analyser ? "none" : `lr-wave 0.9s ease-in-out ${(i % 5 * 0.11).toFixed(2)}s infinite` }} />
         ))}
       </div>
       <span style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.78rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#7E8470" }}>Listening…</span>
@@ -160,16 +186,18 @@ function Waveform() {
 }
 
 // Mic toggle in the corner of the input window. Idle = lime outline; active = lime fill.
-function MicButton({ active, onClick }: { active: boolean; onClick: () => void }) {
+function MicButton({ active, disabled, onClick }: { active: boolean; disabled?: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       aria-label={active ? "Stop dictation" : "Dictate your message"}
       title={active ? "Stop listening" : "Speak your message"}
       style={{
         position: "absolute", bottom: 12, right: 12, zIndex: 3,
         width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center",
-        backgroundColor: active ? LIME : "transparent", border: `2px solid ${LIME}`, borderRadius: 0, cursor: "pointer",
+        backgroundColor: active ? LIME : "transparent", border: `2px solid ${LIME}`, borderRadius: 0,
+        cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.5 : 1,
       }}
     >
       <svg width="18" height="20" viewBox="0 0 18 20" fill="none" stroke={active ? INK : LIME} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -746,12 +774,16 @@ export default function Home() {
   const [audience, setAudience] = useState<Audience | null>(null);
   const [sampling, setSampling] = useState(false);
   const [listening, setListening] = useState(false);
+  const [transcribing, setTranscribing] = useState(false);
   const [micSupported, setMicSupported] = useState(false);
   const [micError, setMicError] = useState<string | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const recRef = useRef<any>(null);
   const baseTextRef = useRef("");
-  const transcriptRef = useRef("");
+  const streamRef = useRef<MediaStream | null>(null);
+  const mrRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<BlobPart[]>([]);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const vadRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [appState, setAppState] = useState<AppState>("idle");
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
@@ -783,66 +815,133 @@ export default function Home() {
     }
   }
 
-  // Voice dictation via the browser's built-in Web Speech API (no token cost).
+  // Voice dictation via record-and-transcribe (works on mobile browsers, the
+  // standalone PWA, and later inside a native webview wrapper).
   useEffect(() => {
-    const w = window as unknown as { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown };
-    setMicSupported(Boolean(w.SpeechRecognition || w.webkitSpeechRecognition));
+    const ok = typeof navigator !== "undefined" && !!navigator.mediaDevices?.getUserMedia && typeof window !== "undefined" && typeof window.MediaRecorder !== "undefined";
+    setMicSupported(ok);
+    return () => {
+      if (vadRef.current) clearInterval(vadRef.current);
+      streamRef.current?.getTracks().forEach(t => t.stop());
+      try { audioCtxRef.current?.close(); } catch { /* ignore */ }
+    };
   }, []);
 
-  function commitTranscript() {
-    const t = transcriptRef.current.trim();
-    if (!t) return;
-    const base = baseTextRef.current;
-    setRawInput((base ? base + " " + t : t).slice(0, 500));
+  function pickMime(): string {
+    if (typeof MediaRecorder === "undefined") return "";
+    const types = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/mp4;codecs=mp4a.40.2", "audio/aac", "audio/ogg"];
+    for (const t of types) { try { if (MediaRecorder.isTypeSupported(t)) return t; } catch { /* ignore */ } }
+    return "";
   }
 
-  function stopDictation() {
-    try { recRef.current?.stop(); } catch { /* ignore */ }
+  function cleanupAudio() {
+    if (vadRef.current) { clearInterval(vadRef.current); vadRef.current = null; }
+    streamRef.current?.getTracks().forEach(t => t.stop());
+    streamRef.current = null;
+    try { audioCtxRef.current?.close(); } catch { /* ignore */ }
+    audioCtxRef.current = null;
+    analyserRef.current = null;
   }
 
-  function startDictation() {
-    setMicError(null);
-    const w = window as unknown as { SpeechRecognition?: new () => unknown; webkitSpeechRecognition?: new () => unknown };
-    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
-    if (!SR) { setMicError("Voice input isn’t supported in this browser. Try Chrome or Safari."); return; }
-    if (typeof window !== "undefined" && window.isSecureContext === false) {
-      setMicError("Voice input needs a secure (https) connection."); return;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rec: any = new SR();
-    rec.lang = navigator.language || "en-US";
-    rec.continuous = false;     // auto-stops on a natural pause, then commits
-    rec.interimResults = true;
-    baseTextRef.current = rawInput.trim();
-    transcriptRef.current = "";
-    let finalT = "";
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rec.onresult = (e: any) => {
-      let interim = "";
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        const seg = e.results[i][0].transcript;
-        if (e.results[i].isFinal) finalT += seg; else interim += seg;
+  async function transcribeClip(blob: Blob, mime: string) {
+    setTranscribing(true);
+    try {
+      const ext = mime.includes("mp4") || mime.includes("aac") ? "mp4" : mime.includes("ogg") ? "ogg" : "webm";
+      const fd = new FormData();
+      fd.append("audio", blob, `clip.${ext}`);
+      const res = await fetch("/api/transcribe", { method: "POST", body: fd });
+      const data = await res.json();
+      if (data.success && data.text) {
+        const base = baseTextRef.current;
+        setRawInput((base ? base + " " + data.text : data.text).trim().slice(0, 500));
+      } else {
+        setMicError("Couldn’t transcribe that. Tap the mic and try again.");
       }
-      transcriptRef.current = (finalT + interim).replace(/\s+/g, " ").trim();
-    };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rec.onerror = (e: any) => {
+    } catch {
+      setMicError("Couldn’t transcribe that. Tap the mic and try again.");
+    } finally {
+      setTranscribing(false);
+    }
+  }
+
+  function stopRecording() {
+    if (vadRef.current) { clearInterval(vadRef.current); vadRef.current = null; }
+    const mr = mrRef.current;
+    if (mr && mr.state !== "inactive") { try { mr.stop(); } catch { /* ignore */ } }
+  }
+
+  async function startRecording() {
+    setMicError(null);
+    if (!navigator.mediaDevices?.getUserMedia) { setMicError("Voice input needs a secure (https) connection."); return; }
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (err) {
+      const name = (err as { name?: string })?.name;
+      if (name === "NotAllowedError" || name === "SecurityError") setMicError("Microphone is blocked. Allow mic access for this site, then tap again.");
+      else if (name === "NotFoundError") setMicError("No microphone found.");
+      else setMicError("Couldn’t access the microphone.");
+      return;
+    }
+    streamRef.current = stream;
+    baseTextRef.current = rawInput.trim();
+
+    // Analyser drives the live waveform and the silence-based auto-stop.
+    try {
+      const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const ctx = new Ctx();
+      audioCtxRef.current = ctx;
+      const src = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      src.connect(analyser);
+      analyserRef.current = analyser;
+    } catch { /* waveform falls back to CSS animation */ }
+
+    const mime = pickMime();
+    let mr: MediaRecorder;
+    try {
+      mr = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+    } catch {
+      mr = new MediaRecorder(stream);
+    }
+    mrRef.current = mr;
+    chunksRef.current = [];
+    mr.ondataavailable = e => { if (e.data && e.data.size > 0) chunksRef.current.push(e.data); };
+    mr.onstop = () => {
+      const type = mr.mimeType || mime || "audio/webm";
+      const blob = new Blob(chunksRef.current, { type });
+      cleanupAudio();
       setListening(false);
-      const code = e?.error;
-      if (code === "not-allowed" || code === "service-not-allowed") setMicError("Microphone is blocked. Allow mic access for this site, then tap again.");
-      else if (code === "audio-capture") setMicError("No microphone found.");
-      else if (code === "network") setMicError("Voice service is unavailable right now.");
-      else if (code === "no-speech") setMicError("Didn’t catch that. Tap the mic and try again.");
-      // "aborted" is a normal user-initiated stop — no message
+      if (blob.size > 0) transcribeClip(blob, type);
     };
-    rec.onend = () => { setListening(false); commitTranscript(); };
-    recRef.current = rec;
+    try { mr.start(); } catch { cleanupAudio(); setMicError("Couldn’t start recording."); return; }
     setListening(true);
-    try { rec.start(); } catch { setListening(false); setMicError("Couldn’t start the mic. Tap to try again."); }
+
+    // Auto-stop: after speech, on a ~1.5s pause; hard cap 30s; 7s if no speech.
+    const analyser = analyserRef.current;
+    if (analyser) {
+      const buf = new Uint8Array(analyser.fftSize);
+      let speech = false, lastLoud = performance.now();
+      const started = performance.now();
+      vadRef.current = setInterval(() => {
+        analyser.getByteTimeDomainData(buf);
+        let sum = 0;
+        for (let i = 0; i < buf.length; i++) { const v = (buf[i] - 128) / 128; sum += v * v; }
+        const rms = Math.sqrt(sum / buf.length);
+        const now = performance.now();
+        if (rms > 0.045) { speech = true; lastLoud = now; }
+        if (now - started > 30000) stopRecording();
+        else if (speech && now - lastLoud > 1500) stopRecording();
+        else if (!speech && now - started > 7000) stopRecording();
+      }, 150);
+    } else {
+      vadRef.current = setInterval(() => stopRecording(), 12000);
+    }
   }
 
   function toggleDictation() {
-    if (listening) stopDictation(); else startDictation();
+    if (listening) stopRecording(); else startRecording();
   }
 
   async function generate() {
@@ -993,7 +1092,7 @@ export default function Home() {
               onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) startGenerate(); }}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
-              placeholder={sampling || listening ? "" : "Write the rough version. Messy is fine."}
+              placeholder={sampling || listening || transcribing ? "" : "Write the rough version. Messy is fine."}
               rows={4}
               maxLength={500}
               style={{
@@ -1018,14 +1117,20 @@ export default function Home() {
                 <LoadingDots />
               </div>
             )}
-            {/* While dictating: oscillating waveform fills the window. */}
+            {/* While dictating: live waveform fills the window. */}
             {listening && (
               <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2, pointerEvents: "none" }}>
-                <Waveform />
+                <LiveWaveform analyser={analyserRef.current} />
+              </div>
+            )}
+            {/* While transcribing the clip: quiet dots. */}
+            {transcribing && (
+              <div style={{ position: "absolute", top: 0, left: 0, padding: "18px 20px", pointerEvents: "none" }}>
+                <LoadingDots />
               </div>
             )}
             {/* Voice dictation toggle (only when the browser supports it). */}
-            {micSupported && <MicButton active={listening} onClick={toggleDictation} />}
+            {micSupported && <MicButton active={listening} disabled={transcribing} onClick={toggleDictation} />}
           </div>
 
           {micError && (
