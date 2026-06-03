@@ -747,6 +747,7 @@ export default function Home() {
   const [sampling, setSampling] = useState(false);
   const [listening, setListening] = useState(false);
   const [micSupported, setMicSupported] = useState(false);
+  const [micError, setMicError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recRef = useRef<any>(null);
   const baseTextRef = useRef("");
@@ -788,18 +789,29 @@ export default function Home() {
     setMicSupported(Boolean(w.SpeechRecognition || w.webkitSpeechRecognition));
   }, []);
 
+  function commitTranscript() {
+    const t = transcriptRef.current.trim();
+    if (!t) return;
+    const base = baseTextRef.current;
+    setRawInput((base ? base + " " + t : t).slice(0, 500));
+  }
+
   function stopDictation() {
     try { recRef.current?.stop(); } catch { /* ignore */ }
   }
 
   function startDictation() {
+    setMicError(null);
     const w = window as unknown as { SpeechRecognition?: new () => unknown; webkitSpeechRecognition?: new () => unknown };
     const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
-    if (!SR) return;
+    if (!SR) { setMicError("Voice input isn’t supported in this browser. Try Chrome or Safari."); return; }
+    if (typeof window !== "undefined" && window.isSecureContext === false) {
+      setMicError("Voice input needs a secure (https) connection."); return;
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const rec: any = new SR();
     rec.lang = navigator.language || "en-US";
-    rec.continuous = true;
+    rec.continuous = false;     // auto-stops on a natural pause, then commits
     rec.interimResults = true;
     baseTextRef.current = rawInput.trim();
     transcriptRef.current = "";
@@ -813,18 +825,20 @@ export default function Home() {
       }
       transcriptRef.current = (finalT + interim).replace(/\s+/g, " ").trim();
     };
-    rec.onerror = () => setListening(false);
-    rec.onend = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    rec.onerror = (e: any) => {
       setListening(false);
-      const t = transcriptRef.current.trim();
-      if (t) {
-        const base = baseTextRef.current;
-        setRawInput((base ? base + " " + t : t).slice(0, 500));
-      }
+      const code = e?.error;
+      if (code === "not-allowed" || code === "service-not-allowed") setMicError("Microphone is blocked. Allow mic access for this site, then tap again.");
+      else if (code === "audio-capture") setMicError("No microphone found.");
+      else if (code === "network") setMicError("Voice service is unavailable right now.");
+      else if (code === "no-speech") setMicError("Didn’t catch that. Tap the mic and try again.");
+      // "aborted" is a normal user-initiated stop — no message
     };
+    rec.onend = () => { setListening(false); commitTranscript(); };
     recRef.current = rec;
     setListening(true);
-    try { rec.start(); } catch { setListening(false); }
+    try { rec.start(); } catch { setListening(false); setMicError("Couldn’t start the mic. Tap to try again."); }
   }
 
   function toggleDictation() {
@@ -1013,6 +1027,13 @@ export default function Home() {
             {/* Voice dictation toggle (only when the browser supports it). */}
             {micSupported && <MicButton active={listening} onClick={toggleDictation} />}
           </div>
+
+          {micError && (
+            <div style={{ marginTop: -18, marginBottom: 18, display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ width: 8, height: 8, backgroundColor: "#E5484D", flexShrink: 0 }} />
+              <span style={{ fontFamily: BODY, fontSize: "0.82rem", lineHeight: 1.4, color: MUTED }}>{micError}</span>
+            </div>
+          )}
 
           {/* Audience */}
           <div style={{ marginBottom: 12 }}>
