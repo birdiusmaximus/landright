@@ -33,7 +33,7 @@ const MIN_CHARS = 10;
 
 const STEPS = [
   "splash", "recognition", "moment",
-  "mirror", "trap", "why", "route_map", "demo_input", "processing", "route_cards", "compare", "line_breakdown", "rooted_in",
+  "mirror", "trap", "why", "demo_input", "processing", "route_cards", "compare", "line_breakdown", "rooted_in",
   "pattern_library", "generic_ai", "try_yours", "result", "paywall",
 ] as const;
 type StepId = (typeof STEPS)[number];
@@ -221,6 +221,19 @@ const MOMENT_ORDER: Moment[] = [
   "apology_without_self_defence", "need_without_pressure", "hurt_without_blame",
   "boundary_without_coldness", "reconnect_after_distance", "pause_before_escalation", "truth_without_attack",
 ];
+
+// The principle behind each route, shown as credibility on "why landing matters".
+// Grounded paraphrases of established ideas (not verbatim quotes), attributed to
+// the tradition they come from.
+const WHY_EVIDENCE: Record<Moment, string> = {
+  apology_without_self_defence: "In apology research, clearly owning the impact repairs trust more than the explanation that follows.",
+  need_without_pressure: "A core idea in Nonviolent Communication: a request leaves the other person free to say yes, where a demand makes them defend their freedom.",
+  hurt_without_blame: "In the Gottman tradition, naming the impact without reading motive keeps a complaint from turning into an attack.",
+  boundary_without_coldness: "Boundary work holds that a limit is received as care when the relationship stays visible beside it.",
+  reconnect_after_distance: "From Getting to Yes: separating the people from the problem is what reopens a stuck conversation.",
+  pause_before_escalation: "Gottman’s work on emotional flooding: a clear pause with a return point protects a conversation better than pushing through it.",
+  truth_without_attack: "Staged delivery holds that a hard truth is easier to hear when the delivery carries less threat.",
+};
 
 // ─── Shared content ───────────────────────────────────────────────────────────
 
@@ -662,7 +675,7 @@ export default function Onboarding() {
     if (step === "splash") fire("onboarding_started");
     fire("onboarding_screen_viewed", { screen_id: step });
     if (step === "trap") fire("branch_trap_viewed");
-    if (step === "route_map") fire("branch_route_viewed");
+    if (step === "why") fire("branch_route_viewed");
     if (step === "demo_input") fire("demo_input_viewed");
     if (step === "route_cards") fire("demo_routes_viewed");
     if (step === "rooted_in") fire("rooted_in_opened");
@@ -812,35 +825,18 @@ export default function Onboarding() {
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <div style={{ marginBottom: 14 }}><Tag variant="outline">Why landing matters</Tag></div>
           <h1 style={{ ...H1, color: INK }}>{branch.why.headline}</h1>
-          <p style={{ ...LEAD_INK, marginTop: 18, marginBottom: 28 }}>{branch.why.body}</p>
-          <CTA onClick={next} variant="ink">See the route</CTA>
-        </div>
-      )}
-
-      {/* 6 ROUTE MAP (light, dark map card with lime header) */}
-      {step === "route_map" && (
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ marginBottom: 14 }}><Tag variant="solid">The route LANDRIGHT chooses</Tag></div>
-          <div className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: `5px 5px 0 ${LIME}` }}>
-            <div style={{ padding: "18px" }}>
-              {[["Moment", branch.title], ["Risk", branch.routeMap.risk], ["Route A", branch.routeMap.routeA], ["Route B", branch.routeMap.routeB], ["Line logic", branch.routeMap.lineLogic]].map(([k, v]) => (
-                <div key={k} style={{ display: "flex", gap: 12, paddingBottom: 10, marginBottom: 10, borderBottom: "1px solid rgba(255,255,255,0.12)" }}>
-                  <span style={{ flexShrink: 0, width: 86, fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME }}>{k}</span>
-                  <span style={{ fontFamily: BODY, fontSize: "0.98rem", lineHeight: 1.4, color: "#FFFFFF" }}>{v}</span>
-                </div>
-              ))}
-              <div style={{ display: "flex", gap: 12 }}>
-                <span style={{ flexShrink: 0, width: 86, fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME }}>Rooted in</span>
-                <span style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {branch.routeMap.rootedIn.map(r => <span key={r} style={{ fontFamily: BODY, fontSize: "0.84rem", color: "#E8E8E2", border: "1px solid rgba(255,255,255,0.25)", padding: "3px 8px" }}>{r}</span>)}
-                </span>
-              </div>
+          <p style={{ ...LEAD_INK, marginTop: 18 }}>{branch.why.body}</p>
+          {/* Credibility: the principle behind it */}
+          <div style={{ borderLeft: `4px solid ${LIME}`, paddingLeft: 16, marginTop: 22 }}>
+            <p style={{ ...LEAD_INK, fontStyle: "italic", margin: 0 }}>{WHY_EVIDENCE[moment ?? "apology_without_self_defence"]}</p>
+          </div>
+          <div style={{ marginTop: 20, marginBottom: 30 }}>
+            <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, marginBottom: 9 }}>Rooted in</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+              {branch.routeMap.rootedIn.map(r => <span key={r} style={{ fontFamily: BODY, fontSize: "0.82rem", color: INK, border: `1px solid ${INK}`, padding: "4px 9px" }}>{r}</span>)}
             </div>
           </div>
-          <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 12 }}>
-            <CTA onClick={next} variant="ink">See it in the app</CTA>
-            <CTA onClick={() => goto("try_yours")} variant="outline">Skip demo, try mine</CTA>
-          </div>
+          <CTA onClick={next} variant="ink">See it in the app</CTA>
         </div>
       )}
 
