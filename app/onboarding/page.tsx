@@ -509,9 +509,13 @@ function Shell({ stepIndex, dark, onBack, children }: { stepIndex: number; dark:
       <div style={{ width: "100%", maxWidth: 560, margin: "0 auto", flex: 1, display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: "clamp(20px, 5vw, 36px)" }}>
           {onBack ? <button onClick={onBack} aria-label="Back" style={{ background: "none", border: "none", cursor: "pointer", color: fg, fontFamily: COND, fontWeight: 900, fontSize: "1.2rem", padding: 0, lineHeight: 1 }}>←</button> : <span style={{ width: 12 }} />}
-          <div style={{ flex: 1, height: 6, backgroundColor: dark ? "rgba(255,255,255,0.14)" : GROUND2, border: `2px solid ${edge}` }}>
-            <div style={{ height: "100%", width: `${pct}%`, backgroundColor: LIME, transition: "width .35s cubic-bezier(.22,1,.36,1)" }} />
-          </div>
+          {stepIndex > 0 ? (
+            <div style={{ flex: 1, height: 6, backgroundColor: dark ? "rgba(255,255,255,0.14)" : GROUND2, border: `2px solid ${edge}` }}>
+              <div style={{ height: "100%", width: `${pct}%`, backgroundColor: LIME, transition: "width .35s cubic-bezier(.22,1,.36,1)" }} />
+            </div>
+          ) : (
+            <div style={{ flex: 1 }} />
+          )}
           <a href="/" aria-label="Back to Landright" style={{ textDecoration: "none" }}>
             <span style={{ display: "inline-block", fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "4px 9px", lineHeight: 1.1, border: `2px solid ${edge}`, color: edge }}>v{APP_VERSION}</span>
           </a>
@@ -614,11 +618,6 @@ export default function Onboarding() {
   }, [index]);
 
   useEffect(() => {
-    if (step !== "splash") return;
-    const t = setTimeout(() => setIndex(i => (STEPS[i] === "splash" ? i + 1 : i)), 1600);
-    return () => clearTimeout(t);
-  }, [step]);
-  useEffect(() => {
     if (step !== "processing") return;
     const t = setTimeout(() => setIndex(i => (STEPS[i] === "processing" ? i + 1 : i)), 1500);
     return () => clearTimeout(t);
@@ -660,14 +659,15 @@ export default function Onboarding() {
 
   return (
     <Shell stepIndex={index} dark={dark} onBack={showBack ? back : undefined}>
-      {/* 0 SPLASH (dark title card) */}
+      {/* 0 SPLASH (dark) — the home hero, white text + lime highlight */}
       {step === "splash" && (
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
-          <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(2.4rem, 12vw, 3.8rem)", letterSpacing: "-0.035em", color: "#FFFFFF" }}>LANDRIGHT</span>
-          <p style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(1.2rem, 5vw, 1.6rem)", letterSpacing: "-0.01em", textTransform: "uppercase", color: "#FFFFFF", marginTop: 16 }}>
-            Make your message <Mark>land right.</Mark>
-          </p>
-          <div style={{ marginTop: 34, width: "100%", maxWidth: 320 }}><CTA onClick={next} variant="primary">Continue</CTA></div>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <h1 style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(3rem, 13vw, 5.6rem)", lineHeight: 0.84, letterSpacing: "-0.035em", textTransform: "uppercase", color: "#FFFFFF", marginBottom: 40 }}>
+            Make your{" "}
+            <span style={{ fontStyle: "italic" }}>message</span><br />
+            <Mark>land right.</Mark>
+          </h1>
+          <CTA onClick={next} variant="primary">Continue</CTA>
         </div>
       )}
 
