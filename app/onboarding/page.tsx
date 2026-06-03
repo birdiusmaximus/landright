@@ -3,6 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { APP_VERSION } from "@/lib/version";
+// Demo route examples, pre-generated with gpt-5.5 so the onboarding shows options
+// at their most elaborate. Real user messages still use the live fast/slow hybrid.
+import DEMOS from "@/data/onboarding_demos.json";
 
 // ─── Brand tokens (mirror app/page.tsx, same design system) ───────────────────
 
@@ -656,7 +659,10 @@ export default function Onboarding() {
   const [moment, setMoment] = useState<Moment | null>(null);
   const [receiverRisk, setReceiverRisk] = useState<ReceiverRisk | null>(null);
   const [desiredLanding, setDesiredLanding] = useState<DesiredLanding | null>(null);
-  const branch = moment ? BRANCHES[moment] : BRANCHES.apology_without_self_defence;
+  const baseBranch = moment ? BRANCHES[moment] : BRANCHES.apology_without_self_defence;
+  const demoOverride = (DEMOS as Record<Moment, Pick<Branch, "routes" | "breakdown">>)[moment ?? "apology_without_self_defence"];
+  // gpt-5.5 demo routes + matching highlights override the placeholder copy.
+  const branch: Branch = { ...baseBranch, ...demoOverride };
 
   const [breakdownRoute, setBreakdownRoute] = useState<"a" | "b">("a");
   // One-time pop-up sweep on the recognition screen (teaches the chips exist).
