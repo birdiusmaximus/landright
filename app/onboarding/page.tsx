@@ -539,16 +539,18 @@ const H1: React.CSSProperties = { fontFamily: DISPLAY, fontWeight: 900, fontSize
 const LEAD_INK: React.CSSProperties = { fontFamily: BODY, fontSize: "1.06rem", lineHeight: 1.6, color: INK, margin: 0 };
 
 // Light selectable moment card with an outlined number (the app button language).
-function MomentCard({ index, title, body, onClick }: { index: string; title: string; body: string; onClick: () => void }) {
+function MomentCard({ index, title, body, selected = false, onClick }: { index: string; title: string; body: string; selected?: boolean; onClick: () => void }) {
   const [pressed, setPressed] = useState(false);
+  // Fill the card the moment it's pressed/selected (the app's selected-button look).
+  const on = selected || pressed;
   return (
     <button onClick={onClick} onMouseDown={() => setPressed(true)} onMouseUp={() => setPressed(false)} onMouseLeave={() => setPressed(false)}
-      style={{ width: "100%", textAlign: "left", cursor: "pointer", borderRadius: 0, border: `2px solid ${INK}`, backgroundColor: "transparent", padding: "14px 16px", display: "flex", gap: 14, alignItems: "center",
-        boxShadow: pressed ? `0 0 0 ${LIME}` : `4px 4px 0 ${LIME}`, transform: pressed ? "translate(4px,4px)" : "none", transition: "transform .1s ease, box-shadow .1s ease" }}>
-      <span style={{ flexShrink: 0, fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(26px, 7vw, 36px)", lineHeight: 0.8, color: "transparent", WebkitTextStroke: `2px ${INK}` }}>{index}</span>
+      style={{ width: "100%", textAlign: "left", cursor: "pointer", borderRadius: 0, border: `2px solid ${INK}`, backgroundColor: on ? INK : "transparent", padding: "14px 16px", display: "flex", gap: 14, alignItems: "center",
+        boxShadow: pressed ? `0 0 0 ${LIME}` : `4px 4px 0 ${LIME}`, transform: pressed ? "translate(4px,4px)" : "none", transition: "transform .1s ease, box-shadow .1s ease, background-color .12s ease" }}>
+      <span style={{ flexShrink: 0, fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(26px, 7vw, 36px)", lineHeight: 0.8, color: "transparent", WebkitTextStroke: `2px ${on ? LIME : INK}` }}>{index}</span>
       <span>
-        <span style={{ display: "block", fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.08rem", letterSpacing: "-0.01em", textTransform: "uppercase", color: INK }}>{title}</span>
-        <span style={{ display: "block", fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.4, color: MUTED, marginTop: 3 }}>{body}</span>
+        <span style={{ display: "block", fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.08rem", letterSpacing: "-0.01em", textTransform: "uppercase", color: on ? LIME : INK }}>{title}</span>
+        <span style={{ display: "block", fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.4, color: on ? DARK_MUTED : MUTED, marginTop: 3 }}>{body}</span>
       </span>
     </button>
   );
@@ -700,7 +702,7 @@ export default function Onboarding() {
     const b = BRANCHES[m];
     setMoment(m); setReceiverRisk(b.receiver_risk); setDesiredLanding(b.desired_landing);
     emit("moment_selected", { selected_moment: m, receiver_risk: b.receiver_risk, desired_landing: b.desired_landing });
-    setTimeout(next, 160);
+    setTimeout(next, 320); // hold briefly so the selected colour registers
   }
 
   const ctx = useCallback(() => ({ selected_moment: moment, receiver_risk: receiverRisk, desired_landing: desiredLanding }), [moment, receiverRisk, desiredLanding]);
@@ -773,7 +775,7 @@ export default function Onboarding() {
           <div style={{ marginBottom: 12 }}><Tag variant="solid">What are you trying to say carefully?</Tag></div>
           <p style={{ ...LEAD_INK, color: MUTED, marginBottom: 20 }}>Choose the moment that feels closest.</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
-            {MOMENT_ORDER.map((m, i) => <MomentCard key={m} index={String(i + 1).padStart(2, "0")} title={BRANCHES[m].title} body={BRANCHES[m].cardBody} onClick={() => chooseMoment(m)} />)}
+            {MOMENT_ORDER.map((m, i) => <MomentCard key={m} index={String(i + 1).padStart(2, "0")} title={BRANCHES[m].title} body={BRANCHES[m].cardBody} selected={moment === m} onClick={() => chooseMoment(m)} />)}
           </div>
         </div>
       )}
