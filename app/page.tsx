@@ -101,6 +101,36 @@ function Mark({ children }: { children: React.ReactNode }) {
   );
 }
 
+// The "What do you need to say?" label doubles as a one-tap sample generator
+// (audience-aware) so the app is quick to test. Styled like a solid Tag but
+// pressable, with a ↻ to signal "shuffle a fresh draft".
+function SampleTag({ loading, onClick }: { loading: boolean; onClick: () => void }) {
+  const [pressed, setPressed] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      disabled={loading}
+      title="Tap for a realistic sample message to test with"
+      onMouseDown={() => setPressed(true)}
+      onMouseUp={() => setPressed(false)}
+      onMouseLeave={() => setPressed(false)}
+      style={{
+        backgroundColor: LIME, color: INK, border: `2px solid ${INK}`,
+        fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.07em",
+        textTransform: "uppercase", padding: "6px 12px", lineHeight: 1.1, whiteSpace: "nowrap",
+        cursor: loading ? "default" : "pointer", borderRadius: 0,
+        display: "inline-flex", alignItems: "center", gap: 8,
+        boxShadow: pressed ? `0 0 0 ${INK}` : `3px 3px 0 ${INK}`,
+        transform: pressed ? "translate(3px, 3px)" : "none",
+        transition: "transform 0.08s ease, box-shadow 0.08s ease",
+      }}
+    >
+      {loading ? "Finding a sample…" : "What do you need to say?"}
+      <span aria-hidden style={{ fontSize: "1.05em", opacity: loading ? 0.5 : 1 }}>↻</span>
+    </button>
+  );
+}
+
 function Button({
   children,
   onClick,
@@ -663,6 +693,7 @@ function PendingCard({ index, error }: { index: string; error?: string | null })
 export default function Home() {
   const [rawInput, setRawInput] = useState("");
   const [audience, setAudience] = useState<Audience | null>(null);
+  const [sampling, setSampling] = useState(false);
   const [appState, setAppState] = useState<AppState>("idle");
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
@@ -673,6 +704,25 @@ export default function Home() {
   const rotationRef = useRef(0);
 
   const canGenerate = rawInput.trim().length > 0 && !isGenerating;
+
+  // One-tap realistic sample for testing, tuned to the selected audience.
+  async function generateSample() {
+    if (sampling) return;
+    setSampling(true);
+    try {
+      const res = await fetch("/api/sample", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ audience: audience ?? undefined }),
+      });
+      const data = await res.json();
+      if (data.success && data.message) setRawInput(data.message);
+    } catch {
+      /* ignore — sampling is a convenience, never blocks the user */
+    } finally {
+      setSampling(false);
+    }
+  }
 
   async function generate() {
     if (!canGenerate) return;
@@ -799,7 +849,7 @@ export default function Home() {
         {/* ═══ Input ═══ */}
         <section style={{ marginBottom: "clamp(28px, 6vw, 44px)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-            <Tag variant="solid">What do you need to say?</Tag>
+            <SampleTag loading={sampling} onClick={generateSample} />
             <span style={{ fontFamily: COND, fontWeight: 600, fontSize: "0.85rem", color: MUTED, fontVariantNumeric: "tabular-nums" }}>
               {rawInput.length}/500
             </span>
