@@ -225,15 +225,13 @@ const MOMENT_ORDER: Moment[] = [
 // ─── Shared content ───────────────────────────────────────────────────────────
 
 const RECOGNITION = {
-  lead: "You have probably written this once already, and deleted it.",
-  lines: [
-    "You try to apologise, and it lands as a defence.",
-    "You ask for more, and it lands as pressure.",
-    "You say you are hurt, and it lands as blame.",
-    "You set a limit, and it lands as rejection.",
-  ],
   close: "LANDRIGHT helps you shape the message before the wrong version arrives.",
-  fragments: ["Sorry, but…", "You never make time…", "That really hurt me…", "I can’t keep doing this…", "So are we just not talking?", "I need to be honest…"],
+  items: [
+    { line: "You try to apologise, and it lands as a defence.", examples: ["Sorry, but you started it.", "I already said sorry."] },
+    { line: "You ask for more, and it lands as pressure.", examples: ["You never make time for me.", "Why am I always the one asking?"] },
+    { line: "You say you are hurt, and it lands as blame.", examples: ["You always do this.", "You embarrassed me in front of everyone."] },
+    { line: "You draw a line, and it lands as rejection.", examples: ["I can’t keep doing this.", "I need some space."] },
+  ],
 };
 
 const PATTERN_LIBRARY = {
@@ -674,14 +672,22 @@ export default function Onboarding() {
       {/* 1 RECOGNITION (light editorial) */}
       {step === "recognition" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <h1 style={{ ...H1, color: INK }}>There is the message you send, and the message they <Mark>hear.</Mark></h1>
-          <p style={{ ...LEAD_INK, fontWeight: 600, marginTop: 20 }}>{RECOGNITION.lead}</p>
-          <div style={{ marginTop: 16, marginBottom: 24 }}>
-            {RECOGNITION.lines.map(l => <p key={l} style={{ ...LEAD_INK, marginBottom: 8 }}>{l}</p>)}
-            <p style={{ ...LEAD_INK, fontWeight: 600, marginTop: 16 }}>{RECOGNITION.close}</p>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }}>
-            {RECOGNITION.fragments.map(f => <span key={f} style={{ fontFamily: BODY, fontSize: "0.86rem", color: MUTED, border: `1px solid ${INK}`, padding: "5px 10px" }}>{f}</span>)}
+          <h1 style={{ ...H1, color: INK }}>
+            There is the message<br />
+            <Mark>you send</Mark>, and the message <Mark>they hear.</Mark>
+          </h1>
+          <p style={{ ...LEAD_INK, fontWeight: 600, marginTop: 18, marginBottom: 26 }}>{RECOGNITION.close}</p>
+          <div style={{ marginBottom: 26 }}>
+            {RECOGNITION.items.map(item => (
+              <div key={item.line} style={{ marginBottom: 18 }}>
+                <p style={{ ...LEAD_INK, marginBottom: 9 }}>{item.line}</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+                  {item.examples.map(ex => (
+                    <span key={ex} style={{ fontFamily: BODY, fontSize: "0.82rem", color: MUTED, border: `1px solid ${INK}`, padding: "4px 9px" }}>{ex}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
           <CTA onClick={next} variant="ink">Yes, that&rsquo;s me</CTA>
         </div>
