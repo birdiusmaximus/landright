@@ -225,11 +225,12 @@ const MOMENT_ORDER: Moment[] = [
 // ─── Shared content ───────────────────────────────────────────────────────────
 
 const RECOGNITION = {
+  lead: "You have probably written this once already, and deleted it.",
   lines: [
-    "You may be trying to apologise, and it lands as defence.",
-    "You may be asking for more, and it lands as pressure.",
-    "You may be saying you are hurt, and it lands as blame.",
-    "You may be setting a limit, and it lands as rejection.",
+    "You try to apologise, and it lands as a defence.",
+    "You ask for more, and it lands as pressure.",
+    "You say you are hurt, and it lands as blame.",
+    "You set a limit, and it lands as rejection.",
   ],
   close: "LANDRIGHT helps you shape the message before the wrong version arrives.",
   fragments: ["Sorry, but…", "You never make time…", "That really hurt me…", "I can’t keep doing this…", "So are we just not talking?", "I need to be honest…"],
@@ -674,14 +675,15 @@ export default function Onboarding() {
       {step === "recognition" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <h1 style={{ ...H1, color: INK }}>There is the message you send, and the message they <Mark>hear.</Mark></h1>
-          <div style={{ marginTop: 22, marginBottom: 24 }}>
+          <p style={{ ...LEAD_INK, fontWeight: 600, marginTop: 20 }}>{RECOGNITION.lead}</p>
+          <div style={{ marginTop: 16, marginBottom: 24 }}>
             {RECOGNITION.lines.map(l => <p key={l} style={{ ...LEAD_INK, marginBottom: 8 }}>{l}</p>)}
             <p style={{ ...LEAD_INK, fontWeight: 600, marginTop: 16 }}>{RECOGNITION.close}</p>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }}>
             {RECOGNITION.fragments.map(f => <span key={f} style={{ fontFamily: BODY, fontSize: "0.86rem", color: MUTED, border: `1px solid ${INK}`, padding: "5px 10px" }}>{f}</span>)}
           </div>
-          <CTA onClick={next} variant="ink">Find my moment</CTA>
+          <CTA onClick={next} variant="ink">Yes, that&rsquo;s me</CTA>
         </div>
       )}
 
@@ -696,13 +698,12 @@ export default function Onboarding() {
         </div>
       )}
 
-      {/* 3 MIRROR (light) */}
+      {/* 3 MIRROR (light): lead with recognition, not a restated label */}
       {step === "mirror" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <div style={{ marginBottom: 16 }}><Tag variant="solid">{branch.title}</Tag></div>
-          <h1 style={{ ...H1, color: INK }}>{branch.mirror.headline}</h1>
-          <p style={{ ...LEAD_INK, marginTop: 18 }}>{branch.mirror.lead}</p>
-          <div style={{ marginTop: 20, marginBottom: 28, borderLeft: `4px solid ${LIME}`, paddingLeft: 16 }}>
+          <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.8rem", letterSpacing: "0.18em", textTransform: "uppercase", color: INK, marginBottom: 14 }}>Sound familiar?</p>
+          <h1 style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(1.55rem, 5.8vw, 2.2rem)", lineHeight: 1.14, letterSpacing: "-0.02em", color: INK, margin: 0 }}>{branch.mirror.lead}</h1>
+          <div style={{ marginTop: 24, marginBottom: 30, borderLeft: `4px solid ${LIME}`, paddingLeft: 16 }}>
             <p style={{ ...LEAD_INK, fontWeight: 600, margin: 0 }}>{branch.mirror.youMean}</p>
             <p style={{ ...LEAD_INK, color: MUTED, marginTop: 6, marginBottom: 0 }}>{branch.mirror.theyHear}</p>
           </div>
@@ -717,7 +718,7 @@ export default function Onboarding() {
           <h1 style={{ ...H1, color: "#FFFFFF" }}>{branch.trap.headline}</h1>
           <p style={{ fontFamily: BODY, fontSize: "1.06rem", lineHeight: 1.6, color: "#E8E8E2", marginTop: 18, marginBottom: 22 }}>{branch.trap.body}</p>
           <div style={{ border: `2px solid ${LIME}`, padding: "16px 18px", marginBottom: 28 }}>
-            <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.08em", textTransform: "uppercase", color: LIME, margin: 0 }}>What they might hear</p>
+            <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.08em", textTransform: "uppercase", color: LIME, margin: 0 }}>The version that actually arrives</p>
             <p style={{ fontFamily: BODY, fontSize: "1.05rem", lineHeight: 1.5, color: "#FFFFFF", marginTop: 8, marginBottom: 0 }}>“{branch.trap.theyHear}”</p>
           </div>
           <CTA onClick={next} variant="primary">Why landing matters</CTA>
