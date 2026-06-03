@@ -56,7 +56,7 @@ const AUDIENCES: { value: Audience; label: string }[] = [
 
 type TagVariant = "solid" | "outline" | "ink";
 
-function Tag({ children, variant = "solid", size = "sm" }: { children: React.ReactNode; variant?: TagVariant; size?: "sm" | "xs" }) {
+function Tag({ children, variant = "solid", size = "sm", shadow = false }: { children: React.ReactNode; variant?: TagVariant; size?: "sm" | "xs"; shadow?: boolean }) {
   const styles: Record<TagVariant, React.CSSProperties> = {
     solid: { backgroundColor: LIME, color: INK, border: `2px solid ${INK}` },
     outline: { backgroundColor: "transparent", color: INK, border: `2px solid ${INK}` },
@@ -75,6 +75,7 @@ function Tag({ children, variant = "solid", size = "sm" }: { children: React.Rea
         padding: size === "xs" ? "4px 9px" : "6px 12px",
         lineHeight: 1.1,
         whiteSpace: "nowrap",
+        boxShadow: shadow ? `3px 3px 0 ${INK}` : undefined,
       }}
     >
       {children}
@@ -101,16 +102,16 @@ function Mark({ children }: { children: React.ReactNode }) {
   );
 }
 
-// The "What do you need to say?" label doubles as a one-tap sample generator
-// (audience-aware) so the app is quick to test. Styled like a solid Tag but
-// pressable, with a ↻ to signal "shuffle a fresh draft".
+// The "What do you need to say?" label is, by design, a hidden easter egg: it
+// looks exactly like the solid shadowed Tag next to "Who needs to hear this?",
+// but tapping it drops a realistic, audience-aware sample message in to test.
 function SampleTag({ loading, onClick }: { loading: boolean; onClick: () => void }) {
   const [pressed, setPressed] = useState(false);
   return (
     <button
       onClick={onClick}
       disabled={loading}
-      title="Tap for a realistic sample message to test with"
+      aria-label="What do you need to say?"
       onMouseDown={() => setPressed(true)}
       onMouseUp={() => setPressed(false)}
       onMouseLeave={() => setPressed(false)}
@@ -118,15 +119,14 @@ function SampleTag({ loading, onClick }: { loading: boolean; onClick: () => void
         backgroundColor: LIME, color: INK, border: `2px solid ${INK}`,
         fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.07em",
         textTransform: "uppercase", padding: "6px 12px", lineHeight: 1.1, whiteSpace: "nowrap",
-        cursor: loading ? "default" : "pointer", borderRadius: 0,
-        display: "inline-flex", alignItems: "center", gap: 8,
+        cursor: "pointer", borderRadius: 0, display: "inline-block",
         boxShadow: pressed ? `0 0 0 ${INK}` : `3px 3px 0 ${INK}`,
         transform: pressed ? "translate(3px, 3px)" : "none",
-        transition: "transform 0.08s ease, box-shadow 0.08s ease",
+        opacity: loading ? 0.7 : 1,
+        transition: "transform 0.08s ease, box-shadow 0.08s ease, opacity 0.15s ease",
       }}
     >
-      {loading ? "Finding a sample…" : "What do you need to say?"}
-      <span aria-hidden style={{ fontSize: "1.05em", opacity: loading ? 0.5 : 1 }}>↻</span>
+      What do you need to say?
     </button>
   );
 }
@@ -894,7 +894,7 @@ export default function Home() {
 
           {/* Audience */}
           <div style={{ marginBottom: 12 }}>
-            <Tag variant="solid">Who needs to hear this?</Tag>
+            <Tag variant="solid" shadow>Who needs to hear this?</Tag>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 30 }}>
             {AUDIENCES.map(a => {
