@@ -130,19 +130,18 @@ function SampleTag({ loading, onClick }: { loading: boolean; onClick: () => void
   );
 }
 
-// Rotating ASCII spinner shown inside the message window while a sample drafts.
-function Spinner() {
-  const frames = ["|", "/", "-", "\\"];
-  const [i, setI] = useState(0);
+// While a sample drafts: quiet grey dots that build up one by one, styled like
+// the input placeholder so it reads as the window "typing" a thought.
+function LoadingDots() {
+  const [n, setN] = useState(1);
   useEffect(() => {
-    const id = setInterval(() => setI(n => (n + 1) % frames.length), 110);
+    const id = setInterval(() => setN(x => (x % 4) + 1), 350);
     return () => clearInterval(id);
-  }, [frames.length]);
+  }, []);
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, pointerEvents: "none" }}>
-      <span style={{ fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace", fontSize: "2.4rem", fontWeight: 700, color: LIME, lineHeight: 1, width: "1.1em", textAlign: "center" }}>{frames[i]}</span>
-      <span style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.78rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#7E8470" }}>Thinking…</span>
-    </div>
+    <span style={{ fontFamily: BODY, fontSize: "1.05rem", lineHeight: 1.6, color: "#7E7E76" }}>
+      {".".repeat(n)}
+    </span>
   );
 }
 
@@ -909,8 +908,8 @@ export default function Home() {
             />
             {/* While a sample drafts: the window itself shows it's working. */}
             {sampling && (
-              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Spinner />
+              <div style={{ position: "absolute", top: 0, left: 0, padding: "18px 20px", pointerEvents: "none" }}>
+                <LoadingDots />
               </div>
             )}
           </div>
