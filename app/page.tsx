@@ -145,6 +145,43 @@ function LoadingDots() {
   );
 }
 
+// Oscillating lime bars shown in the window while dictation is listening.
+function Waveform() {
+  return (
+    <div aria-hidden style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 5, height: 44 }}>
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+          <span key={i} style={{ width: 5, height: 44, backgroundColor: LIME, transformOrigin: "center", animation: `lr-wave 0.9s ease-in-out ${(i % 5 * 0.11).toFixed(2)}s infinite` }} />
+        ))}
+      </div>
+      <span style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.78rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#7E8470" }}>Listening…</span>
+    </div>
+  );
+}
+
+// Mic toggle in the corner of the input window. Idle = lime outline; active = lime fill.
+function MicButton({ active, onClick }: { active: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label={active ? "Stop dictation" : "Dictate your message"}
+      title={active ? "Stop listening" : "Speak your message"}
+      style={{
+        position: "absolute", bottom: 12, right: 12, zIndex: 3,
+        width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center",
+        backgroundColor: active ? LIME : "transparent", border: `2px solid ${LIME}`, borderRadius: 0, cursor: "pointer",
+      }}
+    >
+      <svg width="18" height="20" viewBox="0 0 18 20" fill="none" stroke={active ? INK : LIME} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="6" y="1" width="6" height="10" rx="3" fill={active ? INK : "none"} />
+        <path d="M3 9a6 6 0 0 0 12 0" />
+        <line x1="9" y1="15" x2="9" y2="18.5" />
+        <line x1="6" y1="18.5" x2="12" y2="18.5" />
+      </svg>
+    </button>
+  );
+}
+
 function Button({
   children,
   onClick,
@@ -708,6 +745,12 @@ export default function Home() {
   const [rawInput, setRawInput] = useState("");
   const [audience, setAudience] = useState<Audience | null>(null);
   const [sampling, setSampling] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [micSupported, setMicSupported] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recRef = useRef<any>(null);
+  const baseTextRef = useRef("");
+  const transcriptRef = useRef("");
   const [appState, setAppState] = useState<AppState>("idle");
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
@@ -737,6 +780,55 @@ export default function Home() {
     } finally {
       setSampling(false);
     }
+  }
+
+  // Voice dictation via the browser's built-in Web Speech API (no token cost).
+  useEffect(() => {
+    const w = window as unknown as { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown };
+    setMicSupported(Boolean(w.SpeechRecognition || w.webkitSpeechRecognition));
+  }, []);
+
+  function stopDictation() {
+    try { recRef.current?.stop(); } catch { /* ignore */ }
+  }
+
+  function startDictation() {
+    const w = window as unknown as { SpeechRecognition?: new () => unknown; webkitSpeechRecognition?: new () => unknown };
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!SR) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rec: any = new SR();
+    rec.lang = navigator.language || "en-US";
+    rec.continuous = true;
+    rec.interimResults = true;
+    baseTextRef.current = rawInput.trim();
+    transcriptRef.current = "";
+    let finalT = "";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    rec.onresult = (e: any) => {
+      let interim = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const seg = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalT += seg; else interim += seg;
+      }
+      transcriptRef.current = (finalT + interim).replace(/\s+/g, " ").trim();
+    };
+    rec.onerror = () => setListening(false);
+    rec.onend = () => {
+      setListening(false);
+      const t = transcriptRef.current.trim();
+      if (t) {
+        const base = baseTextRef.current;
+        setRawInput((base ? base + " " + t : t).slice(0, 500));
+      }
+    };
+    recRef.current = rec;
+    setListening(true);
+    try { rec.start(); } catch { setListening(false); }
+  }
+
+  function toggleDictation() {
+    if (listening) stopDictation(); else startDictation();
   }
 
   async function generate() {
@@ -887,7 +979,7 @@ export default function Home() {
               onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) startGenerate(); }}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
-              placeholder={sampling ? "" : "Write the rough version. Messy is fine."}
+              placeholder={sampling || listening ? "" : "Write the rough version. Messy is fine."}
               rows={4}
               maxLength={500}
               style={{
@@ -912,6 +1004,14 @@ export default function Home() {
                 <LoadingDots />
               </div>
             )}
+            {/* While dictating: oscillating waveform fills the window. */}
+            {listening && (
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2, pointerEvents: "none" }}>
+                <Waveform />
+              </div>
+            )}
+            {/* Voice dictation toggle (only when the browser supports it). */}
+            {micSupported && <MicButton active={listening} onClick={toggleDictation} />}
           </div>
 
           {/* Audience */}

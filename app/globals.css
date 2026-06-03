@@ -92,6 +92,12 @@ button:focus-visible {
   color: #7E7E76;
 }
 
+/* ── Dictation waveform bars ── */
+@keyframes lr-wave {
+  0%, 100% { transform: scaleY(0.22); }
+  50% { transform: scaleY(1); }
+}
+
 /* ── Vertical edge label ── */
 .vrail {
   display: none;
