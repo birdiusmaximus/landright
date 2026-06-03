@@ -587,9 +587,11 @@ function ResultRouteCard({ index, out, autoSweep }: { index: string; out: Option
   );
 }
 
-// A rough-message example chip. Hover or tap to reveal the reply it could provoke.
-function ExampleChip({ msg, reply }: { msg: string; reply: string }) {
+// A rough-message example chip. Hover or tap to reveal the reply it could
+// provoke. forceOpen lets the parent flash it during the intro sweep.
+function ExampleChip({ msg, reply, forceOpen = false }: { msg: string; reply: string; forceOpen?: boolean }) {
   const [open, setOpen] = useState(false);
+  const show = open || forceOpen;
   return (
     <span
       style={{ position: "relative", display: "inline-block" }}
@@ -601,13 +603,13 @@ function ExampleChip({ msg, reply }: { msg: string; reply: string }) {
         style={{
           fontFamily: BODY, fontSize: "0.82rem", lineHeight: 1.2, borderRadius: 0, cursor: "pointer",
           border: `1px solid ${INK}`, padding: "4px 9px",
-          backgroundColor: open ? "rgba(198,246,52,0.22)" : "transparent", color: open ? INK : MUTED,
+          backgroundColor: show ? "rgba(198,246,52,0.22)" : "transparent", color: show ? INK : MUTED,
           transition: "background-color .12s ease, color .12s ease",
         }}
       >
         {msg}
       </button>
-      {open && (
+      {show && (
         <span
           role="status"
           style={{
@@ -642,6 +644,9 @@ export default function Onboarding() {
   const branch = moment ? BRANCHES[moment] : BRANCHES.apology_without_self_defence;
 
   const [breakdownRoute, setBreakdownRoute] = useState<"a" | "b">("a");
+  // One-time pop-up sweep on the recognition screen (teaches the chips exist).
+  const [sweepIndex, setSweepIndex] = useState<number | null>(null);
+  const recogSwept = useRef(false);
   const [userMsg, setUserMsg] = useState("");
   const [focused, setFocused] = useState(false);
   const [genState, setGenState] = useState<"idle" | "loading" | "done">("idle");
@@ -671,6 +676,20 @@ export default function Onboarding() {
     if (step !== "processing") return;
     const t = setTimeout(() => setIndex(i => (STEPS[i] === "processing" ? i + 1 : i)), 1500);
     return () => clearTimeout(t);
+  }, [step]);
+
+  // First time the recognition screen appears, flash each reply pop-up in
+  // sequence (~half a second each) so people see the chips are interactive.
+  useEffect(() => {
+    if (step !== "recognition" || recogSwept.current) return;
+    recogSwept.current = true;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const total = RECOGNITION.items.reduce((n, it) => n + it.examples.length, 0);
+    const startDelay = 400, stepMs = 480;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    for (let i = 0; i < total; i++) timers.push(setTimeout(() => setSweepIndex(i), startDelay + i * stepMs));
+    timers.push(setTimeout(() => setSweepIndex(null), startDelay + total * stepMs));
+    return () => timers.forEach(clearTimeout);
   }, [step]);
 
   const goto = (id: StepId) => setIndex(STEPS.indexOf(id));
@@ -732,14 +751,17 @@ export default function Onboarding() {
             LANDRIGHT helps you shape the message<br />before the wrong version arrives.
           </p>
           <div style={{ marginBottom: 26 }}>
-            {RECOGNITION.items.map(item => (
-              <div key={item.line} style={{ borderLeft: `3px solid ${LIME}`, paddingLeft: 14, marginBottom: 18 }}>
-                <p style={{ ...LEAD_INK, marginBottom: 9 }}>{item.line}</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-                  {item.examples.map(ex => <ExampleChip key={ex.msg} msg={ex.msg} reply={ex.reply} />)}
+            {RECOGNITION.items.map((item, ci) => {
+              const offset = RECOGNITION.items.slice(0, ci).reduce((n, it) => n + it.examples.length, 0);
+              return (
+                <div key={item.line} style={{ borderLeft: `4px solid ${LIME}`, paddingLeft: 16, marginBottom: 18 }}>
+                  <p style={{ ...LEAD_INK, marginBottom: 9 }}>{item.line}</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+                    {item.examples.map((ex, j) => <ExampleChip key={ex.msg} msg={ex.msg} reply={ex.reply} forceOpen={sweepIndex === offset + j} />)}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <CTA onClick={next} variant="ink">Yes, that&rsquo;s me</CTA>
         </div>
