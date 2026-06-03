@@ -38,6 +38,9 @@ const STEPS = [
 ] as const;
 type StepId = (typeof STEPS)[number];
 
+// Light is the app's home canvas; a few "moment" screens go dark for weight.
+const DARK_SCREENS: StepId[] = ["splash", "trap", "paywall"];
+
 // ─── Branch data (verbatim from spec) ─────────────────────────────────────────
 
 interface Branch {
@@ -62,37 +65,16 @@ const BRANCHES: Record<Moment, Branch> = {
     title: "Apology without self-defence",
     cardBody: "I need to apologise, but I keep explaining myself.",
     receiver_risk: "defensive", desired_landing: "accountable",
-    mirror: {
-      headline: "You chose apology without self-defence.",
-      lead: "This is the apology that starts with “sorry,” then slowly becomes a defence speech.",
-      youMean: "You may be trying to explain the pressure.",
-      theyHear: "They may hear you trying to escape the impact.",
-    },
-    trap: {
-      headline: "The explanation can arrive too early.",
-      body: "In a tense apology, the first sentence sets the temperature. When context comes before impact, the other person may listen for excuses instead of repair.",
-      theyHear: "You are sorry, but you still think I caused it.",
-    },
-    why: {
-      headline: "A better apology lets them feel the impact was seen.",
-      body: "The job is to put the impact where it belongs, own your part clearly and make the next step feel real. It should not become self-punishment. It should not become a defence speech.",
-    },
-    routeMap: {
-      risk: "Sounds like an excuse",
-      routeA: "A real apology", routeB: "Name it before they do",
-      lineLogic: "impact first, no defensive “but,” repair made visible",
-      rootedIn: ["Effective-apology research", "The Gottman Method", "Perceived partner responsiveness"],
-    },
+    mirror: { headline: "You chose apology without self-defence.", lead: "This is the apology that starts with “sorry,” then slowly becomes a defence speech.", youMean: "You may be trying to explain the pressure.", theyHear: "They may hear you trying to escape the impact." },
+    trap: { headline: "The explanation can arrive too early.", body: "In a tense apology, the first sentence sets the temperature. When context comes before impact, the other person may listen for excuses instead of repair.", theyHear: "You are sorry, but you still think I caused it." },
+    why: { headline: "A better apology lets them feel the impact was seen.", body: "The job is to put the impact where it belongs, own your part clearly and make the next step feel real. It should not become self-punishment. It should not become a defence speech." },
+    routeMap: { risk: "Sounds like an excuse", routeA: "A real apology", routeB: "Name it before they do", lineLogic: "impact first, no defensive “but,” repair made visible", rootedIn: ["Effective-apology research", "The Gottman Method", "Perceived partner responsiveness"] },
     demo: { input: "Sorry I snapped, but you were pushing me.", note: "This is where the apology starts defending itself." },
     routes: {
       a: { label: "A real apology", text: "I’m sorry I snapped at you. That was unfair, and I can see how it made the conversation feel unsafe. I want to own that before I explain anything else.", bestWhen: "The main repair needed is clear accountability." },
       b: { label: "Name it before they do", text: "I know this may sound like I’m about to make an excuse, so I want to be clear first. Snapping at you was on me. I was overwhelmed, but I should have paused instead of taking it out on you.", bestWhen: "Context matters, but only after responsibility is clear." },
     },
-    compare: {
-      headline: "Both routes repair, but they do different work.",
-      lineA: "A real apology keeps the message clean and accountable.",
-      lineB: "Name it before they do helps when you need to include context without letting context become the centre.",
-    },
+    compare: { headline: "Both routes repair, but they do different work.", lineA: "A real apology keeps the message clean and accountable.", lineB: "Name it before they do helps when you need to include context without letting context become the centre." },
     breakdown: [
       { span: "I want to own that before I explain anything else.", why: "Keeps accountability ahead of context, which makes the apology feel less defensive.", rootedIn: "Accountability-first repair" },
       { span: "I know this may sound like I’m about to make an excuse", why: "Names the likely concern before it becomes the other person’s objection.", rootedIn: "Negative acknowledgment" },
@@ -101,42 +83,20 @@ const BRANCHES: Record<Moment, Branch> = {
     rootedIn: { pattern: "Name it before they do", rootedIn: "Negative acknowledgment and repair communication", usedFor: "Apology without self-defence", whatChanges: "It names the likely concern before context becomes an excuse." },
     tryYours: { headline: "Write the apology before you start explaining it.", placeholder: "Sorry I snapped, but…" },
   },
-
   need_without_pressure: {
     title: "Need without pressure",
     cardBody: "I need to ask for more without sounding needy.",
     receiver_risk: "needy", desired_landing: "clear_request",
-    mirror: {
-      headline: "You chose need without pressure.",
-      lead: "This is the message where the need is real, but the first draft sounds like a complaint.",
-      youMean: "You may mean closeness.",
-      theyHear: "They may hear accusation.",
-    },
-    trap: {
-      headline: "A need can sound like a demand.",
-      body: "When the message begins with what they never do, they may defend their freedom before they hear what you are asking for.",
-      theyHear: "You are failing me, and now you need to fix how I feel.",
-    },
-    why: {
-      headline: "A better ask gives them something they can respond to.",
-      body: "The aim is to name the feeling, give one concrete example and turn the need into a request that does not corner them.",
-    },
-    routeMap: {
-      risk: "Sounds needy or demanding",
-      routeA: "Feeling, then ask", routeB: "Ask, don’t demand",
-      lineLogic: "owned feeling, concrete example, willing request",
-      rootedIn: ["Nonviolent Communication", "Emotionally focused communication principles", "Autonomy-supportive communication"],
-    },
+    mirror: { headline: "You chose need without pressure.", lead: "This is the message where the need is real, but the first draft sounds like a complaint.", youMean: "You may mean closeness.", theyHear: "They may hear accusation." },
+    trap: { headline: "A need can sound like a demand.", body: "When the message begins with what they never do, they may defend their freedom before they hear what you are asking for.", theyHear: "You are failing me, and now you need to fix how I feel." },
+    why: { headline: "A better ask gives them something they can respond to.", body: "The aim is to name the feeling, give one concrete example and turn the need into a request that does not corner them." },
+    routeMap: { risk: "Sounds needy or demanding", routeA: "Feeling, then ask", routeB: "Ask, don’t demand", lineLogic: "owned feeling, concrete example, willing request", rootedIn: ["Nonviolent Communication", "Emotionally focused communication principles", "Autonomy-supportive communication"] },
     demo: { input: "You never make time for me anymore.", note: "This is where a need starts to sound like a complaint." },
     routes: {
       a: { label: "Feeling, then ask", text: "I’ve been missing proper time with you lately. When our evenings keep getting swallowed up, I start to feel less close to you. Could we choose one night this week that is just ours?", bestWhen: "You want the feeling understood and the ask to be clear." },
       b: { label: "Ask, don’t demand", text: "Would you be willing to look at this week with me and find one proper time to connect? I do not want to pressure you. I want us to protect a bit of space for each other.", bestWhen: "The other person may feel pressured or controlled." },
     },
-    compare: {
-      headline: "One route names the need. One route protects their freedom.",
-      lineA: "Feeling, then ask makes the emotional need visible.",
-      lineB: "Ask, don’t demand makes the request feel more collaborative.",
-    },
+    compare: { headline: "One route names the need. One route protects their freedom.", lineA: "Feeling, then ask makes the emotional need visible.", lineB: "Ask, don’t demand makes the request feel more collaborative." },
     breakdown: [
       { span: "I’ve been missing proper time with you", why: "Names the need without starting from accusation.", rootedIn: "Owned feeling" },
       { span: "When our evenings keep getting swallowed up", why: "Gives a specific pattern rather than a global complaint.", rootedIn: "Concrete example" },
@@ -145,42 +105,20 @@ const BRANCHES: Record<Moment, Branch> = {
     rootedIn: { pattern: "Ask, don’t demand", rootedIn: "Nonviolent Communication and autonomy-supportive communication", usedFor: "Need without pressure", whatChanges: "It keeps the request clear without cornering the other person." },
     tryYours: { headline: "Write the thing you need, even if it sounds too much.", placeholder: "I feel like I’m always asking for…" },
   },
-
   hurt_without_blame: {
     title: "Hurt without blame",
     cardBody: "I need to say I am hurt without blaming them.",
     receiver_risk: "blaming", desired_landing: "understood_impact",
-    mirror: {
-      headline: "You chose hurt without blame.",
-      lead: "This is the message where pain wants to be understood, but the first draft sounds like prosecution.",
-      youMean: "You may mean “that landed badly for me.”",
-      theyHear: "They may hear “you are the problem.”",
-    },
-    trap: {
-      headline: "Pain can turn into a case against them.",
-      body: "When the message assigns motive too quickly, the other person may start defending what they meant instead of hearing what happened to you.",
-      theyHear: "You did this on purpose, and now you need to answer for it.",
-    },
-    why: {
-      headline: "A better message protects the impact from becoming an accusation.",
-      body: "The feeling stays visible. The example stays concrete. The wording leaves room for their intent without erasing your experience.",
-    },
-    routeMap: {
-      risk: "Sounds accusatory",
-      routeA: "Kind but clear", routeB: "Show what’s underneath",
-      lineLogic: "impact, no motive-reading, vulnerable need",
-      rootedIn: ["The Gottman Method", "Nonviolent Communication", "Emotionally focused communication principles"],
-    },
+    mirror: { headline: "You chose hurt without blame.", lead: "This is the message where pain wants to be understood, but the first draft sounds like prosecution.", youMean: "You may mean “that landed badly for me.”", theyHear: "They may hear “you are the problem.”" },
+    trap: { headline: "Pain can turn into a case against them.", body: "When the message assigns motive too quickly, the other person may start defending what they meant instead of hearing what happened to you.", theyHear: "You did this on purpose, and now you need to answer for it." },
+    why: { headline: "A better message protects the impact from becoming an accusation.", body: "The feeling stays visible. The example stays concrete. The wording leaves room for their intent without erasing your experience." },
+    routeMap: { risk: "Sounds accusatory", routeA: "Kind but clear", routeB: "Show what’s underneath", lineLogic: "impact, no motive-reading, vulnerable need", rootedIn: ["The Gottman Method", "Nonviolent Communication", "Emotionally focused communication principles"] },
     demo: { input: "You embarrassed me in front of everyone.", note: "This is where hurt starts sounding like blame." },
     routes: {
       a: { label: "Kind but clear", text: "I felt embarrassed when that was said in front of everyone. I do not think you meant to hurt me, but it stayed with me. I would like us to talk about it privately.", bestWhen: "You need the impact to be clear without accusing their intent." },
       b: { label: "Show what’s underneath", text: "I think what hurt most was feeling exposed instead of backed up. I am not trying to make you the villain. I want you to understand why it landed so badly for me.", bestWhen: "The surface complaint is really about a deeper emotional need." },
     },
-    compare: {
-      headline: "One route names the impact. One route reveals the deeper need.",
-      lineA: "Kind but clear helps when the event needs to be named.",
-      lineB: "Show what’s underneath helps when the hurt is carrying a more vulnerable meaning.",
-    },
+    compare: { headline: "One route names the impact. One route reveals the deeper need.", lineA: "Kind but clear helps when the event needs to be named.", lineB: "Show what’s underneath helps when the hurt is carrying a more vulnerable meaning." },
     breakdown: [
       { span: "I felt embarrassed", why: "Keeps the sentence anchored in your experience.", rootedIn: "Owned feeling" },
       { span: "I do not think you meant to hurt me", why: "Reduces the need for them to defend intent.", rootedIn: "Motive separation" },
@@ -189,42 +127,20 @@ const BRANCHES: Record<Moment, Branch> = {
     rootedIn: { pattern: "Show what’s underneath", rootedIn: "Emotionally focused communication and the Gottman Method", usedFor: "Hurt without blame", whatChanges: "It keeps your experience clear while leaving room for their intent." },
     tryYours: { headline: "Write the hurt version first. LANDRIGHT will help remove the blame.", placeholder: "You made me feel…" },
   },
-
   boundary_without_coldness: {
     title: "Boundary without coldness",
     cardBody: "I need to set a boundary without sounding cold.",
     receiver_risk: "cold", desired_landing: "warm_boundary",
-    mirror: {
-      headline: "You chose boundary without coldness.",
-      lead: "This is the message where the limit matters, but the tone can make it sound like the relationship is being withdrawn.",
-      youMean: "You may mean “I need this to stop.”",
-      theyHear: "They may hear “I am done with you.”",
-    },
-    trap: {
-      headline: "A boundary can sound like rejection.",
-      body: "When care disappears from the sentence, the other person may react to the perceived abandonment instead of the limit.",
-      theyHear: "You are too much, and I am pulling away.",
-    },
-    why: {
-      headline: "A good boundary stays clear without going cold.",
-      body: "The limit should not be buried under apologies. The care should not erase the limit. Both need to stay visible.",
-    },
-    routeMap: {
-      risk: "Sounds cruel, cold or abandoning",
-      routeA: "Hold the line kindly", routeB: "A limit, with love",
-      lineLogic: "clean limit, relational continuity, next step",
-      rootedIn: ["Boundary-setting", "The Gottman Method", "Relational continuity"],
-    },
+    mirror: { headline: "You chose boundary without coldness.", lead: "This is the message where the limit matters, but the tone can make it sound like the relationship is being withdrawn.", youMean: "You may mean “I need this to stop.”", theyHear: "They may hear “I am done with you.”" },
+    trap: { headline: "A boundary can sound like rejection.", body: "When care disappears from the sentence, the other person may react to the perceived abandonment instead of the limit.", theyHear: "You are too much, and I am pulling away." },
+    why: { headline: "A good boundary stays clear without going cold.", body: "The limit should not be buried under apologies. The care should not erase the limit. Both need to stay visible." },
+    routeMap: { risk: "Sounds cruel, cold or abandoning", routeA: "Hold the line kindly", routeB: "A limit, with love", lineLogic: "clean limit, relational continuity, next step", rootedIn: ["Boundary-setting", "The Gottman Method", "Relational continuity"] },
     demo: { input: "I can’t keep doing this every night.", note: "This is where a limit can sound like rejection." },
     routes: {
       a: { label: "Hold the line kindly", text: "I can’t keep having this conversation late at night. I am willing to talk tomorrow when we are calmer, but tonight I need to stop.", bestWhen: "The limit needs to be clear and firm." },
       b: { label: "A limit, with love", text: "I care about us, which is why I do not want another exhausted conversation to damage this more. I need to stop for tonight, and I want us to come back to it tomorrow.", bestWhen: "You want the boundary to feel connected rather than cold." },
     },
-    compare: {
-      headline: "One route protects the limit. One route protects the connection.",
-      lineA: "Hold the line kindly keeps the boundary clean.",
-      lineB: "A limit, with love makes the care visible while the limit stays intact.",
-    },
+    compare: { headline: "One route protects the limit. One route protects the connection.", lineA: "Hold the line kindly keeps the boundary clean.", lineB: "A limit, with love makes the care visible while the limit stays intact." },
     breakdown: [
       { span: "I can’t keep having this conversation late at night", why: "States the limit without over-explaining.", rootedIn: "Clean boundary" },
       { span: "I care about us", why: "Keeps the relationship visible before the limit lands.", rootedIn: "Relational continuity" },
@@ -233,42 +149,20 @@ const BRANCHES: Record<Moment, Branch> = {
     rootedIn: { pattern: "A limit, with love", rootedIn: "Boundary-setting and relational continuity", usedFor: "Boundary without coldness", whatChanges: "It keeps the limit visible while showing the relationship still matters." },
     tryYours: { headline: "Write the boundary, even if it sounds cold right now.", placeholder: "I can’t keep doing…" },
   },
-
   reconnect_after_distance: {
     title: "Reconnect after distance",
     cardBody: "I want to reconnect, but I do not know how to open the door.",
     receiver_risk: "pressuring", desired_landing: "open_door",
-    mirror: {
-      headline: "You chose reconnect after distance.",
-      lead: "This is the first sentence after silence, awkwardness or distance. It can easily carry too much.",
-      youMean: "You may mean “I miss us.”",
-      theyHear: "They may hear “you need to fix this now.”",
-    },
-    trap: {
-      headline: "Reconnection can sound like pressure.",
-      body: "When the opening asks for closeness too quickly, the other person may protect the distance instead of stepping toward the conversation.",
-      theyHear: "You owe me closeness now.",
-    },
-    why: {
-      headline: "A better opening gives the relationship a door.",
-      body: "The message should acknowledge the distance, keep care visible and invite a next step without demanding immediate closeness.",
-    },
-    routeMap: {
-      risk: "Sounds loaded or pressuring",
-      routeA: "Us vs the problem", routeB: "Ask what matters",
-      lineLogic: "shared problem, no blame, open question",
-      rootedIn: ["Getting to Yes", "Perspective-taking", "Coaching practice"],
-    },
+    mirror: { headline: "You chose reconnect after distance.", lead: "This is the first sentence after silence, awkwardness or distance. It can easily carry too much.", youMean: "You may mean “I miss us.”", theyHear: "They may hear “you need to fix this now.”" },
+    trap: { headline: "Reconnection can sound like pressure.", body: "When the opening asks for closeness too quickly, the other person may protect the distance instead of stepping toward the conversation.", theyHear: "You owe me closeness now." },
+    why: { headline: "A better opening gives the relationship a door.", body: "The message should acknowledge the distance, keep care visible and invite a next step without demanding immediate closeness." },
+    routeMap: { risk: "Sounds loaded or pressuring", routeA: "Us vs the problem", routeB: "Ask what matters", lineLogic: "shared problem, no blame, open question", rootedIn: ["Getting to Yes", "Perspective-taking", "Coaching practice"] },
     demo: { input: "So are we just not talking now?", note: "This is where reconnection can start sounding like accusation." },
     routes: {
       a: { label: "Us vs the problem", text: "I do not want the distance to become the whole story. I think we both got stuck, and I would like us to find a way back into the conversation.", bestWhen: "You want to reduce blame and name the shared problem." },
       b: { label: "Ask what matters", text: "Could I ask what you need from me before we try to talk properly? I want to understand what matters most right now rather than push us into another difficult exchange.", bestWhen: "You want to reopen contact without forcing closeness." },
     },
-    compare: {
-      headline: "One route names the distance. One route invites their reality.",
-      lineA: "Us vs the problem helps when the relationship needs a shared frame.",
-      lineB: "Ask what matters helps when the other person may need space before repair.",
-    },
+    compare: { headline: "One route names the distance. One route invites their reality.", lineA: "Us vs the problem helps when the relationship needs a shared frame.", lineB: "Ask what matters helps when the other person may need space before repair." },
     breakdown: [
       { span: "the distance", why: "Names the problem without making either person the problem.", rootedIn: "Separate people from problem" },
       { span: "we both got stuck", why: "Reduces blame and creates shared ownership.", rootedIn: "Shared problem frame" },
@@ -277,42 +171,20 @@ const BRANCHES: Record<Moment, Branch> = {
     rootedIn: { pattern: "Us vs the problem", rootedIn: "Getting to Yes and perspective-taking", usedFor: "Reconnect after distance", whatChanges: "It names the distance as a shared problem instead of placing it on one person." },
     tryYours: { headline: "Write the first sentence you have not known how to send.", placeholder: "So are we just not talking…" },
   },
-
   pause_before_escalation: {
     title: "Pause before it gets worse",
     cardBody: "I need to stop this before we both say something worse.",
     receiver_risk: "shutting_down", desired_landing: "safe_pause",
-    mirror: {
-      headline: "You chose pause before it gets worse.",
-      lead: "This is the message you send when the conversation is getting too hot to handle well.",
-      youMean: "You may mean “I want to protect this.”",
-      theyHear: "They may hear “I am shutting you out.”",
-    },
-    trap: {
-      headline: "A pause can feel like disappearance.",
-      body: "If the message only says “I can’t talk,” the other person may experience it as punishment, rejection or stonewalling.",
-      theyHear: "I am done listening to you.",
-    },
-    why: {
-      headline: "A better pause creates space and a return point.",
-      body: "The goal is to stop the spiral while making clear that the conversation is not being abandoned.",
-    },
-    routeMap: {
-      risk: "Sounds like shutdown",
-      routeA: "Pause-and-return", routeB: "Soft start, clear point",
-      lineLogic: "name overload, pause, commit to return",
-      rootedIn: ["The Gottman Method", "Conflict de-escalation", "Boundary-setting"],
-    },
+    mirror: { headline: "You chose pause before it gets worse.", lead: "This is the message you send when the conversation is getting too hot to handle well.", youMean: "You may mean “I want to protect this.”", theyHear: "They may hear “I am shutting you out.”" },
+    trap: { headline: "A pause can feel like disappearance.", body: "If the message only says “I can’t talk,” the other person may experience it as punishment, rejection or stonewalling.", theyHear: "I am done listening to you." },
+    why: { headline: "A better pause creates space and a return point.", body: "The goal is to stop the spiral while making clear that the conversation is not being abandoned." },
+    routeMap: { risk: "Sounds like shutdown", routeA: "Pause-and-return", routeB: "Soft start, clear point", lineLogic: "name overload, pause, commit to return", rootedIn: ["The Gottman Method", "Conflict de-escalation", "Boundary-setting"] },
     demo: { input: "I can’t talk to you when you’re like this.", note: "This is where a pause starts sounding like rejection." },
     routes: {
       a: { label: "Pause-and-return", text: "I want to pause before we say things we cannot take back. I am going to take some space now, and I will come back to this tomorrow.", bestWhen: "The conversation is too heated and needs a clear return point." },
       b: { label: "Soft start, clear point", text: "I care about resolving this. I also know I am getting too activated to do it well right now. I need us to stop for tonight and continue when we are both steadier.", bestWhen: "You need to pause while making care and intent visible." },
     },
-    compare: {
-      headline: "One route creates distance safely. One route explains the pause.",
-      lineA: "Pause-and-return is short and protective.",
-      lineB: "Soft start, clear point adds reassurance when the pause could feel like rejection.",
-    },
+    compare: { headline: "One route creates distance safely. One route explains the pause.", lineA: "Pause-and-return is short and protective.", lineB: "Soft start, clear point adds reassurance when the pause could feel like rejection." },
     breakdown: [
       { span: "before we say things we cannot take back", why: "Frames the pause as protection rather than withdrawal.", rootedIn: "De-escalation" },
       { span: "I will come back to this tomorrow", why: "Prevents the pause from feeling like disappearance.", rootedIn: "Return point" },
@@ -321,42 +193,20 @@ const BRANCHES: Record<Moment, Branch> = {
     rootedIn: { pattern: "Pause-and-return", rootedIn: "Conflict de-escalation and the Gottman Method", usedFor: "Pause before it gets worse", whatChanges: "It stops the spiral while keeping a clear point of return." },
     tryYours: { headline: "Write the message before the argument gets worse.", placeholder: "I can’t do this right now…" },
   },
-
   truth_without_attack: {
     title: "Truth without attack",
     cardBody: "I need to say the truth without turning it into an attack.",
     receiver_risk: "attacking", desired_landing: "honest_but_receivable",
-    mirror: {
-      headline: "You chose truth without attack.",
-      lead: "This is the message where the truth matters, but the delivery could make it sound harsher than you mean.",
-      youMean: "You may mean “I need to be honest.”",
-      theyHear: "They may hear “here is everything you did wrong.”",
-    },
-    trap: {
-      headline: "A true sentence can still land too sharply.",
-      body: "When the message arrives with too much force, the other person may react to the threat before they understand the point.",
-      theyHear: "You are being judged, not spoken to.",
-    },
-    why: {
-      headline: "A better truth stays clear enough to trust.",
-      body: "The goal is to remove the extra threat around the message so the real point has a better chance of being heard.",
-    },
-    routeMap: {
-      risk: "Sounds harsh or final",
-      routeA: "Just say it plainly", routeB: "Ease into it",
-      lineLogic: "plain truth, soft runway, no unnecessary threat",
-      rootedIn: ["Plain-language authenticity", "The Gottman Method", "Staged delivery"],
-    },
+    mirror: { headline: "You chose truth without attack.", lead: "This is the message where the truth matters, but the delivery could make it sound harsher than you mean.", youMean: "You may mean “I need to be honest.”", theyHear: "They may hear “here is everything you did wrong.”" },
+    trap: { headline: "A true sentence can still land too sharply.", body: "When the message arrives with too much force, the other person may react to the threat before they understand the point.", theyHear: "You are being judged, not spoken to." },
+    why: { headline: "A better truth stays clear enough to trust.", body: "The goal is to remove the extra threat around the message so the real point has a better chance of being heard." },
+    routeMap: { risk: "Sounds harsh or final", routeA: "Just say it plainly", routeB: "Ease into it", lineLogic: "plain truth, soft runway, no unnecessary threat", rootedIn: ["Plain-language authenticity", "The Gottman Method", "Staged delivery"] },
     demo: { input: "I don’t think this is working anymore.", note: "This is where truth can land harder than intended." },
     routes: {
       a: { label: "Just say it plainly", text: "I need to be honest. I am not feeling okay about where we are, and I do not want to pretend I am.", bestWhen: "The message needs clarity more than emotional build-up." },
       b: { label: "Ease into it", text: "I want to say this carefully because it matters. I have been feeling unsure about us for a while, and I think we need to talk honestly about where this is going.", bestWhen: "The truth is difficult and the opening needs more emotional runway." },
     },
-    compare: {
-      headline: "One route is plain. One route creates runway.",
-      lineA: "Just say it plainly reduces confusion.",
-      lineB: "Ease into it prepares the emotional ground before the difficult point lands.",
-    },
+    compare: { headline: "One route is plain. One route creates runway.", lineA: "Just say it plainly reduces confusion.", lineB: "Ease into it prepares the emotional ground before the difficult point lands." },
     breakdown: [
       { span: "I need to be honest", why: "Signals seriousness without accusation.", rootedIn: "Plain-language authenticity" },
       { span: "I do not want to pretend I am", why: "Keeps the truth owned and specific.", rootedIn: "Owned truth" },
@@ -375,7 +225,6 @@ const MOMENT_ORDER: Moment[] = [
 // ─── Shared content ───────────────────────────────────────────────────────────
 
 const RECOGNITION = {
-  headline: "There is the message you send, and the message they hear.",
   lines: [
     "You may be trying to apologise, and it lands as defence.",
     "You may be asking for more, and it lands as pressure.",
@@ -389,19 +238,8 @@ const RECOGNITION = {
 const PATTERN_LIBRARY = {
   headline: "A named method for the message you are holding.",
   body: "LANDRIGHT draws from more than 30 communication patterns for hard, tender and awkward messages.",
-  lines: [
-    "Some clean up apologies.",
-    "Some turn need into request.",
-    "Some keep boundaries warm.",
-    "Some open a door after distance.",
-    "Some help truth land without becoming an attack.",
-  ],
-  cards: [
-    "A real apology", "Own it first", "Name it before they do", "Ask, don’t demand",
-    "Feeling, then ask", "Show what’s underneath", "A limit, with love", "Hold the line kindly",
-    "Kind but clear", "Ease into it", "Us vs the problem", "Ask what matters",
-    "Pause-and-return", "Just say it plainly", "Soft start, clear point", "Specific reassurance",
-  ],
+  lines: ["Some clean up apologies.", "Some turn need into request.", "Some keep boundaries warm.", "Some open a door after distance.", "Some help truth land without becoming an attack."],
+  cards: ["A real apology", "Own it first", "Name it before they do", "Ask, don’t demand", "Feeling, then ask", "Show what’s underneath", "A limit, with love", "Hold the line kindly", "Kind but clear", "Ease into it", "Us vs the problem", "Ask what matters", "Pause-and-return", "Just say it plainly", "Soft start, clear point", "Specific reassurance"],
 };
 
 const GENERIC_AI = {
@@ -414,13 +252,7 @@ const GENERIC_AI = {
 const PAYWALL = {
   headline: "Unlock the full communication toolkit.",
   body: "Get more routes, full line-by-line explanations, saved messages and pattern guidance for the conversations that matter.",
-  bullets: [
-    "More than 30 communication patterns",
-    "Multiple routes for each message",
-    "Line-by-line “why it works”",
-    "Saved message history",
-    "Generate more approaches when the first one is not quite right",
-  ],
+  bullets: ["More than 30 communication patterns", "Multiple routes for each message", "Line-by-line “why it works”", "Saved message history", "Generate more approaches when the first one is not quite right"],
 };
 
 // ─── Analytics (no raw message text ever leaves the client) ───────────────────
@@ -431,72 +263,91 @@ function emit(event: string, props: Record<string, unknown>) {
   else if (process.env.NODE_ENV !== "production") console.debug("[analytics]", event, props);
 }
 
-// ─── Primitives ───────────────────────────────────────────────────────────────
+// ─── Primitives (lifted from the app's visual language) ───────────────────────
 
-function CTA({ children, onClick, disabled, variant = "lime", full = true }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; variant?: "lime" | "ink" | "ghost"; full?: boolean }) {
+type TagVariant = "solid" | "outline" | "ink";
+function Tag({ children, variant = "solid", size = "sm" }: { children: React.ReactNode; variant?: TagVariant; size?: "sm" | "xs" }) {
+  const styles: Record<TagVariant, React.CSSProperties> = {
+    solid: { backgroundColor: LIME, color: INK, border: `2px solid ${INK}` },
+    outline: { backgroundColor: "transparent", color: INK, border: `2px solid ${INK}` },
+    ink: { backgroundColor: INK, color: LIME, border: `2px solid ${INK}` },
+  };
+  return <span style={{ ...styles[variant], display: "inline-block", fontFamily: COND, fontWeight: 900, fontSize: size === "xs" ? "0.72rem" : "0.82rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: size === "xs" ? "4px 9px" : "6px 12px", lineHeight: 1.1, whiteSpace: "nowrap" }}>{children}</span>;
+}
+
+// Lime highlighter mark for headline emphasis (the app's signature).
+function Mark({ children }: { children: React.ReactNode }) {
+  return <span style={{ backgroundColor: LIME, color: INK, padding: "0.02em 0.16em", display: "inline-block", transform: "rotate(-1.4deg)", WebkitBoxDecorationBreak: "clone", boxDecorationBreak: "clone" }}>{children}</span>;
+}
+
+function CTA({ children, onClick, disabled, variant = "primary", onDark = false, full = true }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; variant?: "primary" | "ink" | "outline"; onDark?: boolean; full?: boolean }) {
   const [pressed, setPressed] = useState(false);
+  const edge = onDark ? LIME : INK;
   const look = {
-    lime: { bg: LIME, color: INK, border: INK, shadow: INK },
-    ink: { bg: INK, color: LIME, border: INK, shadow: LIME },
-    ghost: { bg: "transparent", color: "inherit", border: "currentColor", shadow: "currentColor" },
+    primary: { bg: LIME, color: INK, shadow: INK, border: INK },
+    ink: { bg: INK, color: LIME, shadow: LIME, border: INK },
+    outline: { bg: "transparent", color: onDark ? "#FFFFFF" : INK, shadow: edge, border: edge },
   }[variant];
   return (
-    <button onClick={onClick} disabled={disabled}
-      onMouseDown={() => !disabled && setPressed(true)} onMouseUp={() => setPressed(false)} onMouseLeave={() => setPressed(false)}
-      style={{
-        fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase",
-        border: `2px solid ${disabled ? MUTED : look.border}`, padding: "16px 26px", width: full ? "100%" : undefined,
-        cursor: disabled ? "not-allowed" : "pointer", backgroundColor: disabled ? "rgba(120,120,120,0.18)" : look.bg, color: disabled ? MUTED : look.color,
-        boxShadow: disabled ? "none" : pressed ? `0 0 0 ${look.shadow}` : `4px 4px 0 ${look.shadow}`, transform: pressed ? "translate(4px,4px)" : "none",
-        transition: "transform .1s ease, box-shadow .1s ease", borderRadius: 0,
-      }}>
+    <button onClick={onClick} disabled={disabled} onMouseDown={() => !disabled && setPressed(true)} onMouseUp={() => setPressed(false)} onMouseLeave={() => setPressed(false)}
+      style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", border: `2px solid ${disabled ? MUTED : look.border}`, padding: "16px 26px", width: full ? "100%" : undefined,
+        cursor: disabled ? "not-allowed" : "pointer", backgroundColor: disabled ? (onDark ? "rgba(120,120,120,0.18)" : GROUND2) : look.bg, color: disabled ? MUTED : look.color,
+        boxShadow: disabled ? "none" : pressed ? `0 0 0 ${look.shadow}` : `4px 4px 0 ${look.shadow}`, transform: pressed ? "translate(4px,4px)" : "none", transition: "transform .1s ease, box-shadow .1s ease", borderRadius: 0 }}>
       {children}
     </button>
   );
 }
 
-function Eyebrow({ children, color = LIME }: { children: React.ReactNode; color?: string }) {
-  return <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", color, marginBottom: 14 }}>{children}</p>;
-}
-
-const H1: React.CSSProperties = { fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(1.8rem, 6.6vw, 2.5rem)", lineHeight: 1.0, letterSpacing: "-0.025em", textTransform: "uppercase", margin: 0 };
-const LEAD: React.CSSProperties = { fontFamily: BODY, fontSize: "1.06rem", lineHeight: 1.6, color: "#E8E8E2", margin: 0 };
-
-function Headline({ children }: { children: React.ReactNode }) {
-  return <h1 style={{ ...H1, color: "#FFFFFF" }}>{children}</h1>;
-}
-
-// Pill that mirrors the app's lime tag (shows the chosen moment).
-function MomentPill({ label }: { label: string }) {
-  return <span style={{ display: "inline-block", fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.08em", textTransform: "uppercase", color: INK, backgroundColor: LIME, padding: "5px 10px" }}>{label}</span>;
-}
-
-// Selectable moment card. Lifts gently on press.
-function MomentCard({ title, body, onClick }: { title: string; body: string; onClick: () => void }) {
-  const [pressed, setPressed] = useState(false);
+// The app's latency-paced loading bar (ink track, lime fill).
+function LoadingBar({ expectedMs = 1400 }: { expectedMs?: number }) {
+  const [pct, setPct] = useState(0);
+  useEffect(() => {
+    const start = performance.now();
+    const id = setInterval(() => {
+      const t = performance.now() - start;
+      setPct(t < expectedMs ? 0.92 * (t / expectedMs) : 0.92 + 0.07 * (1 - Math.exp(-(t - expectedMs) / 2200)));
+    }, 50);
+    return () => clearInterval(id);
+  }, [expectedMs]);
   return (
-    <button onClick={onClick} onMouseDown={() => setPressed(true)} onMouseUp={() => setPressed(false)} onMouseLeave={() => setPressed(false)}
-      style={{ width: "100%", textAlign: "left", cursor: "pointer", borderRadius: 0, border: "2px solid rgba(255,255,255,0.26)", backgroundColor: "transparent",
-        padding: "16px 18px", boxShadow: pressed ? "none" : "0 0 0 transparent", transform: pressed ? "translate(2px,2px)" : "none", transition: "transform .1s ease, border-color .12s ease" }}>
-      <span style={{ display: "block", fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.12rem", letterSpacing: "-0.01em", textTransform: "uppercase", color: "#FFFFFF" }}>{title}</span>
-      <span style={{ display: "block", fontFamily: BODY, fontSize: "0.95rem", lineHeight: 1.4, color: "#C7C9BD", marginTop: 6 }}>{body}</span>
-    </button>
+    <div style={{ height: 12, overflow: "hidden", backgroundColor: INK, border: `2px solid ${INK}` }}>
+      <div style={{ height: "100%", width: `${(pct * 100).toFixed(1)}%`, backgroundColor: LIME, transition: "width .1s linear" }} />
+    </div>
   );
 }
 
-// Strategic route card (demo + best-when).
-function RouteCard({ label, text, bestWhen, active }: { label: string; text: string; bestWhen?: string; active?: boolean }) {
+// The app's outlined-number + label header band for a route card.
+function CardHeader({ index, label }: { index: string; label: string }) {
   return (
-    <div style={{ border: `2px solid ${active ? LIME : "rgba(255,255,255,0.22)"}`, boxShadow: active ? `6px 6px 0 ${LIME}` : "none" }}>
-      <div style={{ borderBottom: `2px solid ${active ? LIME : "rgba(255,255,255,0.22)"}`, padding: "12px 18px", display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ width: 9, height: 9, backgroundColor: LIME, flexShrink: 0 }} />
-        <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "-0.01em", textTransform: "uppercase", color: "#FFFFFF" }}>{label}</span>
+    <div style={{ display: "flex", alignItems: "stretch", borderBottom: `2px solid ${LIME}` }}>
+      <div style={{ borderRight: "2px solid rgba(255,255,255,0.16)", padding: "10px 18px", display: "flex", alignItems: "center" }}>
+        <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(34px, 8vw, 48px)", lineHeight: 0.8, color: "transparent", WebkitTextStroke: `2px ${LIME}` }}>{index}</span>
       </div>
-      <div style={{ padding: "18px" }}>
-        <p style={{ fontFamily: BODY, fontSize: "1.0rem", lineHeight: 1.72, color: "#FFFFFF", margin: 0 }}>{text}</p>
-        {bestWhen && <p style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.8rem", letterSpacing: "0.03em", textTransform: "uppercase", color: DARK_MUTED, marginTop: 14, marginBottom: 0 }}>Best when: {bestWhen}</p>}
+      <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 18px" }}>
+        <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(1.05rem, 4vw, 1.4rem)", letterSpacing: "-0.01em", textTransform: "uppercase", color: "#FFFFFF", lineHeight: 1.02 }}>{label}</span>
       </div>
     </div>
+  );
+}
+
+// The app's TriMarker (corner triangles + thin lines that frame a highlight).
+function TriMarker({ pos, innerRef }: { pos: "start" | "end"; innerRef?: React.Ref<HTMLSpanElement> }) {
+  const base: React.CSSProperties = { position: "absolute", width: 0, height: 0, borderLeft: "6px solid transparent", borderRight: "6px solid transparent", pointerEvents: "none" };
+  const line: React.CSSProperties = { position: "absolute", width: 1, backgroundColor: LIME, pointerEvents: "none" };
+  return (
+    <span ref={innerRef} aria-hidden style={{ position: "relative", display: "inline-block", width: 0, height: "1em", verticalAlign: "text-bottom" }}>
+      {pos === "start" ? (
+        <>
+          <i style={{ ...base, borderTop: `7px solid ${LIME}`, top: "-11px", left: "-8px" }} />
+          <i style={{ ...line, left: "-2px", top: "-4px", height: "27px" }} />
+        </>
+      ) : (
+        <>
+          <i style={{ ...base, borderBottom: `7px solid ${LIME}`, bottom: "-7px", left: "-4px" }} />
+          <i style={{ ...line, left: "2px", top: "-10px", height: "27px" }} />
+        </>
+      )}
+    </span>
   );
 }
 
@@ -504,29 +355,21 @@ function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   function copy() {
     const done = () => { setCopied(true); setTimeout(() => setCopied(false), 1500); };
-    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done).catch(done);
-    else done();
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done).catch(done); else done();
   }
-  return (
-    <button onClick={copy} style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.05em", textTransform: "uppercase", border: `2px solid ${LIME}`, backgroundColor: copied ? LIME : "transparent", color: copied ? INK : LIME, padding: "8px 14px", cursor: "pointer", borderRadius: 0 }}>
-      {copied ? "Copied" : "Copy text"}
-    </button>
-  );
+  return <button onClick={copy} style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.05em", textTransform: "uppercase", border: `2px solid ${LIME}`, backgroundColor: copied ? LIME : "transparent", color: copied ? INK : LIME, padding: "8px 14px", cursor: "pointer", borderRadius: 0 }}>{copied ? "Copied" : "Copy text"}</button>;
 }
 
-// ─── Highlight segmentation + inline highlight component (app interaction) ─────
+// ─── Highlight message (the app's exact interaction: TriMarker + WAAPI settle) ─
 
 type Seg = { text: string; hi: number | null };
 function segmentMessage(text: string, spans: readonly string[]): Seg[] {
   const lower = text.toLowerCase();
-  const found = spans
-    .map((span, i) => ({ i, span, at: lower.indexOf(span.toLowerCase()) }))
-    .filter(x => x.at >= 0)
-    .sort((a, b) => a.at - b.at);
+  const found = spans.map((span, i) => ({ i, span, at: lower.indexOf(span.toLowerCase()) })).filter(x => x.at >= 0).sort((a, b) => a.at - b.at);
   const out: Seg[] = [];
   let cursor = 0;
   for (const f of found) {
-    if (f.at < cursor) continue; // skip overlap
+    if (f.at < cursor) continue;
     if (f.at > cursor) out.push({ text: text.slice(cursor, f.at), hi: null });
     out.push({ text: text.slice(f.at, f.at + f.span.length), hi: f.i });
     cursor = f.at + f.span.length;
@@ -535,119 +378,195 @@ function segmentMessage(text: string, spans: readonly string[]): Seg[] {
   return out;
 }
 
-// Message with tappable highlighted phrases + a rationale panel underneath.
-// mode "reveal": highlights appear one by one and stay lit (demo line breakdown).
-// mode "tap": phrases are subtly underlined; the tapped one lights up (result).
-function InlineHighlights({
-  text, marks, mode, onOpen,
+function HighlightMessage({
+  text, marks, autoSweep = false, underline = false, onOpen,
 }: {
   text: string;
   marks: { span: string; note: string; rootedIn?: string }[];
-  mode: "reveal" | "tap";
+  autoSweep?: boolean;
+  underline?: boolean;
   onOpen?: (count: number) => void;
 }) {
   const segs = segmentMessage(text, marks.map(m => m.span));
-  const [active, setActive] = useState<number | null>(null);
-  const [revealed, setRevealed] = useState(mode === "tap" ? marks.length : 0);
+  const [active, setActive] = useState<number | null>(null); // active SEGMENT index
+  const trackRef = useRef(0);
+  const paraRef = useRef<HTMLParagraphElement | null>(null);
+  const hiRef = useRef<HTMLSpanElement | null>(null);
+  const endRef = useRef<HTMLSpanElement | null>(null);
+  const animSeq = useRef(0);
+  const canHover = useRef(true);
+  const sweepCancelled = useRef(false);
+  const sweepRunning = useRef(false);
   const opened = useRef<Set<number>>(new Set());
 
+  useEffect(() => { canHover.current = window.matchMedia?.("(hover: hover)").matches ?? true; }, []);
+
+  const travelForIndex = (segIndex: number) => {
+    const wrap = paraRef.current?.children[segIndex] as HTMLElement | undefined;
+    const hl = wrap?.firstElementChild as HTMLElement | undefined;
+    if (!hl) return 0;
+    const rects = hl.getClientRects();
+    return rects.length ? Math.round(rects[rects.length - 1].width * 0.2) : 0;
+  };
+
+  const open = (segIndex: number, el?: HTMLElement) => {
+    if (sweepRunning.current && el) return; // ignore passive hover mid-sweep
+    trackRef.current = el ? (() => { const r = el.getClientRects(); return r.length ? Math.round(r[r.length - 1].width * 0.2) : 0; })() : travelForIndex(segIndex);
+    animSeq.current += 1;
+    setActive(segIndex);
+    const segHi = segs[segIndex]?.hi;
+    if (segHi !== null && segHi !== undefined) { opened.current.add(segHi); onOpen?.(opened.current.size); }
+  };
+
+  // WAAPI "settle": the lime fill grows its last 20%, the end marker rides in.
   useEffect(() => {
-    if (mode !== "reveal") return;
-    setRevealed(0); setActive(null); opened.current = new Set();
+    if (active === null) return;
+    const dur = 380, ease = "cubic-bezier(0.22, 1, 0.36, 1)";
+    if (hiRef.current) hiRef.current.animate([{ backgroundSize: "80% 100%" }, { backgroundSize: "100% 100%" }], { duration: dur, easing: ease });
+    if (endRef.current && trackRef.current > 0) endRef.current.animate([{ transform: `translateX(-${trackRef.current}px)` }, { transform: "translateX(0)" }], { duration: dur, easing: ease });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, animSeq.current]);
+
+  // Auto-sweep through the highlighted segments on first appearance.
+  useEffect(() => {
+    if (!autoSweep) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const interactive = segs.map((s, i) => (s.hi !== null ? i : -1)).filter(i => i >= 0);
+    if (!interactive.length) return;
+    sweepCancelled.current = false; sweepRunning.current = true;
     const timers: ReturnType<typeof setTimeout>[] = [];
-    marks.forEach((_, i) => timers.push(setTimeout(() => setRevealed(n => Math.max(n, i + 1)), 350 + i * 420)));
-    return () => timers.forEach(clearTimeout);
+    const onAbort = () => { sweepCancelled.current = true; sweepRunning.current = false; };
+    window.addEventListener("pointerdown", onAbort, { once: true });
+    interactive.forEach((segIndex, k) => timers.push(setTimeout(() => { if (sweepCancelled.current) return; trackRef.current = travelForIndex(segIndex); animSeq.current += 1; setActive(segIndex); }, 460 + k * 620)));
+    timers.push(setTimeout(() => { sweepRunning.current = false; if (!sweepCancelled.current) setActive(null); }, 460 + interactive.length * 620 + 120));
+    return () => { sweepRunning.current = false; timers.forEach(clearTimeout); window.removeEventListener("pointerdown", onAbort); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
 
-  function open(i: number) {
-    setActive(i);
-    opened.current.add(i);
-    onOpen?.(opened.current.size);
-  }
+  const activeMark = active !== null && segs[active]?.hi !== null && segs[active]?.hi !== undefined ? marks[segs[active].hi as number] : null;
 
   return (
     <>
-      <div style={{ border: "2px solid rgba(255,255,255,0.22)", padding: "18px" }}>
-        <p style={{ fontFamily: BODY, fontSize: "1.04rem", lineHeight: 1.9, color: "#FFFFFF", margin: 0 }}>
+      <div className="surface-dark" style={{ border: `2px solid ${INK}` }}>
+        <p ref={paraRef} style={{ fontFamily: BODY, fontSize: "1.04rem", lineHeight: 1.9, color: "#FFFFFF", margin: 0, padding: "18px" }}>
           {segs.map((seg, i) => {
-            if (seg.hi === null) return <span key={i}>{seg.text}</span>;
-            const hiIndex = seg.hi;
-            const lit = mode === "reveal" ? hiIndex < revealed : active === hiIndex;
-            const tappable = mode === "reveal" ? hiIndex < revealed : true;
-            const underline = mode === "tap" && active !== hiIndex;
+            const interactive = seg.hi !== null;
+            const on = active === i;
+            let content: React.ReactNode = seg.text;
+            if (on && interactive) {
+              const firstSp = seg.text.indexOf(" "), lastSp = seg.text.lastIndexOf(" ");
+              content = firstSp === -1 ? (
+                <span style={{ whiteSpace: "nowrap" }}><TriMarker pos="start" />{seg.text}<TriMarker pos="end" innerRef={endRef} /></span>
+              ) : (
+                <>
+                  <span style={{ whiteSpace: "nowrap" }}><TriMarker pos="start" />{seg.text.slice(0, firstSp)}</span>
+                  {seg.text.slice(firstSp, lastSp + 1)}
+                  <span style={{ whiteSpace: "nowrap" }}>{seg.text.slice(lastSp + 1)}<TriMarker pos="end" innerRef={endRef} /></span>
+                </>
+              );
+            }
             return (
-              <button key={i} onClick={() => tappable && open(hiIndex)} aria-label={`${seg.text}. ${marks[hiIndex].note}`}
-                style={{ font: "inherit", color: lit ? INK : "#FFFFFF", backgroundColor: lit ? LIME : "transparent",
-                  borderTop: "2px solid transparent", borderLeft: "none", borderRight: "none",
-                  borderBottom: underline ? `2px solid ${LIME}` : "2px solid transparent",
-                  padding: "0 .12em", cursor: tappable ? "pointer" : "default", borderRadius: 0,
-                  transition: "background-color .35s ease, color .35s ease", WebkitBoxDecorationBreak: "clone", boxDecorationBreak: "clone" }}>
-                {seg.text}
-              </button>
+              <span key={i}>
+                <span ref={on ? hiRef : undefined}
+                  onMouseEnter={e => { if (interactive && canHover.current) open(i, e.currentTarget); }}
+                  onMouseLeave={() => { if (interactive && canHover.current) setActive(null); }}
+                  onClick={e => { if (!interactive) return; sweepCancelled.current = true; sweepRunning.current = false; if (active === i) setActive(null); else open(i, e.currentTarget); }}
+                  style={{ position: "relative", color: on ? INK : "#FFFFFF",
+                    backgroundImage: on ? `linear-gradient(${LIME}, ${LIME})` : "none", backgroundRepeat: "no-repeat", backgroundPosition: "left center", backgroundSize: "100% 100%",
+                    padding: "0.05em 0.1em", cursor: interactive ? "pointer" : "default", borderBottom: underline && interactive && !on ? `2px solid ${LIME}` : "2px solid transparent",
+                    transition: "color 0.12s ease", WebkitBoxDecorationBreak: "clone", boxDecorationBreak: "clone" }}>
+                  {content}
+                </span>
+                {i < segs.length - 1 ? " " : ""}
+              </span>
             );
           })}
         </p>
       </div>
-      <div style={{ minHeight: 84, marginTop: 12, border: "2px solid rgba(255,255,255,0.16)", padding: "13px 16px" }}>
-        {active !== null ? (
+      <div style={{ minHeight: 78, marginTop: 12, border: "2px solid rgba(17,17,16,0.16)", padding: "13px 16px", backgroundColor: GROUND2 }}>
+        {activeMark ? (
           <>
-            {marks[active].rootedIn && <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME, margin: 0 }}>Rooted in {marks[active].rootedIn}</p>}
-            <p style={{ fontFamily: BODY, fontSize: "0.95rem", lineHeight: 1.55, color: "#E8E8E2", marginTop: marks[active].rootedIn ? 6 : 0, marginBottom: 0 }}>{marks[active].note}</p>
+            {activeMark.rootedIn && <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.06em", textTransform: "uppercase", color: INK, margin: 0 }}>Rooted in {activeMark.rootedIn}</p>}
+            <p style={{ fontFamily: BODY, fontSize: "0.95rem", lineHeight: 1.55, color: INK, marginTop: activeMark.rootedIn ? 6 : 0, marginBottom: 0 }}>{activeMark.note}</p>
           </>
         ) : (
-          <p style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: DARK_MUTED, margin: 0 }}>Tap a highlighted phrase to see what it is doing</p>
+          <p style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, margin: 0 }}>Hover or tap a line to see what it is doing</p>
         )}
       </div>
     </>
   );
 }
 
-// ─── Shell: progress + back + V0.1 link back to the app ───────────────────────
+// ─── Shell: light ground canvas (or dark for the few "moment" screens) ────────
 
-function Shell({ index, onBack, children }: { index: number; onBack?: () => void; children: React.ReactNode }) {
-  const pct = Math.round((index / (STEPS.length - 1)) * 100);
+function Shell({ stepIndex, dark, onBack, children }: { stepIndex: number; dark: boolean; onBack?: () => void; children: React.ReactNode }) {
+  const pct = Math.round((stepIndex / (STEPS.length - 1)) * 100);
+  const fg = dark ? "#FFFFFF" : INK;
+  const edge = dark ? LIME : INK;
   return (
-    <div className="surface-dark" style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", backgroundColor: DARK, color: "#FFFFFF", padding: "clamp(18px, 5vw, 36px)" }}>
+    <main className={dark ? "surface-dark" : undefined} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", backgroundColor: dark ? DARK : "transparent", color: fg, padding: "clamp(18px, 5vw, 36px)" }}>
       <div style={{ width: "100%", maxWidth: 560, margin: "0 auto", flex: 1, display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: "clamp(20px, 5vw, 36px)" }}>
-          {onBack ? <button onClick={onBack} aria-label="Back" style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", fontFamily: COND, fontWeight: 900, fontSize: "1.2rem", padding: 0, lineHeight: 1 }}>←</button> : <span style={{ width: 12 }} />}
-          <div style={{ flex: 1, height: 6, backgroundColor: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.25)" }}>
+          {onBack ? <button onClick={onBack} aria-label="Back" style={{ background: "none", border: "none", cursor: "pointer", color: fg, fontFamily: COND, fontWeight: 900, fontSize: "1.2rem", padding: 0, lineHeight: 1 }}>←</button> : <span style={{ width: 12 }} />}
+          <div style={{ flex: 1, height: 6, backgroundColor: dark ? "rgba(255,255,255,0.14)" : GROUND2, border: `2px solid ${edge}` }}>
             <div style={{ height: "100%", width: `${pct}%`, backgroundColor: LIME, transition: "width .35s cubic-bezier(.22,1,.36,1)" }} />
           </div>
           <a href="/" aria-label="Back to Landright" style={{ textDecoration: "none" }}>
-            <span style={{ display: "inline-block", fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "4px 9px", lineHeight: 1.1, border: `2px solid ${LIME}`, color: LIME }}>v{APP_VERSION}</span>
+            <span style={{ display: "inline-block", fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "4px 9px", lineHeight: 1.1, border: `2px solid ${edge}`, color: edge }}>v{APP_VERSION}</span>
           </a>
         </div>
         {children}
       </div>
-    </div>
+    </main>
   );
 }
 
-// Read-only "app input" card (mirrors the app's dark textarea).
-function InputDisplay({ value }: { value: string }) {
+const H1: React.CSSProperties = { fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(1.9rem, 6.8vw, 2.6rem)", lineHeight: 1.0, letterSpacing: "-0.025em", textTransform: "uppercase", margin: 0 };
+const LEAD_INK: React.CSSProperties = { fontFamily: BODY, fontSize: "1.06rem", lineHeight: 1.6, color: INK, margin: 0 };
+
+// Light selectable moment card with an outlined number (the app button language).
+function MomentCard({ index, title, body, onClick }: { index: string; title: string; body: string; onClick: () => void }) {
+  const [pressed, setPressed] = useState(false);
   return (
-    <div style={{ border: "2px dashed rgba(255,255,255,0.3)", padding: "16px 18px" }}>
-      <p style={{ fontFamily: BODY, fontSize: "1.1rem", lineHeight: 1.55, color: "#E8E8E2", margin: 0 }}>{value}</p>
-    </div>
+    <button onClick={onClick} onMouseDown={() => setPressed(true)} onMouseUp={() => setPressed(false)} onMouseLeave={() => setPressed(false)}
+      style={{ width: "100%", textAlign: "left", cursor: "pointer", borderRadius: 0, border: `2px solid ${INK}`, backgroundColor: "transparent", padding: "14px 16px", display: "flex", gap: 14, alignItems: "center",
+        boxShadow: pressed ? `0 0 0 ${LIME}` : `4px 4px 0 ${LIME}`, transform: pressed ? "translate(4px,4px)" : "none", transition: "transform .1s ease, box-shadow .1s ease" }}>
+      <span style={{ flexShrink: 0, fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(26px, 7vw, 36px)", lineHeight: 0.8, color: "transparent", WebkitTextStroke: `2px ${INK}` }}>{index}</span>
+      <span>
+        <span style={{ display: "block", fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.08rem", letterSpacing: "-0.01em", textTransform: "uppercase", color: INK }}>{title}</span>
+        <span style={{ display: "block", fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.4, color: MUTED, marginTop: 3 }}>{body}</span>
+      </span>
+    </button>
   );
 }
 
-// ─── Result route card (uses the app's line-by-line + rooted-in language) ─────
+// Dark route card on light ground (the app result-card chrome).
+function RouteCard({ index, label, text, bestWhen, active }: { index: string; label: string; text: string; bestWhen?: string; active?: boolean }) {
+  return (
+    <div className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: active ? `6px 6px 0 ${LIME}` : "none" }}>
+      <CardHeader index={index} label={label} />
+      <div style={{ padding: "18px" }}>
+        <p style={{ fontFamily: BODY, fontSize: "1.0rem", lineHeight: 1.72, color: "#FFFFFF", margin: 0 }}>{text}</p>
+        {bestWhen && <p style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.8rem", letterSpacing: "0.03em", textTransform: "uppercase", color: DARK_MUTED, marginTop: 14, marginBottom: 0 }}>Best when: {bestWhen}</p>}
+      </div>
+    </div>
+  );
+}
 
 interface OptionOut { stack_label: string; option: string; origin?: string; rationale?: string; breakdown: { text: string; note: string }[] }
-function ResultRouteCard({ num, out }: { num: string; out: OptionOut }) {
+function ResultRouteCard({ index, out, autoSweep }: { index: string; out: OptionOut; autoSweep?: boolean }) {
   return (
-    <div style={{ border: `2px solid ${INK === INK ? "rgba(255,255,255,0.22)" : "#000"}` }}>
-      <div style={{ borderBottom: `2px solid ${LIME}`, padding: "12px 18px", display: "flex", alignItems: "center", gap: 12 }}>
-        <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.4rem", lineHeight: 1, color: "transparent", WebkitTextStroke: `2px ${LIME}` }}>{num}</span>
-        <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.05rem", letterSpacing: "-0.01em", textTransform: "uppercase", color: "#FFFFFF" }}>{out.stack_label}</span>
-      </div>
+    <div className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: `6px 6px 0 ${LIME}` }}>
+      <CardHeader index={index} label={out.stack_label} />
       <div style={{ padding: "18px" }}>
-        <InlineHighlights text={out.option} marks={out.breakdown.map(b => ({ span: b.text, note: b.note }))} mode="tap" />
-        {out.origin && <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.05em", textTransform: "uppercase", color: LIME, marginTop: 16, marginBottom: 0 }}>Rooted in {out.origin}</p>}
-        {out.rationale && <p style={{ fontFamily: BODY, fontSize: "0.9rem", lineHeight: 1.55, color: "#B9BBAE", marginTop: 6 }}>{out.rationale}</p>}
+        <HighlightMessage text={out.option} marks={out.breakdown.map(b => ({ span: b.text, note: b.note }))} autoSweep={autoSweep} />
+        {out.origin && (
+          <div style={{ display: "flex", alignItems: "center", gap: 9, marginTop: 18 }}>
+            <span style={{ width: 9, height: 9, backgroundColor: LIME, display: "inline-block", flexShrink: 0 }} />
+            <span style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.9rem", letterSpacing: "0.05em", textTransform: "uppercase", color: LIME }}>Rooted in {out.origin}</span>
+          </div>
+        )}
+        {out.rationale && <p style={{ fontFamily: BODY, fontSize: "0.88rem", lineHeight: 1.55, color: "#B9BBAE", marginTop: 8 }}>{out.rationale}</p>}
         <div style={{ marginTop: 16 }}><CopyButton text={out.option} /></div>
       </div>
     </div>
@@ -660,15 +579,16 @@ export default function Onboarding() {
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const step: StepId = STEPS[index];
+  const dark = DARK_SCREENS.includes(step);
 
   const [moment, setMoment] = useState<Moment | null>(null);
   const [receiverRisk, setReceiverRisk] = useState<ReceiverRisk | null>(null);
   const [desiredLanding, setDesiredLanding] = useState<DesiredLanding | null>(null);
   const branch = moment ? BRANCHES[moment] : BRANCHES.apology_without_self_defence;
 
-  const [demoRoute, setDemoRoute] = useState<"a" | "b">("a");
   const [breakdownRoute, setBreakdownRoute] = useState<"a" | "b">("a");
   const [userMsg, setUserMsg] = useState("");
+  const [focused, setFocused] = useState(false);
   const [genState, setGenState] = useState<"idle" | "loading" | "done">("idle");
   const [gen, setGen] = useState<{ a: OptionOut | null; b: OptionOut | null }>({ a: null, b: null });
 
@@ -676,7 +596,6 @@ export default function Onboarding() {
     emit(event, { screen_id: STEPS[index], screen_index: index, selected_moment: moment, receiver_risk: receiverRisk, desired_landing: desiredLanding, ...extra });
   }, [index, moment, receiverRisk, desiredLanding]);
 
-  // Screen-view + per-screen events.
   useEffect(() => {
     if (step === "splash") fire("onboarding_started");
     fire("onboarding_screen_viewed", { screen_id: step });
@@ -689,17 +608,15 @@ export default function Onboarding() {
     if (step === "generic_ai") fire("generic_ai_contrast_viewed");
     if (step === "try_yours") fire("try_yours_started");
     if (step === "paywall") { fire("account_gate_viewed"); fire("paywall_viewed", { paywall_variant: PAYWALL_VARIANT }); }
+    window.scrollTo(0, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
-  // Splash auto-advance.
   useEffect(() => {
     if (step !== "splash") return;
-    const t = setTimeout(() => setIndex(i => (STEPS[i] === "splash" ? i + 1 : i)), 1500);
+    const t = setTimeout(() => setIndex(i => (STEPS[i] === "splash" ? i + 1 : i)), 1600);
     return () => clearTimeout(t);
   }, [step]);
-
-  // Processing auto-advance to the demo route cards.
   useEffect(() => {
     if (step !== "processing") return;
     const t = setTimeout(() => setIndex(i => (STEPS[i] === "processing" ? i + 1 : i)), 1500);
@@ -717,13 +634,7 @@ export default function Onboarding() {
     setTimeout(next, 160);
   }
 
-  function selectDemoRoute(r: "a" | "b") {
-    setDemoRoute(r);
-    fire("demo_route_compared", { selected_route: r === "a" ? "route_a" : "route_b" });
-  }
-
   const ctx = useCallback(() => ({ selected_moment: moment, receiver_risk: receiverRisk, desired_landing: desiredLanding }), [moment, receiverRisk, desiredLanding]);
-
   function finish() {
     try { localStorage.setItem("landright_onboarding", JSON.stringify({ done: true, ...ctx(), at: new Date().toISOString() })); } catch { /* ignore */ }
     router.push("/");
@@ -733,8 +644,7 @@ export default function Onboarding() {
     const msg = userMsg.trim();
     if (msg.length < MIN_CHARS) return;
     fire("user_message_submitted", { char_count: msg.length });
-    setGenState("loading"); setGen({ a: null, b: null });
-    goto("result");
+    setGenState("loading"); setGen({ a: null, b: null }); goto("result");
     const call = (which: "a" | "b") => fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ raw_input: msg, which, onboarding: ctx() }) }).then(r => r.json());
     const pa = call("a"); const pb = call("b");
     try {
@@ -745,271 +655,285 @@ export default function Onboarding() {
     try { const db = await pb; if (db.success) setGen(g => ({ ...g, b: db.option })); } catch { /* B is a bonus */ }
   }
 
-  const showBack = index > 1 && step !== "result" && step !== "paywall" && step !== "processing";
+  const showBack = index > 1 && step !== "result" && step !== "processing";
 
   return (
-    <Shell index={index} onBack={showBack ? back : undefined}>
-      {/* 0 SPLASH */}
+    <Shell stepIndex={index} dark={dark} onBack={showBack ? back : undefined}>
+      {/* 0 SPLASH (dark title card) */}
       {step === "splash" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
-          <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(2.4rem, 11vw, 3.6rem)", letterSpacing: "-0.03em", color: "#FFFFFF" }}>LANDRIGHT</span>
-          <p style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.4rem", letterSpacing: "-0.01em", textTransform: "uppercase", color: LIME, marginTop: 14 }}>Make your message land right.</p>
-          <div style={{ marginTop: 34, width: "100%", maxWidth: 320 }}><CTA onClick={next}>Continue</CTA></div>
+          <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(2.4rem, 12vw, 3.8rem)", letterSpacing: "-0.035em", color: "#FFFFFF" }}>LANDRIGHT</span>
+          <p style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(1.2rem, 5vw, 1.6rem)", letterSpacing: "-0.01em", textTransform: "uppercase", color: "#FFFFFF", marginTop: 16 }}>
+            Make your message <Mark>land right.</Mark>
+          </p>
+          <div style={{ marginTop: 34, width: "100%", maxWidth: 320 }}><CTA onClick={next} variant="primary">Continue</CTA></div>
         </div>
       )}
 
-      {/* 1 RECOGNITION */}
+      {/* 1 RECOGNITION (light editorial) */}
       {step === "recognition" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <Headline>{RECOGNITION.headline}</Headline>
-          <div style={{ marginTop: 22, marginBottom: 26 }}>
-            {RECOGNITION.lines.map(l => <p key={l} style={{ ...LEAD, marginBottom: 8 }}>{l}</p>)}
-            <p style={{ ...LEAD, color: "#FFFFFF", marginTop: 16 }}>{RECOGNITION.close}</p>
+          <h1 style={{ ...H1, color: INK }}>There is the message you send, and the message they <Mark>hear.</Mark></h1>
+          <div style={{ marginTop: 22, marginBottom: 24 }}>
+            {RECOGNITION.lines.map(l => <p key={l} style={{ ...LEAD_INK, marginBottom: 8 }}>{l}</p>)}
+            <p style={{ ...LEAD_INK, fontWeight: 600, marginTop: 16 }}>{RECOGNITION.close}</p>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }}>
-            {RECOGNITION.fragments.map(f => <span key={f} style={{ fontFamily: BODY, fontSize: "0.86rem", color: DARK_MUTED, border: "1px solid rgba(255,255,255,0.16)", padding: "5px 10px" }}>{f}</span>)}
+            {RECOGNITION.fragments.map(f => <span key={f} style={{ fontFamily: BODY, fontSize: "0.86rem", color: MUTED, border: `1px solid ${INK}`, padding: "5px 10px" }}>{f}</span>)}
           </div>
-          <CTA onClick={next}>Find my moment</CTA>
+          <CTA onClick={next} variant="ink">Find my moment</CTA>
         </div>
       )}
 
-      {/* 2 MOMENT SELECTION */}
+      {/* 2 MOMENT SELECTION (light, numbered cards) */}
       {step === "moment" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <Headline>What are you trying to say carefully?</Headline>
-          <p style={{ ...LEAD, color: "#C7C9BD", marginTop: 12, marginBottom: 22 }}>Choose the moment that feels closest.</p>
+          <div style={{ marginBottom: 12 }}><Tag variant="solid">What are you trying to say carefully?</Tag></div>
+          <p style={{ ...LEAD_INK, color: MUTED, marginBottom: 20 }}>Choose the moment that feels closest.</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
-            {MOMENT_ORDER.map(m => <MomentCard key={m} title={BRANCHES[m].title} body={BRANCHES[m].cardBody} onClick={() => chooseMoment(m)} />)}
+            {MOMENT_ORDER.map((m, i) => <MomentCard key={m} index={String(i + 1).padStart(2, "0")} title={BRANCHES[m].title} body={BRANCHES[m].cardBody} onClick={() => chooseMoment(m)} />)}
           </div>
         </div>
       )}
 
-      {/* 3 MIRROR */}
+      {/* 3 MIRROR (light) */}
       {step === "mirror" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <MomentPill label={branch.title} />
-          <h1 style={{ ...H1, color: "#FFFFFF", marginTop: 16 }}>{branch.mirror.headline}</h1>
-          <p style={{ ...LEAD, marginTop: 18 }}>{branch.mirror.lead}</p>
-          <div style={{ marginTop: 20, marginBottom: 28, borderLeft: `3px solid ${LIME}`, paddingLeft: 16 }}>
-            <p style={{ ...LEAD, color: "#FFFFFF", margin: 0 }}>{branch.mirror.youMean}</p>
-            <p style={{ ...LEAD, color: DARK_MUTED, marginTop: 6, marginBottom: 0 }}>{branch.mirror.theyHear}</p>
+          <div style={{ marginBottom: 16 }}><Tag variant="solid">{branch.title}</Tag></div>
+          <h1 style={{ ...H1, color: INK }}>{branch.mirror.headline}</h1>
+          <p style={{ ...LEAD_INK, marginTop: 18 }}>{branch.mirror.lead}</p>
+          <div style={{ marginTop: 20, marginBottom: 28, borderLeft: `4px solid ${LIME}`, paddingLeft: 16 }}>
+            <p style={{ ...LEAD_INK, fontWeight: 600, margin: 0 }}>{branch.mirror.youMean}</p>
+            <p style={{ ...LEAD_INK, color: MUTED, marginTop: 6, marginBottom: 0 }}>{branch.mirror.theyHear}</p>
           </div>
-          <CTA onClick={next}>Show me the trap</CTA>
+          <CTA onClick={next} variant="ink">Show me the trap</CTA>
         </div>
       )}
 
-      {/* 4 TRAP */}
+      {/* 4 TRAP (dark, for weight) */}
       {step === "trap" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <Eyebrow>What can go wrong</Eyebrow>
+          <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", color: LIME, marginBottom: 14 }}>What can go wrong</p>
           <h1 style={{ ...H1, color: "#FFFFFF" }}>{branch.trap.headline}</h1>
-          <p style={{ ...LEAD, marginTop: 18, marginBottom: 22 }}>{branch.trap.body}</p>
-          <div style={{ border: "2px solid rgba(255,255,255,0.22)", padding: "16px 18px", marginBottom: 28 }}>
-            <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.08em", textTransform: "uppercase", color: DARK_MUTED, margin: 0 }}>What they might hear</p>
+          <p style={{ fontFamily: BODY, fontSize: "1.06rem", lineHeight: 1.6, color: "#E8E8E2", marginTop: 18, marginBottom: 22 }}>{branch.trap.body}</p>
+          <div style={{ border: `2px solid ${LIME}`, padding: "16px 18px", marginBottom: 28 }}>
+            <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.08em", textTransform: "uppercase", color: LIME, margin: 0 }}>What they might hear</p>
             <p style={{ fontFamily: BODY, fontSize: "1.05rem", lineHeight: 1.5, color: "#FFFFFF", marginTop: 8, marginBottom: 0 }}>“{branch.trap.theyHear}”</p>
           </div>
-          <CTA onClick={next}>Why landing matters</CTA>
+          <CTA onClick={next} variant="primary">Why landing matters</CTA>
         </div>
       )}
 
-      {/* 5 WHY LANDING MATTERS */}
+      {/* 5 WHY (light) */}
       {step === "why" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <Eyebrow>Why landing matters</Eyebrow>
-          <h1 style={{ ...H1, color: "#FFFFFF" }}>{branch.why.headline}</h1>
-          <p style={{ ...LEAD, marginTop: 18, marginBottom: 28 }}>{branch.why.body}</p>
-          <CTA onClick={next}>See the route</CTA>
+          <div style={{ marginBottom: 14 }}><Tag variant="outline">Why landing matters</Tag></div>
+          <h1 style={{ ...H1, color: INK }}>{branch.why.headline}</h1>
+          <p style={{ ...LEAD_INK, marginTop: 18, marginBottom: 28 }}>{branch.why.body}</p>
+          <CTA onClick={next} variant="ink">See the route</CTA>
         </div>
       )}
 
-      {/* 6 ROUTE MAP */}
+      {/* 6 ROUTE MAP (light, dark map card with lime header) */}
       {step === "route_map" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <Eyebrow>The route LANDRIGHT chooses</Eyebrow>
-          <div style={{ border: `2px solid ${LIME}`, boxShadow: `5px 5px 0 ${LIME}`, padding: "18px" }}>
-            {[["Moment", branch.title], ["Risk", branch.routeMap.risk], ["Route A", branch.routeMap.routeA], ["Route B", branch.routeMap.routeB], ["Line logic", branch.routeMap.lineLogic]].map(([k, v]) => (
-              <div key={k} style={{ display: "flex", gap: 12, paddingBottom: 10, marginBottom: 10, borderBottom: "1px solid rgba(255,255,255,0.12)" }}>
-                <span style={{ flexShrink: 0, width: 86, fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME }}>{k}</span>
-                <span style={{ fontFamily: BODY, fontSize: "0.98rem", lineHeight: 1.4, color: "#FFFFFF" }}>{v}</span>
+          <div style={{ marginBottom: 14 }}><Tag variant="solid">The route LANDRIGHT chooses</Tag></div>
+          <div className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: `5px 5px 0 ${LIME}` }}>
+            <div style={{ padding: "18px" }}>
+              {[["Moment", branch.title], ["Risk", branch.routeMap.risk], ["Route A", branch.routeMap.routeA], ["Route B", branch.routeMap.routeB], ["Line logic", branch.routeMap.lineLogic]].map(([k, v]) => (
+                <div key={k} style={{ display: "flex", gap: 12, paddingBottom: 10, marginBottom: 10, borderBottom: "1px solid rgba(255,255,255,0.12)" }}>
+                  <span style={{ flexShrink: 0, width: 86, fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME }}>{k}</span>
+                  <span style={{ fontFamily: BODY, fontSize: "0.98rem", lineHeight: 1.4, color: "#FFFFFF" }}>{v}</span>
+                </div>
+              ))}
+              <div style={{ display: "flex", gap: 12 }}>
+                <span style={{ flexShrink: 0, width: 86, fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME }}>Rooted in</span>
+                <span style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {branch.routeMap.rootedIn.map(r => <span key={r} style={{ fontFamily: BODY, fontSize: "0.84rem", color: "#E8E8E2", border: "1px solid rgba(255,255,255,0.25)", padding: "3px 8px" }}>{r}</span>)}
+                </span>
               </div>
-            ))}
-            <div style={{ display: "flex", gap: 12 }}>
-              <span style={{ flexShrink: 0, width: 86, fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME }}>Rooted in</span>
-              <span style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {branch.routeMap.rootedIn.map(r => <span key={r} style={{ fontFamily: BODY, fontSize: "0.84rem", color: "#E8E8E2", border: "1px solid rgba(255,255,255,0.2)", padding: "3px 8px" }}>{r}</span>)}
-              </span>
             </div>
           </div>
           <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 12 }}>
-            <CTA onClick={next}>See it in the app</CTA>
-            <CTA onClick={() => goto("try_yours")} variant="ghost">Skip demo, try mine</CTA>
+            <CTA onClick={next} variant="ink">See it in the app</CTA>
+            <CTA onClick={() => goto("try_yours")} variant="outline">Skip demo, try mine</CTA>
           </div>
         </div>
       )}
 
-      {/* 7 DEMO INPUT */}
+      {/* 7 DEMO INPUT (light, dark input like the app) */}
       {step === "demo_input" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <Eyebrow>Raw thought</Eyebrow>
-          <InputDisplay value={branch.demo.input} />
-          <p style={{ fontFamily: BODY, fontSize: "0.9rem", lineHeight: 1.5, color: DARK_MUTED, marginTop: 12, marginBottom: 26 }}>{branch.demo.note}</p>
-          <CTA onClick={next}>Find the route</CTA>
+          <div style={{ marginBottom: 12 }}><Tag variant="solid">Raw thought</Tag></div>
+          <div className="surface-dark" style={{ border: `2px dashed ${INK}` }}>
+            <p style={{ fontFamily: BODY, fontSize: "1.1rem", lineHeight: 1.55, color: "#E8E8E2", margin: 0, padding: "16px 18px" }}>{branch.demo.input}</p>
+          </div>
+          <p style={{ ...LEAD_INK, fontSize: "0.9rem", color: MUTED, marginTop: 12, marginBottom: 26 }}>{branch.demo.note}</p>
+          <CTA onClick={next} variant="ink">Find the route</CTA>
         </div>
       )}
 
-      {/* 8 PROCESSING */}
+      {/* 8 PROCESSING (light, app loading bar) */}
       {step === "processing" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.9rem", letterSpacing: "0.1em", textTransform: "uppercase", color: LIME, marginBottom: 18 }}>Reading the moment. Choosing a route.</p>
-          <div style={{ height: 10, backgroundColor: INK, border: `2px solid ${INK}`, overflow: "hidden" }}>
-            <div style={{ height: "100%", backgroundColor: LIME, width: "0%", animation: "lrfill 1.4s linear forwards" }} />
-          </div>
-          <style>{`@keyframes lrfill { from { width: 6% } to { width: 100% } }`}</style>
+          <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.92rem", letterSpacing: "0.1em", textTransform: "uppercase", color: INK, marginBottom: 16 }}>Reading the moment. Choosing a route.</p>
+          <LoadingBar expectedMs={1300} />
         </div>
       )}
 
-      {/* 9 ROUTE CARDS (demo) */}
+      {/* 9 ROUTE CARDS (light, dark result-card chrome) */}
       {step === "route_cards" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <Headline>Two routes for this moment.</Headline>
-          <p style={{ ...LEAD, color: "#C7C9BD", marginTop: 12, marginBottom: 20 }}>The same thought, shaped two ways.</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <RouteCard label={branch.routes.a.label} text={branch.routes.a.text} bestWhen={branch.routes.a.bestWhen} active />
-            <RouteCard label={branch.routes.b.label} text={branch.routes.b.text} bestWhen={branch.routes.b.bestWhen} />
+          <h1 style={{ ...H1, color: INK }}>Two routes for this <Mark>moment.</Mark></h1>
+          <p style={{ ...LEAD_INK, color: MUTED, marginTop: 12, marginBottom: 20 }}>The same thought, shaped two ways.</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <RouteCard index="01" label={branch.routes.a.label} text={branch.routes.a.text} bestWhen={branch.routes.a.bestWhen} active />
+            <RouteCard index="02" label={branch.routes.b.label} text={branch.routes.b.text} bestWhen={branch.routes.b.bestWhen} />
           </div>
-          <div style={{ marginTop: 24 }}><CTA onClick={next}>Compare the routes</CTA></div>
+          <div style={{ marginTop: 24 }}><CTA onClick={next} variant="ink">Compare the routes</CTA></div>
         </div>
       )}
 
-      {/* 10 COMPARE */}
+      {/* 10 COMPARE (light) */}
       {step === "compare" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <h1 style={{ ...H1, color: "#FFFFFF" }}>{branch.compare.headline}</h1>
+          <h1 style={{ ...H1, color: INK }}>{branch.compare.headline}</h1>
           <div style={{ marginTop: 22, marginBottom: 28 }}>
-            <p style={{ ...LEAD, marginBottom: 12 }}>{branch.compare.lineA}</p>
-            <p style={{ ...LEAD, margin: 0 }}>{branch.compare.lineB}</p>
+            <p style={{ ...LEAD_INK, marginBottom: 12 }}>{branch.compare.lineA}</p>
+            <p style={{ ...LEAD_INK, margin: 0 }}>{branch.compare.lineB}</p>
           </div>
-          <CTA onClick={next}>See why this works</CTA>
+          <CTA onClick={next} variant="ink">See why this works</CTA>
         </div>
       )}
 
-      {/* 11 LINE BREAKDOWN */}
+      {/* 11 LINE BREAKDOWN (light, app highlight interaction) */}
       {step === "line_breakdown" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <Headline>What each line is doing.</Headline>
-          <p style={{ ...LEAD, color: "#C7C9BD", marginTop: 12, marginBottom: 18 }}>Tap a highlighted phrase to see why it works.</p>
-          <div style={{ display: "flex", gap: 0, marginBottom: 16, border: `2px solid ${LIME}` }}>
+          <h1 style={{ ...H1, color: INK }}>What each line is <Mark>doing.</Mark></h1>
+          <p style={{ ...LEAD_INK, color: MUTED, marginTop: 12, marginBottom: 18 }}>Tap a highlighted phrase to see why it works.</p>
+          <div style={{ display: "flex", gap: 0, marginBottom: 16, border: `2px solid ${INK}` }}>
             {(["a", "b"] as const).map(r => (
-              <button key={r} onClick={() => setBreakdownRoute(r)} style={{ flex: 1, fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "10px 8px", cursor: "pointer", border: "none", borderRadius: 0, backgroundColor: breakdownRoute === r ? LIME : "transparent", color: breakdownRoute === r ? INK : "#FFFFFF" }}>
+              <button key={r} onClick={() => setBreakdownRoute(r)} style={{ flex: 1, fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "10px 8px", cursor: "pointer", border: "none", borderRight: r === "a" ? `2px solid ${INK}` : "none", borderRadius: 0, backgroundColor: breakdownRoute === r ? LIME : "transparent", color: INK }}>
                 {r === "a" ? branch.routes.a.label : branch.routes.b.label}
               </button>
             ))}
           </div>
-          <InlineHighlights key={breakdownRoute} text={breakdownRoute === "a" ? branch.routes.a.text : branch.routes.b.text} marks={branch.breakdown.map(b => ({ span: b.span, note: b.why, rootedIn: b.rootedIn }))} mode="reveal" onOpen={(c) => fire("line_breakdown_opened", { highlight_count: c })} />
-          <div style={{ marginTop: 22 }}><CTA onClick={next}>Why this route</CTA></div>
+          <HighlightMessage key={breakdownRoute} text={breakdownRoute === "a" ? branch.routes.a.text : branch.routes.b.text} marks={branch.breakdown.map(b => ({ span: b.span, note: b.why, rootedIn: b.rootedIn }))} autoSweep underline onOpen={(c) => fire("line_breakdown_opened", { highlight_count: c })} />
+          <div style={{ marginTop: 22 }}><CTA onClick={next} variant="ink">Why this route</CTA></div>
         </div>
       )}
 
-      {/* 12 ROOTED IN */}
+      {/* 12 ROOTED IN (light) */}
       {step === "rooted_in" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <Headline>Why LANDRIGHT chose this route</Headline>
-          <p style={{ ...LEAD, marginTop: 14, marginBottom: 20 }}>LANDRIGHT selects a communication pattern based on the message type, the likely risk and the way you want it to land.</p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 18 }}>
+          <h1 style={{ ...H1, color: INK }}>Why LANDRIGHT chose this route</h1>
+          <p style={{ ...LEAD_INK, marginTop: 14, marginBottom: 20 }}>LANDRIGHT selects a communication pattern based on the message type, the likely risk and the way you want it to land.</p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
             {[["Moment", branch.title], ["Risk", branch.routeMap.risk], ["Route", branch.rootedIn.pattern]].map(([k, v]) => (
-              <div key={k} style={{ border: "2px solid rgba(255,255,255,0.2)", padding: "12px 12px" }}>
-                <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.68rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME, margin: 0 }}>{k}</p>
-                <p style={{ fontFamily: BODY, fontSize: "0.86rem", lineHeight: 1.35, color: "#FFFFFF", marginTop: 6, marginBottom: 0 }}>{v}</p>
+              <div key={k} style={{ border: `2px solid ${INK}`, padding: "12px 12px" }}>
+                <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.66rem", letterSpacing: "0.06em", textTransform: "uppercase", color: MUTED, margin: 0 }}>{k}</p>
+                <p style={{ fontFamily: BODY, fontSize: "0.86rem", lineHeight: 1.35, color: INK, marginTop: 6, marginBottom: 0 }}>{v}</p>
               </div>
             ))}
           </div>
-          <div style={{ border: `2px solid ${LIME}`, padding: "16px 18px", marginBottom: 28 }}>
-            {[["Pattern", branch.rootedIn.pattern], ["Rooted in", branch.rootedIn.rootedIn], ["Used for", branch.rootedIn.usedFor], ["What it changes", branch.rootedIn.whatChanges]].map(([k, v]) => (
-              <div key={k} style={{ marginBottom: 10 }}>
-                <span style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME }}>{k}: </span>
-                <span style={{ fontFamily: BODY, fontSize: "0.95rem", lineHeight: 1.45, color: "#FFFFFF" }}>{v}</span>
-              </div>
-            ))}
+          <div className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: `5px 5px 0 ${LIME}`, marginBottom: 28 }}>
+            <div style={{ padding: "16px 18px" }}>
+              {[["Pattern", branch.rootedIn.pattern], ["Rooted in", branch.rootedIn.rootedIn], ["Used for", branch.rootedIn.usedFor], ["What it changes", branch.rootedIn.whatChanges]].map(([k, v]) => (
+                <div key={k} style={{ marginBottom: 10 }}>
+                  <span style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME }}>{k}: </span>
+                  <span style={{ fontFamily: BODY, fontSize: "0.95rem", lineHeight: 1.45, color: "#FFFFFF" }}>{v}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <CTA onClick={next}>See the method</CTA>
+          <CTA onClick={next} variant="ink">See the method</CTA>
         </div>
       )}
 
-      {/* 13 PATTERN LIBRARY */}
+      {/* 13 PATTERN LIBRARY (light, dark pattern wall) */}
       {step === "pattern_library" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <Headline>{PATTERN_LIBRARY.headline}</Headline>
-          <p style={{ ...LEAD, marginTop: 14, marginBottom: 14 }}>{PATTERN_LIBRARY.body}</p>
+          <h1 style={{ ...H1, color: INK }}>{PATTERN_LIBRARY.headline}</h1>
+          <p style={{ ...LEAD_INK, marginTop: 14, marginBottom: 14 }}>{PATTERN_LIBRARY.body}</p>
           <div style={{ marginBottom: 18 }}>
-            {PATTERN_LIBRARY.lines.map(l => <p key={l} style={{ fontFamily: BODY, fontSize: "0.96rem", lineHeight: 1.5, color: "#C7C9BD", margin: 0 }}>{l}</p>)}
+            {PATTERN_LIBRARY.lines.map(l => <p key={l} style={{ fontFamily: BODY, fontSize: "0.96rem", lineHeight: 1.5, color: MUTED, margin: 0 }}>{l}</p>)}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 26 }}>
-            {PATTERN_LIBRARY.cards.map(c => <span key={c} style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.8rem", letterSpacing: "0.02em", textTransform: "uppercase", color: "#FFFFFF", border: "2px solid rgba(255,255,255,0.2)", padding: "10px 10px", textAlign: "center" }}>{c}</span>)}
+            {PATTERN_LIBRARY.cards.map((c, i) => (
+              <span key={c} className="surface-dark" style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.02em", textTransform: "uppercase", color: i % 5 === 0 ? INK : "#FFFFFF", backgroundColor: i % 5 === 0 ? LIME : DARK, border: `2px solid ${INK}`, padding: "11px 10px", textAlign: "center" }}>{c}</span>
+            ))}
           </div>
-          <CTA onClick={next}>Show me how mine lands</CTA>
+          <CTA onClick={next} variant="ink">Show me how mine lands</CTA>
         </div>
       )}
 
-      {/* 14 GENERIC AI CONTRAST */}
+      {/* 14 GENERIC AI CONTRAST (light, contrast cards) */}
       {step === "generic_ai" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <h1 style={{ ...H1, color: "#FFFFFF" }}>{GENERIC_AI.headline}</h1>
-          <p style={{ ...LEAD, marginTop: 16, marginBottom: 22 }}>{GENERIC_AI.body}</p>
+          <h1 style={{ ...H1, color: INK }}>{GENERIC_AI.headline}</h1>
+          <p style={{ ...LEAD_INK, marginTop: 16, marginBottom: 22 }}>{GENERIC_AI.body}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, marginBottom: 28 }}>
-            <div style={{ border: "2px solid rgba(255,255,255,0.2)", padding: "16px" }}>
-              <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: DARK_MUTED, margin: 0, marginBottom: 10 }}>Generic AI</p>
-              {GENERIC_AI.generic.map(([k, v]) => <p key={k} style={{ fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.4, color: "#C7C9BD", margin: "0 0 4px" }}><span style={{ color: "#FFFFFF", fontWeight: 600 }}>{k}: </span>{v}</p>)}
+            <div style={{ border: `2px solid ${INK}`, padding: "16px", backgroundColor: GROUND2 }}>
+              <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, margin: "0 0 10px" }}>Generic AI</p>
+              {GENERIC_AI.generic.map(([k, v]) => <p key={k} style={{ fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.4, color: INK, margin: "0 0 4px" }}><span style={{ fontWeight: 700 }}>{k}: </span>{v}</p>)}
             </div>
-            <div style={{ border: `2px solid ${LIME}`, padding: "16px", boxShadow: `4px 4px 0 ${LIME}` }}>
-              <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: LIME, margin: 0, marginBottom: 10 }}>LANDRIGHT</p>
-              {GENERIC_AI.landright.map(([k, v]) => <p key={k} style={{ fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.4, color: "#E8E8E2", margin: "0 0 4px" }}><span style={{ color: "#FFFFFF", fontWeight: 600 }}>{k}: </span>{v}</p>)}
+            <div className="surface-dark" style={{ border: `2px solid ${INK}`, padding: "16px", boxShadow: `4px 4px 0 ${LIME}` }}>
+              <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: LIME, margin: "0 0 10px" }}>LANDRIGHT</p>
+              {GENERIC_AI.landright.map(([k, v]) => <p key={k} style={{ fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.4, color: "#E8E8E2", margin: "0 0 4px" }}><span style={{ color: "#FFFFFF", fontWeight: 700 }}>{k}: </span>{v}</p>)}
             </div>
           </div>
-          <CTA onClick={next}>Try my message</CTA>
+          <CTA onClick={next} variant="ink">Try my message</CTA>
         </div>
       )}
 
-      {/* 15 TRY YOURS */}
+      {/* 15 TRY YOURS (light, dark input like the app) */}
       {step === "try_yours" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          {moment && <div style={{ marginBottom: 14 }}><MomentPill label={branch.title} /></div>}
-          <h1 style={{ ...H1, color: "#FFFFFF" }}>{branch.tryYours.headline}</h1>
-          <p style={{ ...LEAD, color: "#C7C9BD", marginTop: 12, marginBottom: 16 }}>Rough is fine. One or two sentences is enough.</p>
-          <div style={{ border: "2px solid rgba(255,255,255,0.3)", marginBottom: 12 }}>
-            <textarea value={userMsg} onChange={e => setUserMsg(e.target.value)} placeholder={branch.tryYours.placeholder} rows={4} maxLength={500}
+          {moment && <div style={{ marginBottom: 14 }}><Tag variant="solid">{branch.title}</Tag></div>}
+          <h1 style={{ ...H1, color: INK }}>{branch.tryYours.headline}</h1>
+          <p style={{ ...LEAD_INK, color: MUTED, marginTop: 12, marginBottom: 16 }}>Rough is fine. One or two sentences is enough.</p>
+          <div className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: focused ? `4px 4px 0 ${LIME}` : "none", transition: "box-shadow .1s ease", marginBottom: 12 }}>
+            <textarea className="dark-input" value={userMsg} onChange={e => setUserMsg(e.target.value)} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} placeholder={branch.tryYours.placeholder} rows={4} maxLength={500}
               style={{ width: "100%", resize: "none", fontFamily: BODY, fontSize: "1.05rem", lineHeight: 1.6, color: "#FFFFFF", caretColor: LIME, backgroundColor: "transparent", border: "none", padding: "16px 18px", outline: "none", borderRadius: 0, display: "block" }} />
           </div>
-          <p style={{ fontFamily: BODY, fontSize: "0.82rem", lineHeight: 1.5, color: DARK_MUTED, marginBottom: 18 }}>Your message is used to generate your routes. You decide what to copy, save or delete.</p>
-          <CTA onClick={submitMine} disabled={userMsg.trim().length < MIN_CHARS}>Find the right route</CTA>
-          <button onClick={() => setUserMsg(branch.demo.input)} style={{ marginTop: 14, background: "none", border: "none", cursor: "pointer", fontFamily: COND, fontWeight: 700, fontSize: "0.8rem", letterSpacing: "0.06em", textTransform: "uppercase", color: DARK_MUTED }}>Use another sample</button>
+          <p style={{ fontFamily: BODY, fontSize: "0.82rem", lineHeight: 1.5, color: MUTED, marginBottom: 18 }}>Your message is used to generate your routes. You decide what to copy, save or delete.</p>
+          <CTA onClick={submitMine} variant="primary" disabled={userMsg.trim().length < MIN_CHARS}>Find the right route</CTA>
+          <button onClick={() => setUserMsg(branch.demo.input)} style={{ marginTop: 14, background: "none", border: "none", cursor: "pointer", fontFamily: COND, fontWeight: 700, fontSize: "0.8rem", letterSpacing: "0.06em", textTransform: "uppercase", color: MUTED }}>Use another sample</button>
         </div>
       )}
 
-      {/* 16 RESULT */}
+      {/* 16 RESULT (light, dark result cards with line-by-line) */}
       {step === "result" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
-            <span style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", color: LIME, border: `2px solid ${LIME}`, padding: "4px 9px" }}>Your routes</span>
-            {moment && <MomentPill label={branch.title} />}
+            <Tag variant="ink" size="xs">Your routes</Tag>
+            {moment && <Tag variant="outline" size="xs">{branch.title}</Tag>}
           </div>
+          {genState === "loading" && !gen.a && (
+            <div style={{ marginBottom: 22 }}>
+              <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.85rem", letterSpacing: "0.08em", textTransform: "uppercase", color: INK, marginBottom: 12 }}>Reading the moment and shaping your routes.</p>
+              <LoadingBar expectedMs={2700} />
+            </div>
+          )}
           <div style={{ display: "flex", flexDirection: "column", gap: 18, marginBottom: 24 }}>
-            {gen.a ? <ResultRouteCard num="01" out={gen.a} /> : (
-              <div style={{ border: "2px solid rgba(255,255,255,0.22)", padding: "18px", fontFamily: COND, fontWeight: 700, fontSize: "0.85rem", letterSpacing: "0.06em", textTransform: "uppercase", color: DARK_MUTED }}>Reading the moment and shaping your first route…</div>
+            {gen.a && <ResultRouteCard index="01" out={gen.a} autoSweep />}
+            {gen.a && !gen.b && (
+              <div style={{ border: `2px solid ${INK}` }}>
+                <div style={{ padding: "16px 18px" }}><LoadingBar expectedMs={10000} /><p style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.78rem", letterSpacing: "0.06em", textTransform: "uppercase", color: MUTED, marginTop: 12, marginBottom: 0 }}>Shaping a more expressive route.</p></div>
+              </div>
             )}
-            {gen.b ? <ResultRouteCard num="02" out={gen.b} /> : gen.a ? (
-              <div style={{ border: "2px solid rgba(255,255,255,0.22)", padding: "18px", fontFamily: COND, fontWeight: 700, fontSize: "0.85rem", letterSpacing: "0.06em", textTransform: "uppercase", color: DARK_MUTED }}>Shaping a second route…</div>
-            ) : null}
+            {gen.b && <ResultRouteCard index="02" out={gen.b} />}
           </div>
-          {genState === "done" && <CTA onClick={next}>Continue</CTA>}
+          {genState === "done" && <CTA onClick={next} variant="ink">Continue</CTA>}
         </div>
       )}
 
-      {/* 17 PAYWALL / ACCOUNT GATE */}
+      {/* 17 PAYWALL (dark close) */}
       {step === "paywall" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <Eyebrow>Save this message?</Eyebrow>
+          <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", color: LIME, marginBottom: 14 }}>Save this message?</p>
           <h1 style={{ ...H1, color: "#FFFFFF" }}>{PAYWALL.headline}</h1>
-          <p style={{ ...LEAD, marginTop: 14, marginBottom: 22 }}>{PAYWALL.body}</p>
+          <p style={{ fontFamily: BODY, fontSize: "1.04rem", lineHeight: 1.55, color: "#E8E8E2", marginTop: 14, marginBottom: 22 }}>{PAYWALL.body}</p>
           <div style={{ marginBottom: 26 }}>
             {PAYWALL.bullets.map(b => (
               <div key={b} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 9 }}>
@@ -1019,8 +943,8 @@ export default function Onboarding() {
             ))}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <CTA onClick={() => { fire("trial_started", { paywall_variant: PAYWALL_VARIANT }); finish(); }}>Start free trial</CTA>
-            <CTA onClick={finish} variant="ghost">Continue with limited preview</CTA>
+            <CTA onClick={() => { fire("trial_started", { paywall_variant: PAYWALL_VARIANT }); finish(); }} variant="primary">Start free trial</CTA>
+            <CTA onClick={finish} variant="outline" onDark>Continue with limited preview</CTA>
           </div>
         </div>
       )}
