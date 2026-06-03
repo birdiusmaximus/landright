@@ -122,12 +122,27 @@ function SampleTag({ loading, onClick }: { loading: boolean; onClick: () => void
         cursor: "pointer", borderRadius: 0, display: "inline-block",
         boxShadow: pressed ? `0 0 0 ${INK}` : `3px 3px 0 ${INK}`,
         transform: pressed ? "translate(3px, 3px)" : "none",
-        opacity: loading ? 0.7 : 1,
-        transition: "transform 0.08s ease, box-shadow 0.08s ease, opacity 0.15s ease",
+        transition: "transform 0.08s ease, box-shadow 0.08s ease",
       }}
     >
       What do you need to say?
     </button>
+  );
+}
+
+// Rotating ASCII spinner shown inside the message window while a sample drafts.
+function Spinner() {
+  const frames = ["|", "/", "-", "\\"];
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setI(n => (n + 1) % frames.length), 110);
+    return () => clearInterval(id);
+  }, [frames.length]);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, pointerEvents: "none" }}>
+      <span style={{ fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace", fontSize: "2.4rem", fontWeight: 700, color: LIME, lineHeight: 1, width: "1.1em", textAlign: "center" }}>{frames[i]}</span>
+      <span style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.78rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#7E8470" }}>Thinking…</span>
+    </div>
   );
 }
 
@@ -708,6 +723,7 @@ export default function Home() {
   // One-tap realistic sample for testing, tuned to the selected audience.
   async function generateSample() {
     if (sampling) return;
+    setRawInput(""); // clear immediately so the spinner reads as responsive
     setSampling(true);
     try {
       const res = await fetch("/api/sample", {
@@ -858,6 +874,7 @@ export default function Home() {
           <div
             className="surface-dark"
             style={{
+              position: "relative",
               border: `2px solid ${INK}`,
               boxShadow: focused ? `4px 4px 0 ${LIME}` : "none",
               transition: "box-shadow 0.1s ease",
@@ -871,7 +888,7 @@ export default function Home() {
               onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) startGenerate(); }}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
-              placeholder="Write the rough version. Messy is fine."
+              placeholder={sampling ? "" : "Write the rough version. Messy is fine."}
               rows={4}
               maxLength={500}
               style={{
@@ -890,6 +907,12 @@ export default function Home() {
                 display: "block",
               }}
             />
+            {/* While a sample drafts: the window itself shows it's working. */}
+            {sampling && (
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Spinner />
+              </div>
+            )}
           </div>
 
           {/* Audience */}

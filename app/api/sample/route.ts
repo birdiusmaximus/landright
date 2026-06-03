@@ -42,16 +42,16 @@ const SCENARIOS = [
   "owning that you overreacted earlier",
 ];
 
-// A second axis of variety: register and shape of the draft.
+// A second axis of variety: the raw emotional register of the blurt.
 const ANGLES = [
-  "as a hesitant question",
-  "as a blunt vent",
-  "as a careful, gentle opener",
-  "mid-frustration, a bit raw",
-  "trying hard to sound calm",
-  "casual and lowercase, like a quick text",
-  "tired and resigned",
-  "warm but unsure how to start",
+  "blunt and frustrated",
+  "half-formed and unsure",
+  "blurted out without thinking",
+  "tired and flat",
+  "annoyed",
+  "anxious and rushed",
+  "cold and short",
+  "hurt and quiet",
 ];
 
 const AUDIENCE_DESC: Record<Audience, string> = {
@@ -78,11 +78,11 @@ export async function POST(req: NextRequest) {
         {
           role: "system",
           content:
-            "You generate realistic rough first-draft messages for a relationship-communication app's test harness. Output only the unpolished, emotionally real version a real person would actually type before getting help. Not polished, not advice, not therapeutic.",
+            "You generate raw, unfiltered first-draft thoughts for a relationship-communication app's test harness. These are the messy, half-formed things a real person blurts or types in the moment, before thinking. Not polished, not well-structured, not advice. Short and rough.",
         },
         {
           role: "user",
-          content: `Write ONE message, a single sentence only, that someone might actually type to their ${aud}. Situation: ${scenario}. Write it ${angle}. First person, addressed to the other person. Invent a specific, concrete detail rather than staying generic. Never use placeholders, brackets, or "X". Keep it to one sentence. Return only the sentence, no quotation marks and no preamble.`,
+          content: `Write ONE very short, rough message someone might fire off to their ${aud}. Situation: ${scenario}. Tone: ${angle}. Keep it short and unfiltered, roughly 4 to 12 words, like a real thought typed in the heat of the moment. No extra context, no explanation, no tidy structure. First person, to the other person, lowercase is fine. Never use placeholders or brackets. Examples of the rough style: "you never make time for me anymore"; "can we talk i feel weird about us"; "i'm so tired of always asking twice"; "why do you always do that". Return only the message, no quotation marks and no preamble.`,
         },
       ],
       // gpt-5 family runs at the default temperature; variety comes from the
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     // Enforce a single sentence: keep up to the first terminal punctuation.
     const m = message.match(/^[\s\S]*?[.?!](?=\s|$)/);
     if (m) message = m[0].trim();
-    message = message.slice(0, 300);
+    message = message.slice(0, 180);
     if (!message) throw new Error("Empty sample");
 
     return NextResponse.json({ success: true, message });
