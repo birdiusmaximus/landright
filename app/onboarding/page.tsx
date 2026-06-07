@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { APP_VERSION } from "@/lib/version";
 // Demo route examples, pre-generated with gpt-5.5 so the onboarding shows options
 // at their most elaborate. Real user messages still use the live fast/slow hybrid.
 import DEMOS from "@/data/onboarding_demos.json";
@@ -546,15 +545,12 @@ function Shell({ stepIndex, dark, onBack, children }: { stepIndex: number; dark:
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: "clamp(20px, 5vw, 36px)" }}>
           {onBack ? <button onClick={onBack} aria-label="Back" style={{ background: "none", border: "none", cursor: "pointer", color: fg, fontFamily: COND, fontWeight: 900, fontSize: "1.2rem", padding: 0, lineHeight: 1 }}>←</button> : <span style={{ width: 12 }} />}
           {stepIndex > 0 ? (
-            <div style={{ flex: 1, height: 6, backgroundColor: dark ? "rgba(255,255,255,0.14)" : GROUND2, border: `2px solid ${edge}` }}>
+            <div style={{ flex: 1, height: 6, backgroundColor: dark ? "rgba(255,255,255,0.14)" : INK, border: `2px solid ${edge}` }}>
               <div style={{ height: "100%", width: `${pct}%`, backgroundColor: LIME, transition: "width .35s cubic-bezier(.22,1,.36,1)" }} />
             </div>
           ) : (
             <div style={{ flex: 1 }} />
           )}
-          <a href="/" aria-label="Back to Landright" style={{ textDecoration: "none" }}>
-            <span style={{ display: "inline-block", fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "4px 9px", lineHeight: 1.1, border: `2px solid ${edge}`, color: edge }}>v{APP_VERSION}</span>
-          </a>
         </div>
         {children}
       </div>
