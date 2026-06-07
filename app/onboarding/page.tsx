@@ -263,7 +263,7 @@ const PAYWALL = {
   headline: "Unlock the full communication toolkit.",
   body: "Get more routes, full line-by-line explanations and pattern guidance for the conversations that matter.",
   bullets: ["Turn difficult moments into connection, not distance", "More than 30 communication patterns", "Multiple routes for each message", "Line-by-line “why it works”", "Generate more approaches when the first one is not quite right"],
-  terms: "3 days free, then £2.99/month, auto-renewing. Cancel anytime — we’ll remind you before your trial ends.",
+  terms: "3 days free, then £2.99/month, auto-renewing. Cancel anytime.",
 };
 
 // ─── Analytics (no raw message text ever leaves the client) ───────────────────
