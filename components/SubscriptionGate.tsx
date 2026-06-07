@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useUser, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { ensurePurchases, RC_ENTITLEMENT } from "@/lib/revenuecat";
-import { isAdminUser } from "@/lib/admin";
+import { isAdminUser, DEV_PREVIEW_BYPASS } from "@/lib/admin";
 
 const LIME = "#C6F634";
 const INK = "#111110";
@@ -35,6 +35,7 @@ export default function SubscriptionGate({ children }: { children: React.ReactNo
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    if (DEV_PREVIEW_BYPASS) { setStatus("subscribed"); return; } // local preview: skip the gate
     if (!isLoaded) return;
     if (!isSignedIn || !user) { setStatus("signedOut"); return; }
     if (isAdminUser(user.id)) { setStatus("subscribed"); return; } // admin allowlist bypasses the paywall

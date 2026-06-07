@@ -12,3 +12,12 @@ const ADMIN_IDS = (process.env.NEXT_PUBLIC_ADMIN_USER_IDS ?? "")
 export function isAdminUser(userId: string | null | undefined): boolean {
   return !!userId && ADMIN_IDS.includes(userId);
 }
+
+// Dev-only preview bypass. When NEXT_PUBLIC_DEV_PREVIEW=1 during local
+// development, the auth gate, the onboarding funnel, and the API subscription
+// check are all skipped — so the app can be viewed in the Claude preview window,
+// which can't reach Clerk's clerk.accounts.dev domain. Hard-guarded: NODE_ENV is
+// "production" on Vercel, so this is ALWAYS off in production regardless of the flag.
+export const DEV_PREVIEW_BYPASS =
+  process.env.NODE_ENV !== "production" &&
+  process.env.NEXT_PUBLIC_DEV_PREVIEW === "1";

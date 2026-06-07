@@ -1,6 +1,6 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { isAdminUser } from "@/lib/admin";
+import { isAdminUser, DEV_PREVIEW_BYPASS } from "@/lib/admin";
 
 // Next.js 16 renamed the `middleware` convention to `proxy` (nodejs runtime).
 // clerkMiddleware() enables `await auth()` in server components and route
@@ -10,6 +10,7 @@ import { isAdminUser } from "@/lib/admin";
 //   • anonymous visitor on "/"          → /onboarding (the marketing pitch)
 //   • signed-in visitor on "/onboarding" → /            (skip the funnel)
 export default clerkMiddleware(async (auth, req) => {
+  if (DEV_PREVIEW_BYPASS) return; // local preview: no funnel redirect, load the app directly
   const { userId } = await auth();
   const path = req.nextUrl.pathname;
 
