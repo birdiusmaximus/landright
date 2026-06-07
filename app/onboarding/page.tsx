@@ -785,15 +785,15 @@ export default function Onboarding() {
           <div style={{ marginBottom: 14 }}><Tag variant="outline">Why landing matters</Tag></div>
           <h1 style={{ ...H1, color: INK }}>{branch.why.headline}</h1>
           <p style={{ ...LEAD_INK, marginTop: 18 }}>{branch.why.body}</p>
-          {/* Credibility: the principle behind it */}
-          <div style={{ borderLeft: `4px solid ${LIME}`, paddingLeft: 16, marginTop: 22 }}>
-            <p style={{ ...LEAD_INK, fontStyle: "italic", margin: 0 }}>{WHY_EVIDENCE[moment ?? "apology_without_self_defence"]}</p>
-          </div>
-          <div style={{ marginTop: 20, marginBottom: 30 }}>
+          {/* Credibility: the sources first, then the principle behind them */}
+          <div style={{ marginTop: 22, marginBottom: 22 }}>
             <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, marginBottom: 9 }}>Rooted in</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
               {branch.routeMap.rootedIn.map(r => <span key={r} style={{ fontFamily: BODY, fontSize: "0.82rem", color: INK, border: `1px solid ${INK}`, padding: "4px 9px" }}>{r}</span>)}
             </div>
+          </div>
+          <div style={{ borderLeft: `4px solid ${LIME}`, paddingLeft: 16, marginBottom: 30 }}>
+            <p style={{ ...LEAD_INK, fontStyle: "italic", margin: 0 }}>{WHY_EVIDENCE[moment ?? "apology_without_self_defence"]}</p>
           </div>
           <CTA onClick={next} variant="ink">See it in the app</CTA>
         </div>
