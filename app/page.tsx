@@ -1064,7 +1064,7 @@ export default function Home() {
               LANDRIGHT
             </span>
           </div>
-          {/* Auth controls (signed-out: sign in / sign up; signed-in: account) + onboarding link */}
+          {/* Auth controls (signed-out: sign in / sign up; signed-in: account) */}
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Show when="signed-out">
               <SignInButton mode="modal">
@@ -1077,9 +1077,6 @@ export default function Home() {
             <Show when="signed-in">
               <UserButton />
             </Show>
-            <a href="/onboarding" style={{ textDecoration: "none" }} aria-label="View onboarding">
-              <Tag variant="outline" size="xs">v{APP_VERSION}</Tag>
-            </a>
           </div>
         </div>
 
@@ -1307,9 +1304,12 @@ export default function Home() {
           <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.02em", color: INK }}>
             LANDRIGHT
           </span>
-          <span style={{ fontFamily: COND, fontWeight: 600, fontSize: "0.74rem", letterSpacing: "0.1em", textTransform: "uppercase", color: MUTED }}>
-            Make your message land right · v{APP_VERSION}
-          </span>
+          {/* Bottom-right version doubles as the onboarding entry (for inspection). */}
+          <a href="/onboarding" aria-label="View onboarding" style={{ textDecoration: "none" }}>
+            <span style={{ fontFamily: COND, fontWeight: 600, fontSize: "0.74rem", letterSpacing: "0.1em", textTransform: "uppercase", color: MUTED, cursor: "pointer" }}>
+              Make your message land right · v{APP_VERSION}
+            </span>
+          </a>
         </footer>
       </div>
     </main>
