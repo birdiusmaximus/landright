@@ -308,17 +308,25 @@ function Mark({ children }: { children: React.ReactNode }) {
 
 function CTA({ children, onClick, disabled, variant = "primary", onDark = false, full = true }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; variant?: "primary" | "ink" | "outline"; onDark?: boolean; full?: boolean }) {
   const [pressed, setPressed] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const edge = onDark ? LIME : INK;
-  const look = {
+  const active = hovered || pressed;
+  // The "ink" forward CTAs sit lime at rest and invert to black on hover/press.
+  const inkLook = active
+    ? { bg: INK, color: LIME, shadow: LIME, border: INK }
+    : { bg: LIME, color: INK, shadow: INK, border: INK };
+  const look = variant === "ink" ? inkLook : {
     primary: { bg: LIME, color: INK, shadow: INK, border: INK },
-    ink: { bg: INK, color: LIME, shadow: LIME, border: INK },
+    ink: inkLook,
     outline: { bg: "transparent", color: onDark ? "#FFFFFF" : INK, shadow: edge, border: edge },
   }[variant];
   return (
-    <button onClick={onClick} disabled={disabled} onMouseDown={() => !disabled && setPressed(true)} onMouseUp={() => setPressed(false)} onMouseLeave={() => setPressed(false)}
+    <button onClick={onClick} disabled={disabled}
+      onMouseEnter={() => setHovered(true)}
+      onMouseDown={() => !disabled && setPressed(true)} onMouseUp={() => setPressed(false)} onMouseLeave={() => { setPressed(false); setHovered(false); }}
       style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", border: `2px solid ${disabled ? MUTED : look.border}`, padding: "16px 26px", width: full ? "100%" : undefined,
         cursor: disabled ? "not-allowed" : "pointer", backgroundColor: disabled ? (onDark ? "rgba(120,120,120,0.18)" : GROUND2) : look.bg, color: disabled ? MUTED : look.color,
-        boxShadow: disabled ? "none" : pressed ? `0 0 0 ${look.shadow}` : `4px 4px 0 ${look.shadow}`, transform: pressed ? "translate(4px,4px)" : "none", transition: "transform .1s ease, box-shadow .1s ease", borderRadius: 0 }}>
+        boxShadow: disabled ? "none" : pressed ? `0 0 0 ${look.shadow}` : `4px 4px 0 ${look.shadow}`, transform: pressed ? "translate(4px,4px)" : "none", transition: "transform .1s ease, box-shadow .1s ease, background-color .12s ease, color .12s ease", borderRadius: 0 }}>
       {children}
     </button>
   );
