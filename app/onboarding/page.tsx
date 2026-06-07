@@ -273,7 +273,6 @@ const RECOGNITION = {
 };
 
 const PATTERN_LIBRARY = {
-  headline: "A named method for the message you are holding.",
   body: "LANDRIGHT draws from more than 30 communication patterns for hard, tender and awkward messages.",
   cards: ["A real apology", "Own it first", "Name it before they do", "Ask, don’t demand", "Feeling, then ask", "Show what’s underneath", "A limit, with love", "Hold the line kindly", "Kind but clear", "Ease into it", "Us vs the problem", "Ask what matters", "Pause-and-return", "Just say it plainly", "Soft start, clear point", "Specific reassurance"],
 };
@@ -876,7 +875,7 @@ export default function Onboarding() {
       {/* 12 PATTERN LIBRARY (light, dark pattern wall) */}
       {step === "pattern_library" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <h1 style={{ ...H1, color: INK }}>{PATTERN_LIBRARY.headline}</h1>
+          <h1 style={{ ...H1, color: INK }}>A named method<br />for the message<br />you are holding.</h1>
           <p style={{ ...LEAD_INK, marginTop: 14, marginBottom: 24 }}>{PATTERN_LIBRARY.body}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 26 }}>
             {PATTERN_LIBRARY.cards.map((c, i) => (
