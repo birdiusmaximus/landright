@@ -36,8 +36,8 @@ const MIN_CHARS = 10;
 
 const STEPS = [
   "splash", "recognition", "moment",
-  "mirror", "trap", "why", "demo_input", "processing", "route_cards", "compare", "line_breakdown",
-  "pattern_library", "generic_ai", "try_yours", "result", "paywall",
+  "mirror", "trap", "why", "demo_input", "processing", "route_cards", "generic_ai", "line_breakdown",
+  "pattern_library", "try_yours", "result", "paywall",
 ] as const;
 type StepId = (typeof STEPS)[number];
 
@@ -828,36 +828,11 @@ export default function Onboarding() {
             <RouteCard index="01" label={branch.routes.a.label} text={branch.routes.a.text} bestWhen={branch.routes.a.bestWhen} active />
             <RouteCard index="02" label={branch.routes.b.label} text={branch.routes.b.text} bestWhen={branch.routes.b.bestWhen} />
           </div>
-          <div style={{ marginTop: 24 }}><CTA onClick={next} variant="ink">Compare the routes</CTA></div>
+          <div style={{ marginTop: 24 }}><CTA onClick={next} variant="ink">See the difference</CTA></div>
         </div>
       )}
 
-      {/* 10 COMPARE (light) */}
-      {step === "compare" && (
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <h1 style={{ ...H1, color: INK }}>{branch.compare.headline}</h1>
-          <div style={{ marginTop: 22, marginBottom: 26 }}>
-            {([["A", branch.routes.a.label, branch.compare.lineA, branch.rootedIn.a], ["B", branch.routes.b.label, branch.compare.lineB, branch.rootedIn.b]] as const).map(([tag, label, line, r], i) => (
-              <div key={tag} className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: `5px 5px 0 ${LIME}`, marginBottom: i === 0 ? 18 : 0 }}>
-                <div style={{ padding: "15px 17px" }}>
-                  <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: DARK_MUTED, margin: 0 }}>Route {tag}</p>
-                  <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.05rem", letterSpacing: "0.02em", textTransform: "uppercase", color: LIME, margin: "3px 0 6px" }}>{label}</p>
-                  <p style={{ fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.45, color: "#FFFFFF", margin: "0 0 13px" }}>{line}</p>
-                  {([["Rooted in", r.rootedIn], ["Used for", r.usedFor], ["What it changes", r.whatChanges]] as const).map(([k, v]) => (
-                    <div key={k} style={{ marginTop: 8 }}>
-                      <span style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.68rem", letterSpacing: "0.06em", textTransform: "uppercase", color: DARK_MUTED }}>{k}: </span>
-                      <span style={{ fontFamily: BODY, fontSize: "0.9rem", lineHeight: 1.45, color: "#FFFFFF" }}>{v}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-          <CTA onClick={next} variant="ink">See why this works</CTA>
-        </div>
-      )}
-
-      {/* 11 LINE BREAKDOWN (light, app highlight interaction) */}
+      {/* LINE BREAKDOWN (light, app highlight interaction) */}
       {step === "line_breakdown" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <h1 style={{ ...H1, color: INK }}>What each line is <Mark>doing.</Mark></h1>
@@ -904,7 +879,7 @@ export default function Onboarding() {
             <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: LIME, margin: "0 0 10px" }}>LANDRIGHT</p>
             {GENERIC_AI.landright.map(([k, v]) => <p key={k} style={{ fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.4, color: "#E8E8E2", margin: "0 0 4px" }}><span style={{ color: "#FFFFFF", fontWeight: 700 }}>{k}: </span>{v}</p>)}
           </div>
-          <CTA onClick={next} variant="ink">Try my message</CTA>
+          <CTA onClick={next} variant="ink">See what each line does</CTA>
         </div>
       )}
 
