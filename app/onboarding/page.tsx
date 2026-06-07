@@ -36,7 +36,7 @@ const MIN_CHARS = 10;
 
 const STEPS = [
   "splash", "recognition", "moment",
-  "mirror", "trap", "why", "demo_input", "processing", "route_cards", "compare", "line_breakdown", "rooted_in",
+  "mirror", "trap", "why", "demo_input", "processing", "route_cards", "compare", "line_breakdown",
   "pattern_library", "generic_ai", "try_yours", "result", "paywall",
 ] as const;
 type StepId = (typeof STEPS)[number];
@@ -657,7 +657,6 @@ export default function Onboarding() {
     if (step === "why") fire("branch_route_viewed");
     if (step === "demo_input") fire("demo_input_viewed");
     if (step === "route_cards") fire("demo_routes_viewed");
-    if (step === "rooted_in") fire("rooted_in_opened");
     if (step === "pattern_library") fire("pattern_library_viewed");
     if (step === "generic_ai") fire("generic_ai_contrast_viewed");
     if (step === "try_yours") fire("try_yours_started");
@@ -871,38 +870,11 @@ export default function Onboarding() {
             ))}
           </div>
           <HighlightMessage key={breakdownRoute} text={breakdownRoute === "a" ? branch.routes.a.text : branch.routes.b.text} marks={branch.breakdown.map(b => ({ span: b.span, note: b.why, rootedIn: b.rootedIn }))} autoSweep underline onOpen={(c) => fire("line_breakdown_opened", { highlight_count: c })} />
-          <div style={{ marginTop: 22 }}><CTA onClick={next} variant="ink">Why this route</CTA></div>
+          <div style={{ marginTop: 22 }}><CTA onClick={next} variant="ink">See the method</CTA></div>
         </div>
       )}
 
-      {/* 12 ROOTED IN (light) */}
-      {step === "rooted_in" && (
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <h1 style={{ ...H1, color: INK }}>Why LANDRIGHT chose this route</h1>
-          <p style={{ ...LEAD_INK, marginTop: 14, marginBottom: 20 }}>LANDRIGHT selects a communication pattern based on the message type, the likely risk and the way you want it to land.</p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
-            {[["Moment", branch.title], ["Risk", branch.routeMap.risk], ["Route", branch.rootedIn.b.pattern]].map(([k, v]) => (
-              <div key={k} style={{ border: `2px solid ${INK}`, padding: "12px 12px" }}>
-                <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.66rem", letterSpacing: "0.06em", textTransform: "uppercase", color: MUTED, margin: 0 }}>{k}</p>
-                <p style={{ fontFamily: BODY, fontSize: "0.86rem", lineHeight: 1.35, color: INK, marginTop: 6, marginBottom: 0 }}>{v}</p>
-              </div>
-            ))}
-          </div>
-          <div className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: `5px 5px 0 ${LIME}`, marginBottom: 28 }}>
-            <div style={{ padding: "16px 18px" }}>
-              {[["Pattern", branch.rootedIn.b.pattern], ["Rooted in", branch.rootedIn.b.rootedIn], ["Used for", branch.rootedIn.b.usedFor], ["What it changes", branch.rootedIn.b.whatChanges]].map(([k, v]) => (
-                <div key={k} style={{ marginBottom: 10 }}>
-                  <span style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME }}>{k}: </span>
-                  <span style={{ fontFamily: BODY, fontSize: "0.95rem", lineHeight: 1.45, color: "#FFFFFF" }}>{v}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <CTA onClick={next} variant="ink">See the method</CTA>
-        </div>
-      )}
-
-      {/* 13 PATTERN LIBRARY (light, dark pattern wall) */}
+      {/* 12 PATTERN LIBRARY (light, dark pattern wall) */}
       {step === "pattern_library" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <h1 style={{ ...H1, color: INK }}>{PATTERN_LIBRARY.headline}</h1>
