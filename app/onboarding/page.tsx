@@ -929,7 +929,7 @@ export default function Onboarding() {
               </div>
             ))}
           </div>
-          <CTA onClick={() => { fire("trial_started", { paywall_variant: PAYWALL_VARIANT }); finish(); }} variant="primary">Start 3-day free trial</CTA>
+          <CTA onClick={() => { fire("trial_started", { paywall_variant: PAYWALL_VARIANT }); finish(); }} variant="ink">Start 3-day free trial</CTA>
           <p style={{ fontFamily: BODY, fontSize: "0.8rem", lineHeight: 1.5, color: DARK_MUTED, textAlign: "center", marginTop: 14, marginBottom: 0 }}>{PAYWALL.terms}</p>
         </div>
       )}
