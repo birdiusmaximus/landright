@@ -252,7 +252,7 @@ const PATTERN_LIBRARY = {
 };
 
 const GENERIC_AI = {
-  headlineGeneric: "Generic AI just polished the sentence.",
+  headlineGeneric: "Generic AI just polishes the sentence.",
   headlineLandright: "LANDRIGHT reads the moment.",
   body: "A relationship message has a job. It may need to apologise, ask, repair, reassure, pause, reconnect, set a boundary or tell the truth. LANDRIGHT identifies that job, chooses a communication route, then shows what each line is doing.",
   generic: [["Prompt", "Make this nicer."], ["Focus", "tone and polish."], ["Output", "one smoother version."], ["Explanation", "usually vague or missing."]],
