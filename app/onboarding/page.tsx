@@ -252,8 +252,6 @@ const PATTERN_LIBRARY = {
 };
 
 const GENERIC_AI = {
-  headlineGeneric: "Generic AI just polishes the sentence.",
-  headlineLandright: "LANDRIGHT reads the moment.",
   body: "A relationship message has a job. It may need to apologise, ask, repair, reassure, pause, reconnect, set a boundary or tell the truth. LANDRIGHT identifies that job, chooses a communication route, then shows what each line is doing.",
   generic: [["Prompt", "Make this nicer."], ["Focus", "tone and polish."], ["Output", "one smoother version."], ["Explanation", "usually vague or missing."]],
   landright: [["Question", "What is this message trying to do?"], ["Risk", "What could it sound like if it lands badly?"], ["Route", "Which pattern fits this pressure moment?"], ["Explanation", "why each line was built that way."]],
@@ -859,13 +857,13 @@ export default function Onboarding() {
       {step === "generic_ai" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           {/* Section 1 — what generic AI does */}
-          <h1 style={{ ...H1, color: INK }}>{GENERIC_AI.headlineGeneric}</h1>
+          <h1 style={{ ...H1, color: INK }}><Mark>Generic AI</Mark> just polishes the sentence.</h1>
           <div style={{ border: `2px solid ${INK}`, padding: "16px", backgroundColor: GROUND2, marginTop: 18, marginBottom: 34 }}>
             <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, margin: "0 0 10px" }}>Generic AI</p>
             {GENERIC_AI.generic.map(([k, v]) => <p key={k} style={{ fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.4, color: INK, margin: "0 0 4px" }}><span style={{ fontWeight: 700 }}>{k}: </span>{v}</p>)}
           </div>
           {/* Section 2 — what LANDRIGHT does */}
-          <h1 style={{ ...H1, color: INK }}>{GENERIC_AI.headlineLandright}</h1>
+          <h1 style={{ ...H1, color: INK }}><Mark>LANDRIGHT</Mark> reads the moment.</h1>
           <p style={{ ...LEAD_INK, marginTop: 16, marginBottom: 22 }}>{GENERIC_AI.body}</p>
           <div className="surface-dark" style={{ border: `2px solid ${INK}`, padding: "16px", boxShadow: `4px 4px 0 ${LIME}`, marginBottom: 28 }}>
             <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: LIME, margin: "0 0 10px" }}>LANDRIGHT</p>
