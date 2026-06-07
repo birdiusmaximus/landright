@@ -242,22 +242,10 @@ const WHY_EVIDENCE: Record<Moment, string> = {
 
 const RECOGNITION = {
   items: [
-    { line: "You try to apologise, and it lands as a defence.", examples: [
-      { msg: "Sorry, but you started it…", reply: "So now it’s my fault? Forget it." },
-      { msg: "I already said sorry…", reply: "Wow. You clearly don’t even mean it." },
-    ] },
-    { line: "You ask for more, and it lands as pressure.", examples: [
-      { msg: "You never make time for me…", reply: "That’s not fair. I’m doing my best here." },
-      { msg: "Why am I always the one asking…", reply: "Here we go again." },
-    ] },
-    { line: "You say you are hurt, and it lands as blame.", examples: [
-      { msg: "You always do this…", reply: "Always? So now I’m the bad guy." },
-      { msg: "You embarrassed me in front of everyone…", reply: "You’re overreacting. I didn’t do anything." },
-    ] },
-    { line: "You set a boundary, and it lands as rejection.", examples: [
-      { msg: "I can’t keep doing this…", reply: "So you’re just giving up on us?" },
-      { msg: "I need some space…", reply: "Fine. Don’t bother coming back then." },
-    ] },
+    { line: "You try to apologise, and it lands as a defence.", msg: "I’m sorry, but…", reply: "Wow, you clearly didn’t even mean it…" },
+    { line: "You ask for more, and it lands as pressure.", msg: "You never make time for me…", reply: "That’s not fair, I’m doing my best…" },
+    { line: "You say you are hurt, and it lands as blame.", msg: "You always do this…", reply: "Always? So now I’m the bad guy…" },
+    { line: "You set a boundary, and it lands as rejection.", msg: "I need some space…", reply: "So you’re just giving up on us?" },
   ],
 };
 
@@ -613,49 +601,6 @@ function ResultRouteCard({ index, out, autoSweep }: { index: string; out: Option
   );
 }
 
-// A rough-message example chip. Hover or tap to reveal the reply it could
-// provoke. forceOpen lets the parent flash it during the intro sweep.
-function ExampleChip({ msg, reply, forceOpen = false }: { msg: string; reply: string; forceOpen?: boolean }) {
-  const [open, setOpen] = useState(false);
-  const show = open || forceOpen;
-  return (
-    <span
-      style={{ position: "relative", display: "inline-block" }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <button
-        onClick={() => setOpen(o => !o)}
-        style={{
-          fontFamily: BODY, fontSize: "0.82rem", lineHeight: 1.2, borderRadius: 0, cursor: "pointer",
-          border: `1px solid ${INK}`, padding: "4px 9px",
-          backgroundColor: show ? "rgba(198,246,52,0.22)" : "transparent", color: show ? INK : MUTED,
-          transition: "background-color .12s ease, color .12s ease",
-        }}
-      >
-        {msg}
-      </button>
-      {show && (
-        <span
-          role="status"
-          style={{
-            position: "absolute", bottom: "calc(100% + 10px)", left: 0, zIndex: 30,
-            width: "max-content", maxWidth: 230,
-            backgroundColor: DARK, color: "#FFFFFF", border: `2px solid ${LIME}`, padding: "9px 12px",
-            animation: "lr-pop 0.16s ease-out",
-          }}
-        >
-          <span style={{ display: "block", fontFamily: COND, fontWeight: 900, fontSize: "0.62rem", letterSpacing: "0.1em", textTransform: "uppercase", color: LIME, marginBottom: 5 }}>
-            They might fire back
-          </span>
-          <span style={{ fontFamily: BODY, fontSize: "0.9rem", lineHeight: 1.4 }}>&ldquo;{reply}&rdquo;</span>
-          <span aria-hidden style={{ position: "absolute", top: "100%", left: 18, width: 0, height: 0, borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: `7px solid ${LIME}` }} />
-        </span>
-      )}
-    </span>
-  );
-}
-
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function Onboarding() {
@@ -673,9 +618,6 @@ export default function Onboarding() {
   const branch: Branch = { ...baseBranch, ...demoOverride };
 
   const [breakdownRoute, setBreakdownRoute] = useState<"a" | "b">("a");
-  // One-time pop-up sweep on the recognition screen (teaches the chips exist).
-  const [sweepIndex, setSweepIndex] = useState<number | null>(null);
-  const recogSwept = useRef(false);
   const [userMsg, setUserMsg] = useState("");
   const [focused, setFocused] = useState(false);
   const [genState, setGenState] = useState<"idle" | "loading" | "done">("idle");
@@ -705,20 +647,6 @@ export default function Onboarding() {
     if (step !== "processing") return;
     const t = setTimeout(() => setIndex(i => (STEPS[i] === "processing" ? i + 1 : i)), 1500);
     return () => clearTimeout(t);
-  }, [step]);
-
-  // First time the recognition screen appears, flash each reply pop-up in
-  // sequence (~half a second each) so people see the chips are interactive.
-  useEffect(() => {
-    if (step !== "recognition" || recogSwept.current) return;
-    recogSwept.current = true;
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
-    const total = RECOGNITION.items.reduce((n, it) => n + it.examples.length, 0);
-    const startDelay = 400, stepMs = 480;
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    for (let i = 0; i < total; i++) timers.push(setTimeout(() => setSweepIndex(i), startDelay + i * stepMs));
-    timers.push(setTimeout(() => setSweepIndex(null), startDelay + total * stepMs));
-    return () => timers.forEach(clearTimeout);
   }, [step]);
 
   const goto = (id: StepId) => setIndex(STEPS.indexOf(id));
@@ -777,17 +705,15 @@ export default function Onboarding() {
             <Mark>you send</Mark>, and the message <Mark>they hear.</Mark>
           </h1>
           <div style={{ marginTop: 28, marginBottom: 26 }}>
-            {RECOGNITION.items.map((item, ci) => {
-              const offset = RECOGNITION.items.slice(0, ci).reduce((n, it) => n + it.examples.length, 0);
-              return (
-                <div key={item.line} style={{ borderLeft: `4px solid ${LIME}`, paddingLeft: 16, marginBottom: 18 }}>
-                  <p style={{ ...LEAD_INK, marginBottom: 9 }}>{item.line}</p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-                    {item.examples.map((ex, j) => <ExampleChip key={ex.msg} msg={ex.msg} reply={ex.reply} forceOpen={sweepIndex === offset + j} />)}
-                  </div>
+            {RECOGNITION.items.map(item => (
+              <div key={item.line} style={{ borderLeft: `4px solid ${LIME}`, paddingLeft: 16, marginBottom: 20 }}>
+                <p style={{ ...LEAD_INK, marginBottom: 10 }}>{item.line}</p>
+                <div style={{ display: "flex", border: `2px solid ${INK}` }}>
+                  <div style={{ flex: 1, padding: "10px 13px", fontFamily: BODY, fontSize: "0.9rem", lineHeight: 1.4, color: INK, borderRight: `2px solid ${INK}` }}>{item.msg}</div>
+                  <div style={{ flex: 1, padding: "10px 13px", fontFamily: BODY, fontSize: "0.9rem", lineHeight: 1.4, color: "#FFFFFF", backgroundColor: INK }}>{item.reply}</div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
           <CTA onClick={next} variant="ink">Yes, that&rsquo;s me</CTA>
         </div>
