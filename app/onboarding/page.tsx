@@ -59,9 +59,11 @@ interface Branch {
   routes: { a: { label: string; text: string; bestWhen: string }; b: { label: string; text: string; bestWhen: string } };
   compare: { headline: string; lineA: string; lineB: string };
   breakdown: { span: string; why: string; rootedIn: string }[];
-  rootedIn: { pattern: string; rootedIn: string; usedFor: string; whatChanges: string };
+  rootedIn: { a: RoutePattern; b: RoutePattern };
   tryYours: { headline: string; placeholder: string };
 }
+
+interface RoutePattern { pattern: string; rootedIn: string; usedFor: string; whatChanges: string }
 
 const BRANCHES: Record<Moment, Branch> = {
   apology_without_self_defence: {
@@ -83,7 +85,10 @@ const BRANCHES: Record<Moment, Branch> = {
       { span: "I know this may sound like I’m about to make an excuse", why: "Names the likely concern before it becomes the other person’s objection.", rootedIn: "Negative acknowledgment" },
       { span: "I was overwhelmed, but I should have paused", why: "Adds context while keeping responsibility intact.", rootedIn: "Repair with context" },
     ],
-    rootedIn: { pattern: "Name it before they do", rootedIn: "Negative acknowledgment and repair communication", usedFor: "Apology without self-defence", whatChanges: "It names the likely concern before context becomes an excuse." },
+    rootedIn: {
+      a: { pattern: "A real apology", rootedIn: "Effective-apology research and accountability-first repair", usedFor: "When the repair simply needs clear ownership", whatChanges: "It puts your responsibility ahead of any explanation." },
+      b: { pattern: "Name it before they do", rootedIn: "Negative acknowledgment and repair communication", usedFor: "When context matters but must not lead", whatChanges: "It names the likely concern before context becomes an excuse." },
+    },
     tryYours: { headline: "Write the apology before you start explaining it.", placeholder: "Sorry I snapped, but…" },
   },
   need_without_pressure: {
@@ -105,7 +110,10 @@ const BRANCHES: Record<Moment, Branch> = {
       { span: "When our evenings keep getting swallowed up", why: "Gives a specific pattern rather than a global complaint.", rootedIn: "Concrete example" },
       { span: "Would you be willing", why: "Keeps the ask cooperative instead of coercive.", rootedIn: "Autonomy-preserving request" },
     ],
-    rootedIn: { pattern: "Ask, don’t demand", rootedIn: "Nonviolent Communication and autonomy-supportive communication", usedFor: "Need without pressure", whatChanges: "It keeps the request clear without cornering the other person." },
+    rootedIn: {
+      a: { pattern: "Feeling, then ask", rootedIn: "Nonviolent Communication and emotionally focused communication", usedFor: "When the feeling needs to be understood first", whatChanges: "It makes the need visible before the request arrives." },
+      b: { pattern: "Ask, don’t demand", rootedIn: "Nonviolent Communication and autonomy-supportive communication", usedFor: "When the other person may feel pressured", whatChanges: "It keeps the request clear without cornering the other person." },
+    },
     tryYours: { headline: "Write the thing you need, even if it sounds too much.", placeholder: "I feel like I’m always asking for…" },
   },
   hurt_without_blame: {
@@ -127,7 +135,10 @@ const BRANCHES: Record<Moment, Branch> = {
       { span: "I do not think you meant to hurt me", why: "Reduces the need for them to defend intent.", rootedIn: "Motive separation" },
       { span: "feeling exposed instead of backed up", why: "Shows the need underneath the hurt.", rootedIn: "Emotional specificity" },
     ],
-    rootedIn: { pattern: "Show what’s underneath", rootedIn: "Emotionally focused communication and the Gottman Method", usedFor: "Hurt without blame", whatChanges: "It keeps your experience clear while leaving room for their intent." },
+    rootedIn: {
+      a: { pattern: "Kind but clear", rootedIn: "The Gottman Method and Nonviolent Communication", usedFor: "When the event itself needs to be named", whatChanges: "It states the impact without putting their intent on trial." },
+      b: { pattern: "Show what’s underneath", rootedIn: "Emotionally focused communication and the Gottman Method", usedFor: "When the hurt carries a more vulnerable meaning", whatChanges: "It keeps your experience clear while leaving room for their intent." },
+    },
     tryYours: { headline: "Write the hurt version first. LANDRIGHT will help remove the blame.", placeholder: "You made me feel…" },
   },
   boundary_without_coldness: {
@@ -149,7 +160,10 @@ const BRANCHES: Record<Moment, Branch> = {
       { span: "I care about us", why: "Keeps the relationship visible before the limit lands.", rootedIn: "Relational continuity" },
       { span: "come back to it tomorrow", why: "Turns the boundary into a pause rather than a disappearance.", rootedIn: "Pause-and-return" },
     ],
-    rootedIn: { pattern: "A limit, with love", rootedIn: "Boundary-setting and relational continuity", usedFor: "Boundary without coldness", whatChanges: "It keeps the limit visible while showing the relationship still matters." },
+    rootedIn: {
+      a: { pattern: "Hold the line kindly", rootedIn: "Boundary-setting and clear-limit communication", usedFor: "When the limit needs to be firm and clear", whatChanges: "It states the limit cleanly without burying it in apology." },
+      b: { pattern: "A limit, with love", rootedIn: "Boundary-setting and relational continuity", usedFor: "When the limit could read as rejection", whatChanges: "It keeps the limit visible while showing the relationship still matters." },
+    },
     tryYours: { headline: "Write the boundary, even if it sounds cold right now.", placeholder: "I can’t keep doing…" },
   },
   reconnect_after_distance: {
@@ -171,7 +185,10 @@ const BRANCHES: Record<Moment, Branch> = {
       { span: "we both got stuck", why: "Reduces blame and creates shared ownership.", rootedIn: "Shared problem frame" },
       { span: "what you need from me", why: "Invites them in before asking for closeness.", rootedIn: "Perspective-first question" },
     ],
-    rootedIn: { pattern: "Us vs the problem", rootedIn: "Getting to Yes and perspective-taking", usedFor: "Reconnect after distance", whatChanges: "It names the distance as a shared problem instead of placing it on one person." },
+    rootedIn: {
+      a: { pattern: "Us vs the problem", rootedIn: "Getting to Yes and shared-problem framing", usedFor: "When the relationship needs a shared frame", whatChanges: "It names the distance as a shared problem instead of placing it on one person." },
+      b: { pattern: "Ask what matters", rootedIn: "Perspective-taking and coaching practice", usedFor: "When the other person may need space first", whatChanges: "It reopens contact without demanding immediate closeness." },
+    },
     tryYours: { headline: "Write the first sentence you have not known how to send.", placeholder: "So are we just not talking…" },
   },
   pause_before_escalation: {
@@ -193,7 +210,10 @@ const BRANCHES: Record<Moment, Branch> = {
       { span: "I will come back to this tomorrow", why: "Prevents the pause from feeling like disappearance.", rootedIn: "Return point" },
       { span: "I am getting too activated", why: "Owns your state without blaming theirs.", rootedIn: "Self-regulation language" },
     ],
-    rootedIn: { pattern: "Pause-and-return", rootedIn: "Conflict de-escalation and the Gottman Method", usedFor: "Pause before it gets worse", whatChanges: "It stops the spiral while keeping a clear point of return." },
+    rootedIn: {
+      a: { pattern: "Pause-and-return", rootedIn: "Conflict de-escalation and the Gottman Method", usedFor: "When the conversation needs to stop fast", whatChanges: "It stops the spiral while keeping a clear point of return." },
+      b: { pattern: "Soft start, clear point", rootedIn: "The Gottman Method and de-escalation practice", usedFor: "When the pause could feel like rejection", whatChanges: "It pauses the conversation while keeping your care visible." },
+    },
     tryYours: { headline: "Write the message before the argument gets worse.", placeholder: "I can’t do this right now…" },
   },
   truth_without_attack: {
@@ -215,7 +235,10 @@ const BRANCHES: Record<Moment, Branch> = {
       { span: "I do not want to pretend I am", why: "Keeps the truth owned and specific.", rootedIn: "Owned truth" },
       { span: "because it matters", why: "Adds care before the difficult point lands.", rootedIn: "Emotional runway" },
     ],
-    rootedIn: { pattern: "Ease into it", rootedIn: "Staged delivery and plain-language authenticity", usedFor: "Truth without attack", whatChanges: "It prepares the ground so the real point has room to be heard." },
+    rootedIn: {
+      a: { pattern: "Just say it plainly", rootedIn: "Plain-language authenticity and owned-truth communication", usedFor: "When clarity matters more than build-up", whatChanges: "It removes the extra force so the point stays clear." },
+      b: { pattern: "Ease into it", rootedIn: "Staged delivery and plain-language authenticity", usedFor: "When the truth is hard and needs runway", whatChanges: "It prepares the ground so the real point has room to be heard." },
+    },
     tryYours: { headline: "Write the truth plainly. LANDRIGHT will help it land.", placeholder: "I need to be honest…" },
   },
 };
@@ -814,9 +837,22 @@ export default function Onboarding() {
       {step === "compare" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <h1 style={{ ...H1, color: INK }}>{branch.compare.headline}</h1>
-          <div style={{ marginTop: 22, marginBottom: 28 }}>
-            <p style={{ ...LEAD_INK, marginBottom: 12 }}>{branch.compare.lineA}</p>
-            <p style={{ ...LEAD_INK, margin: 0 }}>{branch.compare.lineB}</p>
+          <div style={{ marginTop: 22, marginBottom: 26 }}>
+            {([["A", branch.routes.a.label, branch.compare.lineA, branch.rootedIn.a], ["B", branch.routes.b.label, branch.compare.lineB, branch.rootedIn.b]] as const).map(([tag, label, line, r], i) => (
+              <div key={tag} className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: `5px 5px 0 ${LIME}`, marginBottom: i === 0 ? 18 : 0 }}>
+                <div style={{ padding: "15px 17px" }}>
+                  <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: DARK_MUTED, margin: 0 }}>Route {tag}</p>
+                  <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.05rem", letterSpacing: "0.02em", textTransform: "uppercase", color: LIME, margin: "3px 0 6px" }}>{label}</p>
+                  <p style={{ fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.45, color: "#FFFFFF", margin: "0 0 13px" }}>{line}</p>
+                  {([["Rooted in", r.rootedIn], ["Used for", r.usedFor], ["What it changes", r.whatChanges]] as const).map(([k, v]) => (
+                    <div key={k} style={{ marginTop: 8 }}>
+                      <span style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.68rem", letterSpacing: "0.06em", textTransform: "uppercase", color: DARK_MUTED }}>{k}: </span>
+                      <span style={{ fontFamily: BODY, fontSize: "0.9rem", lineHeight: 1.45, color: "#FFFFFF" }}>{v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
           <CTA onClick={next} variant="ink">See why this works</CTA>
         </div>
@@ -845,7 +881,7 @@ export default function Onboarding() {
           <h1 style={{ ...H1, color: INK }}>Why LANDRIGHT chose this route</h1>
           <p style={{ ...LEAD_INK, marginTop: 14, marginBottom: 20 }}>LANDRIGHT selects a communication pattern based on the message type, the likely risk and the way you want it to land.</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
-            {[["Moment", branch.title], ["Risk", branch.routeMap.risk], ["Route", branch.rootedIn.pattern]].map(([k, v]) => (
+            {[["Moment", branch.title], ["Risk", branch.routeMap.risk], ["Route", branch.rootedIn.b.pattern]].map(([k, v]) => (
               <div key={k} style={{ border: `2px solid ${INK}`, padding: "12px 12px" }}>
                 <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.66rem", letterSpacing: "0.06em", textTransform: "uppercase", color: MUTED, margin: 0 }}>{k}</p>
                 <p style={{ fontFamily: BODY, fontSize: "0.86rem", lineHeight: 1.35, color: INK, marginTop: 6, marginBottom: 0 }}>{v}</p>
@@ -854,7 +890,7 @@ export default function Onboarding() {
           </div>
           <div className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: `5px 5px 0 ${LIME}`, marginBottom: 28 }}>
             <div style={{ padding: "16px 18px" }}>
-              {[["Pattern", branch.rootedIn.pattern], ["Rooted in", branch.rootedIn.rootedIn], ["Used for", branch.rootedIn.usedFor], ["What it changes", branch.rootedIn.whatChanges]].map(([k, v]) => (
+              {[["Pattern", branch.rootedIn.b.pattern], ["Rooted in", branch.rootedIn.b.rootedIn], ["Used for", branch.rootedIn.b.usedFor], ["What it changes", branch.rootedIn.b.whatChanges]].map(([k, v]) => (
                 <div key={k} style={{ marginBottom: 10 }}>
                   <span style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.06em", textTransform: "uppercase", color: LIME }}>{k}: </span>
                   <span style={{ fontFamily: BODY, fontSize: "0.95rem", lineHeight: 1.45, color: "#FFFFFF" }}>{v}</span>
