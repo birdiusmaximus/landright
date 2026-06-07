@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import type { Audience, Segment } from "@/lib/types";
 import { APP_VERSION } from "@/lib/version";
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs";
+import SubscriptionGate from "@/components/SubscriptionGate";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1106,6 +1107,8 @@ export default function Home() {
           </p>
         </section>
 
+        {/* ═══ App — gated behind sign-in + an active Plus subscription ═══ */}
+        <SubscriptionGate>
         {/* ═══ Input ═══ */}
         <section style={{ marginBottom: "clamp(28px, 6vw, 44px)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
@@ -1297,6 +1300,7 @@ export default function Home() {
             </div>
           </section>
         )}
+        </SubscriptionGate>
 
         {/* ═══ Footer ═══ */}
         <footer style={{ marginTop: "clamp(40px, 8vw, 64px)", borderTop: `2px solid ${INK}`, paddingTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
