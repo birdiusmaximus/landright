@@ -9,7 +9,8 @@ const OUT = "app/favicon.ico";
 const sizes = [16, 32, 48];
 
 const pngs = await Promise.all(
-  sizes.map((s) => sharp(SRC).resize(s, s, { fit: "cover" }).png().toBuffer()),
+  // ensureAlpha → RGBA PNGs (Next's ICO decoder rejects RGB-only PNG entries).
+  sizes.map((s) => sharp(SRC).resize(s, s, { fit: "cover" }).ensureAlpha().png().toBuffer()),
 );
 
 const header = Buffer.alloc(6);
