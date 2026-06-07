@@ -397,12 +397,13 @@ function segmentMessage(text: string, spans: readonly string[]): Seg[] {
 }
 
 function HighlightMessage({
-  text, marks, autoSweep = false, underline = false, onOpen,
+  text, marks, autoSweep = false, underline = false, onDark = false, onOpen,
 }: {
   text: string;
   marks: { span: string; note: string; rootedIn?: string }[];
   autoSweep?: boolean;
   underline?: boolean;
+  onDark?: boolean; // render flush on a dark card with an inline note (app result style)
   onOpen?: (count: number) => void;
 }) {
   const segs = segmentMessage(text, marks.map(m => m.span));
@@ -461,12 +462,11 @@ function HighlightMessage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
 
-  const activeMark = active !== null && segs[active]?.hi !== null && segs[active]?.hi !== undefined ? marks[segs[active].hi as number] : null;
+  const activeHi = active !== null && segs[active]?.hi !== null && segs[active]?.hi !== undefined ? (segs[active].hi as number) : null;
+  const activeMark = activeHi !== null ? marks[activeHi] : null;
 
-  return (
-    <>
-      <div className="surface-dark" style={{ border: `2px solid ${INK}` }}>
-        <p ref={paraRef} style={{ fontFamily: BODY, fontSize: "1.04rem", lineHeight: 1.9, color: "#FFFFFF", margin: 0, padding: "18px" }}>
+  const para = (
+        <p ref={paraRef} style={{ fontFamily: BODY, fontSize: "1.04rem", lineHeight: 1.9, color: "#FFFFFF", margin: 0, padding: onDark ? 0 : "18px" }}>
           {segs.map((seg, i) => {
             const interactive = seg.hi !== null;
             const on = active === i;
@@ -500,17 +500,35 @@ function HighlightMessage({
             );
           })}
         </p>
-      </div>
-      <div style={{ minHeight: 78, marginTop: 12, border: "2px solid rgba(17,17,16,0.16)", padding: "13px 16px", backgroundColor: GROUND2 }}>
-        {activeMark ? (
-          <>
-            {activeMark.rootedIn && <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.06em", textTransform: "uppercase", color: INK, margin: 0 }}>Rooted in {activeMark.rootedIn}</p>}
-            <p style={{ fontFamily: BODY, fontSize: "0.95rem", lineHeight: 1.55, color: INK, marginTop: activeMark.rootedIn ? 6 : 0, marginBottom: 0 }}>{activeMark.note}</p>
-          </>
-        ) : (
-          <p style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, margin: 0 }}>Hover or tap a line to see what it is doing</p>
-        )}
-      </div>
+  );
+
+  const note = onDark ? (
+    <div style={{ minHeight: 44, marginTop: 14 }}>
+      {activeMark ? (
+        <span style={{ fontFamily: BODY, fontSize: "0.92rem", lineHeight: 1.55, color: "#FFFFFF" }}>
+          {activeHi !== null && <span style={{ color: LIME, fontWeight: 700 }}>{`Beat ${activeHi + 1}/${marks.length} — `}</span>}{activeMark.note}
+        </span>
+      ) : (
+        <span style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", color: LIME }}>Hover or tap the text</span>
+      )}
+    </div>
+  ) : (
+    <div style={{ minHeight: 78, marginTop: 12, border: "2px solid rgba(17,17,16,0.16)", padding: "13px 16px", backgroundColor: GROUND2 }}>
+      {activeMark ? (
+        <>
+          {activeMark.rootedIn && <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.06em", textTransform: "uppercase", color: INK, margin: 0 }}>Rooted in {activeMark.rootedIn}</p>}
+          <p style={{ fontFamily: BODY, fontSize: "0.95rem", lineHeight: 1.55, color: INK, marginTop: activeMark.rootedIn ? 6 : 0, marginBottom: 0 }}>{activeMark.note}</p>
+        </>
+      ) : (
+        <p style={{ fontFamily: COND, fontWeight: 700, fontSize: "0.76rem", letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, margin: 0 }}>Hover or tap a line to see what it is doing</p>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      {onDark ? para : <div className="surface-dark" style={{ border: `2px solid ${INK}` }}>{para}</div>}
+      {note}
     </>
   );
 }
@@ -583,7 +601,7 @@ function ResultRouteCard({ index, out, autoSweep }: { index: string; out: Option
     <div className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: `6px 6px 0 ${LIME}` }}>
       <CardHeader index={index} label={out.stack_label} />
       <div style={{ padding: "18px" }}>
-        <HighlightMessage text={out.option} marks={out.breakdown.map(b => ({ span: b.text, note: b.note }))} autoSweep={autoSweep} />
+        <HighlightMessage text={out.option} marks={out.breakdown.map(b => ({ span: b.text, note: b.note }))} autoSweep={autoSweep} onDark />
         {out.origin && (
           <div style={{ display: "flex", alignItems: "center", gap: 9, marginTop: 18 }}>
             <span style={{ width: 9, height: 9, backgroundColor: LIME, display: "inline-block", flexShrink: 0 }} />
