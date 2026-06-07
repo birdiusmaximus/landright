@@ -275,7 +275,6 @@ const RECOGNITION = {
 const PATTERN_LIBRARY = {
   headline: "A named method for the message you are holding.",
   body: "LANDRIGHT draws from more than 30 communication patterns for hard, tender and awkward messages.",
-  lines: ["Some clean up apologies.", "Some turn need into request.", "Some keep boundaries warm.", "Some open a door after distance.", "Some help truth land without becoming an attack."],
   cards: ["A real apology", "Own it first", "Name it before they do", "Ask, don’t demand", "Feeling, then ask", "Show what’s underneath", "A limit, with love", "Hold the line kindly", "Kind but clear", "Ease into it", "Us vs the problem", "Ask what matters", "Pause-and-return", "Just say it plainly", "Soft start, clear point", "Specific reassurance"],
 };
 
@@ -878,10 +877,7 @@ export default function Onboarding() {
       {step === "pattern_library" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <h1 style={{ ...H1, color: INK }}>{PATTERN_LIBRARY.headline}</h1>
-          <p style={{ ...LEAD_INK, marginTop: 14, marginBottom: 14 }}>{PATTERN_LIBRARY.body}</p>
-          <div style={{ marginBottom: 18 }}>
-            {PATTERN_LIBRARY.lines.map(l => <p key={l} style={{ fontFamily: BODY, fontSize: "0.96rem", lineHeight: 1.5, color: MUTED, margin: 0 }}>{l}</p>)}
-          </div>
+          <p style={{ ...LEAD_INK, marginTop: 14, marginBottom: 24 }}>{PATTERN_LIBRARY.body}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 26 }}>
             {PATTERN_LIBRARY.cards.map((c, i) => (
               <span key={c} className="surface-dark" style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.02em", textTransform: "uppercase", color: i % 5 === 0 ? INK : "#FFFFFF", backgroundColor: i % 5 === 0 ? LIME : DARK, border: `2px solid ${INK}`, padding: "11px 10px", textAlign: "center" }}>{c}</span>
