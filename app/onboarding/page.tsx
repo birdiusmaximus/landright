@@ -707,7 +707,7 @@ export default function Onboarding() {
             <span style={{ fontStyle: "italic" }}>message</span><br />
             <Mark>land right.</Mark>
           </h1>
-          <CTA onClick={next} variant="primary">Continue</CTA>
+          <CTA onClick={next} variant="ink">Continue</CTA>
         </div>
       )}
 
