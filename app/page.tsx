@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { Audience, Segment } from "@/lib/types";
 import { APP_VERSION } from "@/lib/version";
+import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1062,10 +1063,23 @@ export default function Home() {
               LANDRIGHT
             </span>
           </div>
-          {/* Links to the onboarding flow for testing (V0.1 button). */}
-          <a href="/onboarding" style={{ textDecoration: "none" }} aria-label="View onboarding">
-            <Tag variant="outline" size="xs">v{APP_VERSION}</Tag>
-          </a>
+          {/* Auth controls (signed-out: sign in / sign up; signed-in: account) + onboarding link */}
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "5px 11px", lineHeight: 1.1, border: `2px solid ${INK}`, cursor: "pointer", borderRadius: 0, backgroundColor: "transparent", color: INK }}>Sign in</button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "5px 11px", lineHeight: 1.1, border: `2px solid ${INK}`, cursor: "pointer", borderRadius: 0, backgroundColor: LIME, color: INK }}>Sign up</button>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+            <a href="/onboarding" style={{ textDecoration: "none" }} aria-label="View onboarding">
+              <Tag variant="outline" size="xs">v{APP_VERSION}</Tag>
+            </a>
+          </div>
         </div>
 
         {/* ═══ Hero ═══ */}

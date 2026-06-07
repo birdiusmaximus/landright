@@ -1,5 +1,34 @@
 import type { Metadata, Viewport } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
+
+// The Green — brand tokens for Clerk's hosted UI (sign-in/up modal, user button).
+const clerkAppearance = {
+  variables: {
+    colorPrimary: "#111110", // ink — links/accents (readable on the light ground)
+    colorText: "#111110",
+    colorBackground: "#E4E4DF", // ground
+    colorInputBackground: "#FFFFFF",
+    colorInputText: "#111110",
+    colorNeutral: "#111110",
+    borderRadius: "0px", // brutalist: no rounded corners
+    fontFamily: "var(--font-body), -apple-system, sans-serif",
+  },
+  elements: {
+    // Primary action gets the signature lime block with an ink shadow.
+    formButtonPrimary: {
+      backgroundColor: "#C6F634",
+      color: "#111110",
+      border: "2px solid #111110",
+      boxShadow: "4px 4px 0 #111110",
+      borderRadius: "0px",
+      textTransform: "uppercase" as const,
+      fontFamily: "var(--font-cond), 'Arial Narrow', sans-serif",
+      fontWeight: 900,
+      letterSpacing: "0.05em",
+    },
+  },
+};
 
 export const metadata: Metadata = {
   title: "Landright",
@@ -32,7 +61,8 @@ export default function RootLayout({
         {/* Adobe Fonts (Typekit) — neue-haas-grotesk-display/text + acumin-pro-extra-condensed.
             React hoists this stylesheet link into <head>. */}
         <link rel="stylesheet" href="https://use.typekit.net/abe4vwg.css" />
-        {children}
+        {/* ClerkProvider goes inside <body> (Clerk requirement for Next.js App Router). */}
+        <ClerkProvider appearance={clerkAppearance}>{children}</ClerkProvider>
       </body>
     </html>
   );
