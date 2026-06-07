@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useUser, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { ensurePurchases, RC_ENTITLEMENT } from "@/lib/revenuecat";
+import { isAdminUser } from "@/lib/admin";
 
 const LIME = "#C6F634";
 const INK = "#111110";
@@ -36,6 +37,7 @@ export default function SubscriptionGate({ children }: { children: React.ReactNo
   const refresh = useCallback(async () => {
     if (!isLoaded) return;
     if (!isSignedIn || !user) { setStatus("signedOut"); return; }
+    if (isAdminUser(user.id)) { setStatus("subscribed"); return; } // admin allowlist bypasses the paywall
     try {
       const p = await ensurePurchases(user.id);
       const info = await p.getCustomerInfo();

@@ -2,6 +2,7 @@
 // client code), so the RevenueCat secret key stays on the server.
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { isAdminUser } from "@/lib/admin";
 
 const RC_SECRET = process.env.REVENUECAT_SECRET_KEY ?? "";
 const ENTITLEMENT = "Plus";
@@ -42,6 +43,7 @@ export async function requirePaid(): Promise<{ userId: string } | { error: NextR
   if (!userId) {
     return { error: NextResponse.json({ success: false, error: "Sign in required." }, { status: 401 }) };
   }
+  if (isAdminUser(userId)) return { userId }; // admin allowlist bypasses the subscription
   if (!(await hasActivePlus(userId))) {
     return { error: NextResponse.json({ success: false, error: "An active subscription is required." }, { status: 403 }) };
   }
