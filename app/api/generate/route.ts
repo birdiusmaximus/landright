@@ -5,9 +5,14 @@ import { buildGenerationBrief } from "@/lib/engine/router";
 import { buildSourcePacket, getSourcePacketIds } from "@/lib/engine/retrieval";
 import { generateOne } from "@/lib/engine/generation";
 import { screenInput } from "@/lib/engine/guard";
+import { requirePaid } from "@/lib/entitlement";
 
 export async function POST(req: NextRequest) {
   try {
+    // Server-side gate: only signed-in users with an active subscription.
+    const gate = await requirePaid();
+    if ("error" in gate) return gate.error;
+
     const body = (await req.json()) as GenerateRequest;
 
     // Validate input

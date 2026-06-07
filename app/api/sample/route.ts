@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import type { Audience } from "@/lib/types";
+import { requirePaid } from "@/lib/entitlement";
 
 // Lazy client so the build never needs the key at module-load time.
 let _client: OpenAI | null = null;
@@ -67,6 +68,9 @@ function pick<T>(arr: T[]): T {
 
 export async function POST(req: NextRequest) {
   try {
+    const gate = await requirePaid();
+    if ("error" in gate) return gate.error;
+
     const body = (await req.json().catch(() => ({}))) as { audience?: Audience };
     const aud = (body.audience && AUDIENCE_DESC[body.audience]) || "partner, friend or family member";
     const scenario = pick(SCENARIOS);

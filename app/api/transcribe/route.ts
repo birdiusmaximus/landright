@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI, { toFile } from "openai";
+import { requirePaid } from "@/lib/entitlement";
 
 // Lazy client so the build never needs the key at module-load time.
 let _client: OpenAI | null = null;
@@ -15,6 +16,9 @@ const FALLBACK = "whisper-1";
 
 export async function POST(req: NextRequest) {
   try {
+    const gate = await requirePaid();
+    if ("error" in gate) return gate.error;
+
     const form = await req.formData();
     const audio = form.get("audio");
     if (!(audio instanceof Blob) || audio.size === 0) {
