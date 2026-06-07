@@ -774,7 +774,7 @@ export default function Onboarding() {
             <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.74rem", letterSpacing: "0.08em", textTransform: "uppercase", color: LIME, margin: 0 }}>The version that actually arrives</p>
             <p style={{ fontFamily: BODY, fontSize: "1.05rem", lineHeight: 1.5, color: "#FFFFFF", marginTop: 8, marginBottom: 0 }}>“{branch.trap.theyHear}”</p>
           </div>
-          <CTA onClick={next} variant="primary">Why landing matters</CTA>
+          <CTA onClick={next} variant="ink">Why landing matters</CTA>
         </div>
       )}
 
