@@ -246,7 +246,7 @@ const RECOGNITION = {
 };
 
 const PATTERN_LIBRARY = {
-  body: "LANDRIGHT draws from more than 30 communication patterns for hard, tender and awkward messages.",
+  body: "LANDRIGHT draws from more than 30 communication patterns for hard, tender and awkward messages, all grounded in relationship and communication research.",
   // The 30 user-facing patterns (friendly_label) from data/stack_families.json.
   cards: ["Step back and see it", "See it their way first", "Use a real example", "Ask what matters", "Ease the pressure", "Kind but clear", "Feeling, then ask", "Own it first", "Paint it, then say it", "Build up to it", "Ease into it", "Soft start, clear point", "Show what’s underneath", "Ask, don’t demand", "A real apology", "Own it, reassure them", "Hold the line kindly", "A limit, with love", "Just say it plainly", "A specific thank you", "Get them, then ask", "Us vs the problem", "Picture us ahead", "Hard news, said kindly", "Point it out kindly", "Let them get there", "We’ve got this, here’s next", "Ask first, then share", "Name it before they do", "Say it, then why"],
 };
