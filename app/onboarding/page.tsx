@@ -708,9 +708,9 @@ export default function Onboarding() {
             {RECOGNITION.items.map(item => (
               <div key={item.line} style={{ borderLeft: `4px solid ${LIME}`, paddingLeft: 16, marginBottom: 20 }}>
                 <p style={{ ...LEAD_INK, marginBottom: 10 }}>{item.line}</p>
-                <div style={{ display: "flex", gap: 10 }}>
-                  <div style={{ flex: 1, padding: "10px 13px", fontFamily: BODY, fontSize: "0.9rem", lineHeight: 1.4, color: INK, border: `2px solid ${INK}` }}>{item.msg}</div>
-                  <div style={{ flex: 1, padding: "10px 13px", fontFamily: BODY, fontSize: "0.9rem", lineHeight: 1.4, color: "#FFFFFF", backgroundColor: INK, border: `2px solid ${INK}` }}>{item.reply}</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "flex-start" }}>
+                  <span style={{ padding: "9px 12px", fontFamily: BODY, fontSize: "0.88rem", lineHeight: 1.3, color: INK, border: `2px solid ${INK}`, whiteSpace: "nowrap" }}>{item.msg}</span>
+                  <span style={{ padding: "9px 12px", fontFamily: BODY, fontSize: "0.88rem", lineHeight: 1.3, color: "#FFFFFF", backgroundColor: INK, border: `2px solid ${INK}`, whiteSpace: "nowrap" }}>{item.reply}</span>
                 </div>
               </div>
             ))}
