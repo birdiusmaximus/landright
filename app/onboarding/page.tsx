@@ -263,6 +263,7 @@ const PAYWALL = {
   headline: "Unlock the full communication toolkit.",
   body: "Get more routes, full line-by-line explanations and pattern guidance for the conversations that matter.",
   bullets: ["Turn difficult moments into connection, not distance", "More than 30 communication patterns", "Multiple routes for each message", "Line-by-line “why it works”", "Generate more approaches when the first one is not quite right"],
+  terms: "3 days free, then £2.99/month, auto-renewing. Cancel anytime — we’ll remind you before your trial ends.",
 };
 
 // ─── Analytics (no raw message text ever leaves the client) ───────────────────
@@ -919,7 +920,7 @@ export default function Onboarding() {
       {/* 17 PAYWALL (dark close) */}
       {step === "paywall" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", color: LIME, marginBottom: 14 }}>Save this message?</p>
+          <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", color: LIME, marginBottom: 14 }}>3 days free</p>
           <h1 style={{ ...H1, color: "#FFFFFF" }}>{PAYWALL.headline}</h1>
           <p style={{ fontFamily: BODY, fontSize: "1.04rem", lineHeight: 1.55, color: "#E8E8E2", marginTop: 14, marginBottom: 22 }}>{PAYWALL.body}</p>
           <div style={{ marginBottom: 26 }}>
@@ -930,7 +931,8 @@ export default function Onboarding() {
               </div>
             ))}
           </div>
-          <CTA onClick={() => { fire("trial_started", { paywall_variant: PAYWALL_VARIANT }); finish(); }} variant="primary">Start free trial</CTA>
+          <CTA onClick={() => { fire("trial_started", { paywall_variant: PAYWALL_VARIANT }); finish(); }} variant="primary">Start 3-day free trial</CTA>
+          <p style={{ fontFamily: BODY, fontSize: "0.8rem", lineHeight: 1.5, color: DARK_MUTED, textAlign: "center", marginTop: 14, marginBottom: 0 }}>{PAYWALL.terms}</p>
         </div>
       )}
     </Shell>
