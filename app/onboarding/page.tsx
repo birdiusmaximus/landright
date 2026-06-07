@@ -752,7 +752,7 @@ export default function Onboarding() {
       {/* 0 SPLASH (dark) — the home hero, white text + lime highlight */}
       {step === "splash" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <h1 style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(3rem, 13vw, 5.6rem)", lineHeight: 0.84, letterSpacing: "-0.035em", textTransform: "uppercase", color: "#FFFFFF", marginBottom: 40 }}>
+          <h1 style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(3rem, 13vw, 5.6rem)", lineHeight: 0.84, letterSpacing: "-0.035em", textTransform: "uppercase", color: "#FFFFFF", marginBottom: "clamp(64px, 22vh, 200px)" }}>
             Make your{" "}
             <span style={{ fontStyle: "italic" }}>message</span><br />
             <Mark>land right.</Mark>

@@ -1087,10 +1087,8 @@ export default function Home() {
             <Mark>land right.</Mark>
           </h1>
           <p style={{ fontFamily: BODY, fontWeight: 500, fontSize: "1.05rem", lineHeight: 1.55, color: INK }}>
-            Grounded in decades of psychology research, LANDRIGHT helps you say
-            it clearly, calmly, and without turning what you feel into something
-            they have to defend against. For apologies, boundaries, needs,
-            repair, and the conversations that feel too important to improvise.
+            Grounded in decades of psychology research, LANDRIGHT helps you with
+            messages that feel too important to improvise.
           </p>
         </section>
 
