@@ -362,10 +362,16 @@ const MODEL_B = "gpt-5.5";
 export async function generateOne(
   brief: GenerationBrief,
   packet: SourcePacket,
-  which: "a" | "b"
+  which: "a" | "b",
+  divergeFrom?: string
 ): Promise<OptionOutput> {
   const systemPrompt = buildSystemPrompt(which);
-  const userPrompt = buildUserPrompt(brief, packet, which);
+  let userPrompt = buildUserPrompt(brief, packet, which);
+  // If we already have the other option and it came back too similar, steer this
+  // one to a clearly different approach so the two options give real choice.
+  if (divergeFrom && divergeFrom.trim()) {
+    userPrompt += `\n\n## MAKE THIS DISTINCT\nThe other option offered alongside this one reads as follows:\n"""${divergeFrom.trim().slice(0, 1200)}"""\nYour version must take a clearly different approach: a different opening move, a different structure and emphasis, and minimal overlap in wording. Do not echo its phrasing. A reader should feel these are two genuinely different ways to say it, not two edits of the same message.`;
+  }
 
   const model = which === "a" ? MODEL_A : MODEL_B;
   // Some newer models only accept the default temperature (1).

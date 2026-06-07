@@ -1,0 +1,492 @@
+{
+  "apology_without_self_defence": {
+    "routes": {
+      "a": {
+        "label": "A real apology",
+        "text": "I’m sorry I snapped at you. You didn’t deserve to be spoken to like that, and I can see how it would make you feel attacked instead of heard. I’m responsible for how I handle my frustration, and next time I need a pause I’ll say that plainly instead of taking it out on you.",
+        "bestWhen": "The main repair needed is clear accountability."
+      },
+      "b": {
+        "label": "Name it before they do",
+        "text": "I want to clean up my part: raising my voice was not okay, and I’m sorry I hurt you. I also felt cornered in that moment, and I should have said, 'I need a minute,' instead of snapping. I don’t want the fact that I felt pushed to sound like permission; it’s just the spot where I need to do better.",
+        "bestWhen": "Context matters, but only after responsibility is clear."
+      }
+    },
+    "breakdown": {
+      "a": [
+        {
+          "span": "I’m sorry I snapped at you.",
+          "why": "Opens with the apology itself, no run-up.",
+          "rootedIn": "Lead with the apology"
+        },
+        {
+          "span": "You didn’t deserve to be spoken to like that",
+          "why": "Centers the impact on them before any explanation.",
+          "rootedIn": "Impact first"
+        },
+        {
+          "span": "I can see how it would make you feel attacked instead of heard",
+          "why": "Shows you understand how it landed for them.",
+          "rootedIn": "Perspective-taking"
+        },
+        {
+          "span": "I’m responsible for how I handle my frustration",
+          "why": "Owns the behaviour without shifting blame.",
+          "rootedIn": "Clear accountability"
+        },
+        {
+          "span": "next time I need a pause I’ll say that plainly instead of taking it out on you",
+          "why": "Names a concrete repair for next time.",
+          "rootedIn": "Repair, made specific"
+        }
+      ],
+      "b": [
+        {
+          "span": "I want to clean up my part",
+          "why": "Frames it as taking ownership, not negotiating.",
+          "rootedIn": "Own your part"
+        },
+        {
+          "span": "raising my voice was not okay",
+          "why": "States the fault plainly before any context.",
+          "rootedIn": "Responsibility first"
+        },
+        {
+          "span": "I also felt cornered in that moment",
+          "why": "Adds context, but only after the apology.",
+          "rootedIn": "Context, placed second"
+        },
+        {
+          "span": "I should have said, 'I need a minute,' instead of snapping",
+          "why": "Offers the better move you could have made.",
+          "rootedIn": "Concrete alternative"
+        },
+        {
+          "span": "I don’t want the fact that I felt pushed to sound like permission",
+          "why": "Names the pressure without using it as an excuse.",
+          "rootedIn": "Context without excuse"
+        }
+      ]
+    }
+  },
+  "need_without_pressure": {
+    "routes": {
+      "a": {
+        "label": "Feeling, then ask",
+        "text": "I’ve been feeling lonely and a little pushed to the edge of your life lately. When we go a couple weeks without making an actual plan, like this past weekend when we only texted in between other things, I start to miss feeling close to you. Could we pick one night this week to be together without rushing, and talk about what would help time for us feel steady again?",
+        "bestWhen": "You want the feeling understood and the ask to be clear."
+      },
+      "b": {
+        "label": "Ask, don’t demand",
+        "text": "Would you be open to finding a time soon that feels good for both of us? I don’t want to corner you or turn your schedule into a test; I just noticed we’ve had a few near-misses lately, including canceling Tuesday and not circling back. I care about us, and I’d really like a date or a longer call if you have room for that. If things are too full right now, I’d rather you tell me honestly than fit me in out of guilt.",
+        "bestWhen": "The other person may feel pressured or controlled."
+      }
+    },
+    "breakdown": {
+      "a": [
+        {
+          "span": "I’ve been feeling lonely and a little pushed to the edge of your life lately",
+          "why": "Names the feeling, owned as yours.",
+          "rootedIn": "Owned feeling"
+        },
+        {
+          "span": "When we go a couple weeks without making an actual plan",
+          "why": "Gives a concrete pattern, not a global complaint.",
+          "rootedIn": "Specific example"
+        },
+        {
+          "span": "like this past weekend when we only texted in between other things",
+          "why": "Anchors it to a real, recent moment.",
+          "rootedIn": "Concrete detail"
+        },
+        {
+          "span": "I start to miss feeling close to you",
+          "why": "Connects the pattern back to the need.",
+          "rootedIn": "Name the need"
+        },
+        {
+          "span": "Could we pick one night this week to be together without rushing",
+          "why": "Turns it into a clear, doable request.",
+          "rootedIn": "Willing request"
+        }
+      ],
+      "b": [
+        {
+          "span": "Would you be open to finding a time soon that feels good for both of us?",
+          "why": "Opens with an invitation, not a demand.",
+          "rootedIn": "Autonomy-preserving ask"
+        },
+        {
+          "span": "I don’t want to corner you or turn your schedule into a test",
+          "why": "Names and disarms the pressure.",
+          "rootedIn": "Remove the pressure"
+        },
+        {
+          "span": "I just noticed we’ve had a few near-misses lately",
+          "why": "Gives the evidence gently, low blame.",
+          "rootedIn": "Low-blame example"
+        },
+        {
+          "span": "I care about us",
+          "why": "Keeps the relationship visible.",
+          "rootedIn": "Care made explicit"
+        },
+        {
+          "span": "I’d rather you tell me honestly than fit me in out of guilt",
+          "why": "Leaves them a real way out.",
+          "rootedIn": "No guilt leverage"
+        }
+      ]
+    }
+  },
+  "hurt_without_blame": {
+    "routes": {
+      "a": {
+        "label": "Kind but clear",
+        "text": "When you made that comment about me at dinner, I felt exposed and small, and I had a hard time staying present after that. I’m not saying you meant to hurt me, but I need you to know it landed as embarrassing in front of everyone. If something is bothering you about me, I’d rather you tell me privately so I can actually hear you.",
+        "bestWhen": "You need the impact to be clear without accusing their intent."
+      },
+      "b": {
+        "label": "Show what’s underneath",
+        "text": "What hurt most wasn’t just the joke itself; it was feeling like I didn’t have you with me in that room. I need to feel that we protect each other’s dignity around other people, even when we’re annoyed or trying to be funny. When that didn’t happen, I felt alone and embarrassed, and I want us to talk about how we handle moments like that.",
+        "bestWhen": "The surface complaint is really about a deeper emotional need."
+      }
+    },
+    "breakdown": {
+      "a": [
+        {
+          "span": "When you made that comment about me at dinner",
+          "why": "Anchors to the specific event, not a pattern.",
+          "rootedIn": "Specific event"
+        },
+        {
+          "span": "I felt exposed and small",
+          "why": "Owns the feeling in the first person.",
+          "rootedIn": "Owned feeling"
+        },
+        {
+          "span": "I’m not saying you meant to hurt me",
+          "why": "Separates impact from intent so they don’t defend.",
+          "rootedIn": "Motive separation"
+        },
+        {
+          "span": "it landed as embarrassing in front of everyone",
+          "why": "Keeps the focus on impact, not accusation.",
+          "rootedIn": "Impact, not accusation"
+        },
+        {
+          "span": "I’d rather you tell me privately so I can actually hear you",
+          "why": "Offers a better way to handle it next time.",
+          "rootedIn": "Constructive ask"
+        }
+      ],
+      "b": [
+        {
+          "span": "What hurt most wasn’t just the joke itself",
+          "why": "Moves past the surface event.",
+          "rootedIn": "Past the surface"
+        },
+        {
+          "span": "it was feeling like I didn’t have you with me in that room",
+          "why": "Names the deeper need underneath.",
+          "rootedIn": "Underlying need"
+        },
+        {
+          "span": "I need to feel that we protect each other’s dignity around other people",
+          "why": "States the value at stake.",
+          "rootedIn": "Shared value"
+        },
+        {
+          "span": "I felt alone and embarrassed",
+          "why": "Keeps it in owned feeling.",
+          "rootedIn": "Owned feeling"
+        },
+        {
+          "span": "I want us to talk about how we handle moments like that",
+          "why": "Turns it toward repair, not blame.",
+          "rootedIn": "Toward repair"
+        }
+      ]
+    }
+  },
+  "boundary_without_coldness": {
+    "routes": {
+      "a": {
+        "label": "Hold the line kindly",
+        "text": "I’m going to stop having these conversations late at night. I care about what’s happening between us, but when it turns into hours of arguing or processing before sleep, I’m not okay the next day and I show up worse. If it’s after 10, I’m going to pause and we can pick it up tomorrow at a time we both choose.",
+        "bestWhen": "The limit needs to be clear and firm."
+      },
+      "b": {
+        "label": "A limit, with love",
+        "text": "I want us to get through this, not burn ourselves out in the dark every night. I can stay with you for a little while, and then I need us to close the conversation and rest, even if everything isn’t solved yet. Tomorrow I’ll come back to it with you, because stepping away tonight isn’t me stepping away from you.",
+        "bestWhen": "You want the boundary to feel connected rather than cold."
+      }
+    },
+    "breakdown": {
+      "a": [
+        {
+          "span": "I’m going to stop having these conversations late at night",
+          "why": "States the limit cleanly and first.",
+          "rootedIn": "Clean boundary"
+        },
+        {
+          "span": "I care about what’s happening between us",
+          "why": "Keeps the relationship visible.",
+          "rootedIn": "Care made visible"
+        },
+        {
+          "span": "when it turns into hours of arguing or processing before sleep, I’m not okay the next day",
+          "why": "Gives the honest reason without blame.",
+          "rootedIn": "Reason, not blame"
+        },
+        {
+          "span": "If it’s after 10, I’m going to pause",
+          "why": "Makes the boundary concrete and predictable.",
+          "rootedIn": "Specific limit"
+        },
+        {
+          "span": "we can pick it up tomorrow at a time we both choose",
+          "why": "Turns the limit into a pause, not a wall.",
+          "rootedIn": "Pause, not rejection"
+        }
+      ],
+      "b": [
+        {
+          "span": "I want us to get through this",
+          "why": "Leads with the shared goal.",
+          "rootedIn": "Shared goal"
+        },
+        {
+          "span": "I can stay with you for a little while",
+          "why": "Offers connection before the limit.",
+          "rootedIn": "Connection first"
+        },
+        {
+          "span": "then I need us to close the conversation and rest",
+          "why": "States the limit clearly.",
+          "rootedIn": "Clear limit"
+        },
+        {
+          "span": "even if everything isn’t solved yet",
+          "why": "Accepts the discomfort of an open thread.",
+          "rootedIn": "Tolerate the open thread"
+        },
+        {
+          "span": "stepping away tonight isn’t me stepping away from you",
+          "why": "Names the fear and answers it.",
+          "rootedIn": "Reassurance"
+        }
+      ]
+    }
+  },
+  "reconnect_after_distance": {
+    "routes": {
+      "a": {
+        "label": "Us vs the problem",
+        "text": "I don’t want the silence to turn into its own story between us. I know we may both have reasons for pulling back, but I’d rather treat the distance as the thing we’re trying to understand, not as proof that either of us doesn’t care. Can we name what’s making it hard to talk right now?",
+        "bestWhen": "You want to reduce blame and name the shared problem."
+      },
+      "b": {
+        "label": "Ask what matters",
+        "text": "Can I ask what feels most important to you right now: space, a clearer conversation, or something else? I miss being in touch, but I don’t want to push past what you need. If you’re willing, just tell me where you are with this.",
+        "bestWhen": "You want to reopen contact without forcing closeness."
+      }
+    },
+    "breakdown": {
+      "a": [
+        {
+          "span": "I don’t want the silence to turn into its own story between us",
+          "why": "Names the risk without blame.",
+          "rootedIn": "Name the distance"
+        },
+        {
+          "span": "I know we may both have reasons for pulling back",
+          "why": "Shares responsibility both ways.",
+          "rootedIn": "Shared ownership"
+        },
+        {
+          "span": "treat the distance as the thing we’re trying to understand",
+          "why": "Puts the problem, not the person, in the centre.",
+          "rootedIn": "Problem, not person"
+        },
+        {
+          "span": "not as proof that either of us doesn’t care",
+          "why": "Removes the worst interpretation.",
+          "rootedIn": "Reframe the meaning"
+        },
+        {
+          "span": "Can we name what’s making it hard to talk right now?",
+          "why": "Opens a low-pressure door.",
+          "rootedIn": "Open question"
+        }
+      ],
+      "b": [
+        {
+          "span": "Can I ask what feels most important to you right now",
+          "why": "Leads with their reality, not your ask.",
+          "rootedIn": "Their reality first"
+        },
+        {
+          "span": "space, a clearer conversation, or something else",
+          "why": "Offers options so it isn’t loaded.",
+          "rootedIn": "Low-pressure options"
+        },
+        {
+          "span": "I miss being in touch",
+          "why": "Keeps your care honest and visible.",
+          "rootedIn": "Honest care"
+        },
+        {
+          "span": "I don’t want to push past what you need",
+          "why": "Protects their autonomy.",
+          "rootedIn": "Respect their pace"
+        },
+        {
+          "span": "just tell me where you are with this",
+          "why": "Makes responding easy.",
+          "rootedIn": "Easy next step"
+        }
+      ]
+    }
+  },
+  "pause_before_escalation": {
+    "routes": {
+      "a": {
+        "label": "Pause-and-return",
+        "text": "This is getting too heated for me to keep listening well, and I don’t want to say something careless just to get out of it. I’m going to take a break now, and I’ll come back at 7:30 so we can keep talking with calmer voices. If either of us starts raising our voice again, I’ll pause it again instead of pushing through.",
+        "bestWhen": "The conversation is too heated and needs a clear return point."
+      },
+      "b": {
+        "label": "Soft start, clear point",
+        "text": "I care about you, and I’m not leaving this conversation because you don’t matter. I’m too overwhelmed to take in what you’re saying right now, so I need to stop for a bit and settle myself. I want to try again after dinner, when I can actually hear you and answer without snapping.",
+        "bestWhen": "You need to pause while making care and intent visible."
+      }
+    },
+    "breakdown": {
+      "a": [
+        {
+          "span": "This is getting too heated for me to keep listening well",
+          "why": "Names your own state, not their fault.",
+          "rootedIn": "Self-regulation language"
+        },
+        {
+          "span": "I don’t want to say something careless just to get out of it",
+          "why": "Frames the pause as protective.",
+          "rootedIn": "Protect the relationship"
+        },
+        {
+          "span": "I’m going to take a break now",
+          "why": "States the pause clearly.",
+          "rootedIn": "Clear pause"
+        },
+        {
+          "span": "I’ll come back at 7:30",
+          "why": "Gives a concrete return point.",
+          "rootedIn": "Return point"
+        },
+        {
+          "span": "I’ll pause it again instead of pushing through",
+          "why": "Sets the rule for next time.",
+          "rootedIn": "Repeatable plan"
+        }
+      ],
+      "b": [
+        {
+          "span": "I’m not leaving this conversation because you don’t matter",
+          "why": "Names the fear the pause could trigger.",
+          "rootedIn": "Pre-empt the fear"
+        },
+        {
+          "span": "I’m too overwhelmed to take in what you’re saying right now",
+          "why": "Owns your capacity honestly.",
+          "rootedIn": "Owned state"
+        },
+        {
+          "span": "I need to stop for a bit and settle myself",
+          "why": "States the pause and its purpose.",
+          "rootedIn": "Clear pause"
+        },
+        {
+          "span": "I want to try again after dinner",
+          "why": "Commits to returning.",
+          "rootedIn": "Return point"
+        },
+        {
+          "span": "when I can actually hear you and answer without snapping",
+          "why": "Names what the break is for.",
+          "rootedIn": "Purposeful pause"
+        }
+      ]
+    }
+  },
+  "truth_without_attack": {
+    "routes": {
+      "a": {
+        "label": "Just say it plainly",
+        "text": "I need to be honest: I don’t think this relationship is working for me anymore. I care about you, and I’m not saying this to punish you or force a reaction; I’m saying it because pretending we’re okay is starting to hurt us both. I think we need to talk about what ending this would look like, with as much kindness and respect as we can manage.",
+        "bestWhen": "The message needs clarity more than emotional build-up."
+      },
+      "b": {
+        "label": "Ease into it",
+        "text": "This is hard to say, because there are still parts of us that matter deeply to me. Lately I’ve felt more lonely and tense in this relationship than connected, and I don’t want to keep brushing that aside. I’m starting to believe we may not be able to find a healthy way forward, and I’d like us to slow down and talk honestly about where we go from here.",
+        "bestWhen": "The truth is difficult and the opening needs more emotional runway."
+      }
+    },
+    "breakdown": {
+      "a": [
+        {
+          "span": "I don’t think this relationship is working for me anymore",
+          "why": "States the hard truth plainly.",
+          "rootedIn": "Plain truth"
+        },
+        {
+          "span": "I care about you",
+          "why": "Holds care alongside the truth.",
+          "rootedIn": "Care alongside truth"
+        },
+        {
+          "span": "I’m not saying this to punish you or force a reaction",
+          "why": "Removes the threat from the message.",
+          "rootedIn": "Disarm the threat"
+        },
+        {
+          "span": "pretending we’re okay is starting to hurt us both",
+          "why": "Gives the honest reason.",
+          "rootedIn": "Honest reason"
+        },
+        {
+          "span": "with as much kindness and respect as we can manage",
+          "why": "Sets the tone for what comes next.",
+          "rootedIn": "Set the tone"
+        }
+      ],
+      "b": [
+        {
+          "span": "This is hard to say",
+          "why": "Signals weight and care up front.",
+          "rootedIn": "Soft start"
+        },
+        {
+          "span": "there are still parts of us that matter deeply to me",
+          "why": "Anchors in what is real and good.",
+          "rootedIn": "Anchor in care"
+        },
+        {
+          "span": "Lately I’ve felt more lonely and tense in this relationship than connected",
+          "why": "Owns the feeling specifically.",
+          "rootedIn": "Owned feeling"
+        },
+        {
+          "span": "I don’t want to keep brushing that aside",
+          "why": "Names why now.",
+          "rootedIn": "Why now"
+        },
+        {
+          "span": "I’d like us to slow down and talk honestly about where we go from here",
+          "why": "Opens the conversation, not a verdict.",
+          "rootedIn": "Open the conversation"
+        }
+      ]
+    }
+  }
+}
