@@ -768,10 +768,7 @@ export default function Onboarding() {
             There is the message<br />
             <Mark>you send</Mark>, and the message <Mark>they hear.</Mark>
           </h1>
-          <p style={{ ...LEAD_INK, fontWeight: 600, marginTop: 18, marginBottom: 26 }}>
-            LANDRIGHT helps you shape the message<br />before the wrong version arrives.
-          </p>
-          <div style={{ marginBottom: 26 }}>
+          <div style={{ marginTop: 28, marginBottom: 26 }}>
             {RECOGNITION.items.map((item, ci) => {
               const offset = RECOGNITION.items.slice(0, ci).reduce((n, it) => n + it.examples.length, 0);
               return (
