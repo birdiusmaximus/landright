@@ -6,6 +6,8 @@ import { APP_VERSION } from "@/lib/version";
 // Demo route examples, pre-generated with gpt-5.5 so the onboarding shows options
 // at their most elaborate. Real user messages still use the live fast/slow hybrid.
 import DEMOS from "@/data/onboarding_demos.json";
+import { useUser, useClerk } from "@clerk/nextjs";
+import { ensurePurchases, RC_ENTITLEMENT } from "@/lib/revenuecat";
 
 // ─── Brand tokens (mirror app/page.tsx, same design system) ───────────────────
 
@@ -618,6 +620,8 @@ function ResultRouteCard({ index, out, autoSweep }: { index: string; out: Option
 
 export default function Onboarding() {
   const router = useRouter();
+  const { isSignedIn, user } = useUser();
+  const clerk = useClerk();
   const [index, setIndex] = useState(0);
   const step: StepId = STEPS[index];
   const dark = DARK_SCREENS.includes(step);
@@ -677,6 +681,43 @@ export default function Onboarding() {
     try { localStorage.setItem("landright_onboarding", JSON.stringify({ done: true, ...ctx(), at: new Date().toISOString() })); } catch { /* ignore */ }
     router.push("/");
   }
+
+  // ── Real trial: sign up (if needed) → RevenueCat/Stripe checkout → the app ───
+  const [pendingTrial, setPendingTrial] = useState(false);
+  const [trialBusy, setTrialBusy] = useState(false);
+  const [trialError, setTrialError] = useState<string | null>(null);
+
+  const beginTrialPurchase = useCallback(async () => {
+    if (!user) return;
+    setTrialBusy(true); setTrialError(null);
+    try {
+      const p = await ensurePurchases(user.id);
+      const offerings = await p.getOfferings();
+      const monthly = offerings.current?.monthly;
+      if (!monthly) throw new Error("No subscription is available right now.");
+      await p.purchase({ rcPackage: monthly, customerEmail: user.primaryEmailAddress?.emailAddress });
+      const info = await p.getCustomerInfo();
+      if (info.entitlements.active[RC_ENTITLEMENT]) finish(); // subscribed → into the app
+      else setTrialError("Your subscription didn’t activate. Please try again.");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      if (!/cancel/i.test(msg)) setTrialError(msg); // ignore user-cancelled checkout
+    } finally {
+      setTrialBusy(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  function startTrial() {
+    fire("trial_started", { paywall_variant: PAYWALL_VARIANT });
+    if (!isSignedIn) { setPendingTrial(true); clerk.openSignUp({}); return; } // sign up, then continue
+    beginTrialPurchase();
+  }
+
+  // After the user finishes the sign-up modal, continue straight to checkout.
+  useEffect(() => {
+    if (isSignedIn && pendingTrial) { setPendingTrial(false); beginTrialPurchase(); }
+  }, [isSignedIn, pendingTrial, beginTrialPurchase]);
 
   async function submitMine() {
     const msg = userMsg.trim();
@@ -931,8 +972,9 @@ export default function Onboarding() {
               </div>
             ))}
           </div>
-          <CTA onClick={() => { fire("trial_started", { paywall_variant: PAYWALL_VARIANT }); finish(); }} variant="ink">Start 3-day free trial</CTA>
+          <CTA onClick={startTrial} disabled={trialBusy} variant="ink">{trialBusy ? "Opening checkout…" : "Start 3-day free trial"}</CTA>
           <p style={{ fontFamily: BODY, fontSize: "0.8rem", lineHeight: 1.5, color: DARK_MUTED, textAlign: "center", marginTop: 14, marginBottom: 0 }}>{PAYWALL.terms}</p>
+          {trialError && <p style={{ fontFamily: BODY, fontSize: "0.82rem", lineHeight: 1.5, color: "#FF8A8A", textAlign: "center", marginTop: 10, marginBottom: 0 }}>{trialError}</p>}
         </div>
       )}
     </Shell>
