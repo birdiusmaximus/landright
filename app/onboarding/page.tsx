@@ -58,12 +58,13 @@ interface Branch {
   demo: { input: string; note: string };
   routes: { a: { label: string; text: string; bestWhen: string }; b: { label: string; text: string; bestWhen: string } };
   compare: { headline: string; lineA: string; lineB: string };
-  breakdown: { span: string; why: string; rootedIn: string }[];
+  breakdown: { a: BeatMark[]; b: BeatMark[] };
   rootedIn: { a: RoutePattern; b: RoutePattern };
   tryYours: { headline: string; placeholder: string };
 }
 
 interface RoutePattern { pattern: string; rootedIn: string; usedFor: string; whatChanges: string }
+interface BeatMark { span: string; why: string; rootedIn: string }
 
 const BRANCHES: Record<Moment, Branch> = {
   apology_without_self_defence: {
@@ -80,11 +81,7 @@ const BRANCHES: Record<Moment, Branch> = {
       b: { label: "Name it before they do", text: "I know this may sound like I’m about to make an excuse, so I want to be clear first. Snapping at you was on me. I was overwhelmed, but I should have paused instead of taking it out on you.", bestWhen: "Context matters, but only after responsibility is clear." },
     },
     compare: { headline: "Both routes repair, but they do different work.", lineA: "A real apology keeps the message clean and accountable.", lineB: "Name it before they do helps when you need to include context without letting context become the centre." },
-    breakdown: [
-      { span: "I want to own that before I explain anything else.", why: "Keeps accountability ahead of context, which makes the apology feel less defensive.", rootedIn: "Accountability-first repair" },
-      { span: "I know this may sound like I’m about to make an excuse", why: "Names the likely concern before it becomes the other person’s objection.", rootedIn: "Negative acknowledgment" },
-      { span: "I was overwhelmed, but I should have paused", why: "Adds context while keeping responsibility intact.", rootedIn: "Repair with context" },
-    ],
+    breakdown: { a: [], b: [] },
     rootedIn: {
       a: { pattern: "A real apology", rootedIn: "Effective-apology research and accountability-first repair", usedFor: "When the repair simply needs clear ownership", whatChanges: "It puts your responsibility ahead of any explanation." },
       b: { pattern: "Name it before they do", rootedIn: "Negative acknowledgment and repair communication", usedFor: "When context matters but must not lead", whatChanges: "It names the likely concern before context becomes an excuse." },
@@ -105,11 +102,7 @@ const BRANCHES: Record<Moment, Branch> = {
       b: { label: "Ask, don’t demand", text: "Would you be willing to look at this week with me and find one proper time to connect? I do not want to pressure you. I want us to protect a bit of space for each other.", bestWhen: "The other person may feel pressured or controlled." },
     },
     compare: { headline: "One route names the need. One route protects their freedom.", lineA: "Feeling, then ask makes the emotional need visible.", lineB: "Ask, don’t demand makes the request feel more collaborative." },
-    breakdown: [
-      { span: "I’ve been missing proper time with you", why: "Names the need without starting from accusation.", rootedIn: "Owned feeling" },
-      { span: "When our evenings keep getting swallowed up", why: "Gives a specific pattern rather than a global complaint.", rootedIn: "Concrete example" },
-      { span: "Would you be willing", why: "Keeps the ask cooperative instead of coercive.", rootedIn: "Autonomy-preserving request" },
-    ],
+    breakdown: { a: [], b: [] },
     rootedIn: {
       a: { pattern: "Feeling, then ask", rootedIn: "Nonviolent Communication and emotionally focused communication", usedFor: "When the feeling needs to be understood first", whatChanges: "It makes the need visible before the request arrives." },
       b: { pattern: "Ask, don’t demand", rootedIn: "Nonviolent Communication and autonomy-supportive communication", usedFor: "When the other person may feel pressured", whatChanges: "It keeps the request clear without cornering the other person." },
@@ -130,11 +123,7 @@ const BRANCHES: Record<Moment, Branch> = {
       b: { label: "Show what’s underneath", text: "I think what hurt most was feeling exposed instead of backed up. I am not trying to make you the villain. I want you to understand why it landed so badly for me.", bestWhen: "The surface complaint is really about a deeper emotional need." },
     },
     compare: { headline: "One route names the impact. One route reveals the deeper need.", lineA: "Kind but clear helps when the event needs to be named.", lineB: "Show what’s underneath helps when the hurt is carrying a more vulnerable meaning." },
-    breakdown: [
-      { span: "I felt embarrassed", why: "Keeps the sentence anchored in your experience.", rootedIn: "Owned feeling" },
-      { span: "I do not think you meant to hurt me", why: "Reduces the need for them to defend intent.", rootedIn: "Motive separation" },
-      { span: "feeling exposed instead of backed up", why: "Shows the need underneath the hurt.", rootedIn: "Emotional specificity" },
-    ],
+    breakdown: { a: [], b: [] },
     rootedIn: {
       a: { pattern: "Kind but clear", rootedIn: "The Gottman Method and Nonviolent Communication", usedFor: "When the event itself needs to be named", whatChanges: "It states the impact without putting their intent on trial." },
       b: { pattern: "Show what’s underneath", rootedIn: "Emotionally focused communication and the Gottman Method", usedFor: "When the hurt carries a more vulnerable meaning", whatChanges: "It keeps your experience clear while leaving room for their intent." },
@@ -155,11 +144,7 @@ const BRANCHES: Record<Moment, Branch> = {
       b: { label: "A limit, with love", text: "I care about us, which is why I do not want another exhausted conversation to damage this more. I need to stop for tonight, and I want us to come back to it tomorrow.", bestWhen: "You want the boundary to feel connected rather than cold." },
     },
     compare: { headline: "One route protects the limit. One route protects the connection.", lineA: "Hold the line kindly keeps the boundary clean.", lineB: "A limit, with love makes the care visible while the limit stays intact." },
-    breakdown: [
-      { span: "I can’t keep having this conversation late at night", why: "States the limit without over-explaining.", rootedIn: "Clean boundary" },
-      { span: "I care about us", why: "Keeps the relationship visible before the limit lands.", rootedIn: "Relational continuity" },
-      { span: "come back to it tomorrow", why: "Turns the boundary into a pause rather than a disappearance.", rootedIn: "Pause-and-return" },
-    ],
+    breakdown: { a: [], b: [] },
     rootedIn: {
       a: { pattern: "Hold the line kindly", rootedIn: "Boundary-setting and clear-limit communication", usedFor: "When the limit needs to be firm and clear", whatChanges: "It states the limit cleanly without burying it in apology." },
       b: { pattern: "A limit, with love", rootedIn: "Boundary-setting and relational continuity", usedFor: "When the limit could read as rejection", whatChanges: "It keeps the limit visible while showing the relationship still matters." },
@@ -180,11 +165,7 @@ const BRANCHES: Record<Moment, Branch> = {
       b: { label: "Ask what matters", text: "Could I ask what you need from me before we try to talk properly? I want to understand what matters most right now rather than push us into another difficult exchange.", bestWhen: "You want to reopen contact without forcing closeness." },
     },
     compare: { headline: "One route names the distance. One route invites their reality.", lineA: "Us vs the problem helps when the relationship needs a shared frame.", lineB: "Ask what matters helps when the other person may need space before repair." },
-    breakdown: [
-      { span: "the distance", why: "Names the problem without making either person the problem.", rootedIn: "Separate people from problem" },
-      { span: "we both got stuck", why: "Reduces blame and creates shared ownership.", rootedIn: "Shared problem frame" },
-      { span: "what you need from me", why: "Invites them in before asking for closeness.", rootedIn: "Perspective-first question" },
-    ],
+    breakdown: { a: [], b: [] },
     rootedIn: {
       a: { pattern: "Us vs the problem", rootedIn: "Getting to Yes and shared-problem framing", usedFor: "When the relationship needs a shared frame", whatChanges: "It names the distance as a shared problem instead of placing it on one person." },
       b: { pattern: "Ask what matters", rootedIn: "Perspective-taking and coaching practice", usedFor: "When the other person may need space first", whatChanges: "It reopens contact without demanding immediate closeness." },
@@ -205,11 +186,7 @@ const BRANCHES: Record<Moment, Branch> = {
       b: { label: "Soft start, clear point", text: "I care about resolving this. I also know I am getting too activated to do it well right now. I need us to stop for tonight and continue when we are both steadier.", bestWhen: "You need to pause while making care and intent visible." },
     },
     compare: { headline: "One route creates distance safely. One route explains the pause.", lineA: "Pause-and-return is short and protective.", lineB: "Soft start, clear point adds reassurance when the pause could feel like rejection." },
-    breakdown: [
-      { span: "before we say things we cannot take back", why: "Frames the pause as protection rather than withdrawal.", rootedIn: "De-escalation" },
-      { span: "I will come back to this tomorrow", why: "Prevents the pause from feeling like disappearance.", rootedIn: "Return point" },
-      { span: "I am getting too activated", why: "Owns your state without blaming theirs.", rootedIn: "Self-regulation language" },
-    ],
+    breakdown: { a: [], b: [] },
     rootedIn: {
       a: { pattern: "Pause-and-return", rootedIn: "Conflict de-escalation and the Gottman Method", usedFor: "When the conversation needs to stop fast", whatChanges: "It stops the spiral while keeping a clear point of return." },
       b: { pattern: "Soft start, clear point", rootedIn: "The Gottman Method and de-escalation practice", usedFor: "When the pause could feel like rejection", whatChanges: "It pauses the conversation while keeping your care visible." },
@@ -230,11 +207,7 @@ const BRANCHES: Record<Moment, Branch> = {
       b: { label: "Ease into it", text: "I want to say this carefully because it matters. I have been feeling unsure about us for a while, and I think we need to talk honestly about where this is going.", bestWhen: "The truth is difficult and the opening needs more emotional runway." },
     },
     compare: { headline: "One route is plain. One route creates runway.", lineA: "Just say it plainly reduces confusion.", lineB: "Ease into it prepares the emotional ground before the difficult point lands." },
-    breakdown: [
-      { span: "I need to be honest", why: "Signals seriousness without accusation.", rootedIn: "Plain-language authenticity" },
-      { span: "I do not want to pretend I am", why: "Keeps the truth owned and specific.", rootedIn: "Owned truth" },
-      { span: "because it matters", why: "Adds care before the difficult point lands.", rootedIn: "Emotional runway" },
-    ],
+    breakdown: { a: [], b: [] },
     rootedIn: {
       a: { pattern: "Just say it plainly", rootedIn: "Plain-language authenticity and owned-truth communication", usedFor: "When clarity matters more than build-up", whatChanges: "It removes the extra force so the point stays clear." },
       b: { pattern: "Ease into it", rootedIn: "Staged delivery and plain-language authenticity", usedFor: "When the truth is hard and needs runway", whatChanges: "It prepares the ground so the real point has room to be heard." },
@@ -844,7 +817,7 @@ export default function Onboarding() {
               </button>
             ))}
           </div>
-          <HighlightMessage key={breakdownRoute} text={breakdownRoute === "a" ? branch.routes.a.text : branch.routes.b.text} marks={branch.breakdown.map(b => ({ span: b.span, note: b.why, rootedIn: b.rootedIn }))} autoSweep underline onOpen={(c) => fire("line_breakdown_opened", { highlight_count: c })} />
+          <HighlightMessage key={breakdownRoute} text={breakdownRoute === "a" ? branch.routes.a.text : branch.routes.b.text} marks={branch.breakdown[breakdownRoute].map(b => ({ span: b.span, note: b.why, rootedIn: b.rootedIn }))} autoSweep underline onOpen={(c) => fire("line_breakdown_opened", { highlight_count: c })} />
           <div style={{ marginTop: 22 }}><CTA onClick={next} variant="ink">See the method</CTA></div>
         </div>
       )}
