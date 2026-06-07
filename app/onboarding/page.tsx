@@ -683,7 +683,9 @@ export default function Onboarding() {
     if (msg.length < MIN_CHARS) return;
     fire("user_message_submitted", { char_count: msg.length });
     setGenState("loading"); setGen({ a: null, b: null }); goto("result");
-    const call = (which: "a" | "b") => fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ raw_input: msg, which, onboarding: ctx() }) }).then(r => r.json());
+    // Onboarding runs against the ungated, rate-limited demo endpoint (no sign-in
+    // required) — the real app uses /api/generate, which requires a subscription.
+    const call = (which: "a" | "b") => fetch("/api/demo-generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ raw_input: msg, which, onboarding: ctx() }) }).then(r => r.json());
     const pa = call("a"); const pb = call("b");
     try {
       const da = await pa;
