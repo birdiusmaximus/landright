@@ -749,6 +749,9 @@ export default function Onboarding() {
             <Mark>land right.</Mark>
           </h1>
           <CTA onClick={next} variant="ink">Continue</CTA>
+          <button onClick={() => clerk.openSignIn({ forceRedirectUrl: "/" })} style={{ marginTop: 18, alignSelf: "center", background: "none", border: "none", cursor: "pointer", fontFamily: BODY, fontSize: "0.9rem", color: DARK_MUTED }}>
+            Already have an account? <span style={{ color: "#FFFFFF", textDecoration: "underline" }}>Sign in</span>
+          </button>
         </div>
       )}
 

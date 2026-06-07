@@ -1,9 +1,25 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import { isAdminUser } from "@/lib/admin";
 
 // Next.js 16 renamed the `middleware` convention to `proxy` (nodejs runtime).
-// clerkMiddleware() is what enables `await auth()` in server components and
-// route handlers, and keeps Clerk's session cookies fresh on every request.
-export default clerkMiddleware();
+// clerkMiddleware() enables `await auth()` in server components and route
+// handlers and keeps Clerk's session cookies fresh on every request.
+//
+// It also runs the acquisition funnel:
+//   • anonymous visitor on "/"          → /onboarding (the marketing pitch)
+//   • signed-in visitor on "/onboarding" → /            (skip the funnel)
+export default clerkMiddleware(async (auth, req) => {
+  const { userId } = await auth();
+  const path = req.nextUrl.pathname;
+
+  if (!userId && path === "/") {
+    return NextResponse.redirect(new URL("/onboarding", req.url));
+  }
+  if (userId && path === "/onboarding" && !isAdminUser(userId)) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+});
 
 export const config = {
   matcher: [
