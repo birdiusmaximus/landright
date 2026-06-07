@@ -39,8 +39,10 @@ export async function hasActivePlus(appUserId: string): Promise<boolean> {
  * caller, or a ready-to-return NextResponse (401/403) otherwise.
  */
 export async function requirePaid(): Promise<{ userId: string } | { error: NextResponse }> {
+  // Local preview: skip auth + subscription. Checked before auth() because the
+  // preview runs without Clerk middleware, so auth() would throw if called.
+  if (DEV_PREVIEW_BYPASS) return { userId: "dev-preview" };
   const { userId } = await auth();
-  if (DEV_PREVIEW_BYPASS) return { userId: userId ?? "dev-preview" }; // local preview: skip auth + subscription
   if (!userId) {
     return { error: NextResponse.json({ success: false, error: "Sign in required." }, { status: 401 }) };
   }

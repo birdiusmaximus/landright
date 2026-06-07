@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { DEV_PREVIEW_BYPASS } from "@/lib/admin";
 import "./globals.css";
 
 // The Green — brand tokens for Clerk's hosted UI (sign-in/up modal, user button).
@@ -61,8 +62,11 @@ export default function RootLayout({
         {/* Adobe Fonts (Typekit) — neue-haas-grotesk-display/text + acumin-pro-extra-condensed.
             React hoists this stylesheet link into <head>. */}
         <link rel="stylesheet" href="https://use.typekit.net/abe4vwg.css" />
-        {/* ClerkProvider goes inside <body> (Clerk requirement for Next.js App Router). */}
-        <ClerkProvider appearance={clerkAppearance}>{children}</ClerkProvider>
+        {/* ClerkProvider goes inside <body> (Clerk requirement for Next.js App Router).
+            Omitted in the dev preview window: Clerk's dev-browser handshake redirects
+            the whole page to clerk.accounts.dev, which the preview blocks. Always
+            mounted in real browsers and in production. */}
+        {DEV_PREVIEW_BYPASS ? children : <ClerkProvider appearance={clerkAppearance}>{children}</ClerkProvider>}
       </body>
     </html>
   );

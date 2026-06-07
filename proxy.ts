@@ -9,8 +9,7 @@ import { isAdminUser, DEV_PREVIEW_BYPASS } from "@/lib/admin";
 // It also runs the acquisition funnel:
 //   • anonymous visitor on "/"          → /onboarding (the marketing pitch)
 //   • signed-in visitor on "/onboarding" → /            (skip the funnel)
-export default clerkMiddleware(async (auth, req) => {
-  if (DEV_PREVIEW_BYPASS) return; // local preview: no funnel redirect, load the app directly
+const funnel = clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
   const path = req.nextUrl.pathname;
 
@@ -21,6 +20,11 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(new URL("/", req.url));
   }
 });
+
+// Local preview: skip Clerk entirely. clerkMiddleware would otherwise drive the
+// dev-browser handshake against clerk.accounts.dev, which the preview blocks
+// (it only allows localhost), leaving the page stranded on a chrome-error page.
+export default DEV_PREVIEW_BYPASS ? () => undefined : funnel;
 
 export const config = {
   matcher: [

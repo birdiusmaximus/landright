@@ -27,6 +27,13 @@ const BULLETS = [
  * RevenueCat entitlement. Otherwise shows a sign-in prompt or the paywall.
  */
 export default function SubscriptionGate({ children }: { children: React.ReactNode }) {
+  // Local preview: render the app directly, before any Clerk hook — <ClerkProvider>
+  // isn't mounted in the preview, so calling useUser() here would throw.
+  if (DEV_PREVIEW_BYPASS) return <>{children}</>;
+  return <PaidGate>{children}</PaidGate>;
+}
+
+function PaidGate({ children }: { children: React.ReactNode }) {
   const { isLoaded, isSignedIn, user } = useUser();
   const [status, setStatus] = useState<Status>("loading");
   const [priceLabel, setPriceLabel] = useState<string>("£2.99/month");
@@ -35,7 +42,6 @@ export default function SubscriptionGate({ children }: { children: React.ReactNo
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
-    if (DEV_PREVIEW_BYPASS) { setStatus("subscribed"); return; } // local preview: skip the gate
     if (!isLoaded) return;
     if (!isSignedIn || !user) { setStatus("signedOut"); return; }
     if (isAdminUser(user.id)) { setStatus("subscribed"); return; } // admin allowlist bypasses the paywall

@@ -5,6 +5,7 @@ import type { Audience, Segment } from "@/lib/types";
 import { APP_VERSION } from "@/lib/version";
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs";
 import SubscriptionGate from "@/components/SubscriptionGate";
+import { DEV_PREVIEW_BYPASS } from "@/lib/admin";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1064,7 +1065,12 @@ export default function Home() {
               LANDRIGHT
             </span>
           </div>
-          {/* Auth controls (signed-out: sign in / sign up; signed-in: account) */}
+          {/* Auth controls (signed-out: sign in / sign up; signed-in: account).
+              Skipped in the dev preview window: Clerk's JS is served from
+              clerk.accounts.dev, which the preview blocks, so these components
+              can't hydrate and would blank the page. Always rendered in real
+              browsers and in production. */}
+          {!DEV_PREVIEW_BYPASS && (
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Show when="signed-out">
               <SignInButton mode="modal">
@@ -1078,6 +1084,7 @@ export default function Home() {
               <UserButton />
             </Show>
           </div>
+          )}
         </div>
 
         {/* ═══ Hero ═══ */}

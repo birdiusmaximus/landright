@@ -6,7 +6,7 @@ import { APP_VERSION } from "@/lib/version";
 // Demo route examples, pre-generated with gpt-5.5 so the onboarding shows options
 // at their most elaborate. Real user messages still use the live fast/slow hybrid.
 import DEMOS from "@/data/onboarding_demos.json";
-import { useUser, useClerk } from "@clerk/nextjs";
+import { usePreviewSafeAuth } from "@/lib/preview-auth";
 import { ensurePurchases, RC_ENTITLEMENT } from "@/lib/revenuecat";
 
 // ─── Brand tokens (mirror app/page.tsx, same design system) ───────────────────
@@ -620,8 +620,7 @@ function ResultRouteCard({ index, out, autoSweep }: { index: string; out: Option
 
 export default function Onboarding() {
   const router = useRouter();
-  const { isSignedIn, user } = useUser();
-  const clerk = useClerk();
+  const { isSignedIn, user, openSignIn, openSignUp } = usePreviewSafeAuth();
   const [index, setIndex] = useState(0);
   const step: StepId = STEPS[index];
   const dark = DARK_SCREENS.includes(step);
@@ -710,7 +709,7 @@ export default function Onboarding() {
 
   function startTrial() {
     fire("trial_started", { paywall_variant: PAYWALL_VARIANT });
-    if (!isSignedIn) { setPendingTrial(true); clerk.openSignUp({}); return; } // sign up, then continue
+    if (!isSignedIn) { setPendingTrial(true); openSignUp({}); return; } // sign up, then continue
     beginTrialPurchase();
   }
 
@@ -749,7 +748,7 @@ export default function Onboarding() {
             <Mark>land right.</Mark>
           </h1>
           <CTA onClick={next} variant="ink">Continue</CTA>
-          <button onClick={() => clerk.openSignIn({ forceRedirectUrl: "/" })} style={{ marginTop: 18, alignSelf: "center", background: "none", border: "none", cursor: "pointer", fontFamily: BODY, fontSize: "0.9rem", color: DARK_MUTED }}>
+          <button onClick={() => openSignIn({ forceRedirectUrl: "/" })} style={{ marginTop: 18, alignSelf: "center", background: "none", border: "none", cursor: "pointer", fontFamily: BODY, fontSize: "0.9rem", color: DARK_MUTED }}>
             Already have an account? <span style={{ color: "#FFFFFF", textDecoration: "underline" }}>Sign in</span>
           </button>
         </div>
