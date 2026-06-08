@@ -257,6 +257,7 @@ export interface GenerateResponse {
   success: boolean;
   result?: GenerationOutput;
   brief?: Partial<GenerationBrief>;
+  more_available?: boolean; // is a fresh, non-repeating "Two more" pair still available
   error?: string;
 }
 

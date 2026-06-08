@@ -30,6 +30,7 @@ interface ResultState {
   audience: Audience | null;
   chosen?: "a" | "b";
   baseNum: number; // number of option A; B is baseNum + 1 (counts up on "Two more")
+  moreAvailable: boolean; // false once every distinct pair has been shown → disable "Two more"
 }
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
@@ -990,7 +991,7 @@ export default function Home() {
       const da = await pa;
       if (!da.success) throw new Error(da.error || "Generation failed");
       aOption = da.option;
-      setResult({ a: da.option, b: null, bError: null, eventId: da.event_id, brief: da.brief, audience: currentAudience, baseNum });
+      setResult({ a: da.option, b: null, bError: null, eventId: da.event_id, brief: da.brief, audience: currentAudience, baseNum, moreAvailable: da.more_available ?? false });
       setAppState("results");
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
     } catch (err) {
@@ -1295,8 +1296,8 @@ export default function Home() {
             })()}
 
             <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-              <Button onClick={handleRegenerate} disabled={isGenerating} variant="outline">
-                {isGenerating ? "Generating…" : "Two more →"}
+              <Button onClick={handleRegenerate} disabled={isGenerating || !result.moreAvailable} variant="outline">
+                {isGenerating ? "Generating…" : result.moreAvailable ? "Two more →" : "No more options"}
               </Button>
               <Button onClick={handleReset} variant="outline">
                 Start over

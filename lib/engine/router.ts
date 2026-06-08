@@ -474,18 +474,50 @@ const TASK_PAIRS: Record<RelationshipTask, { clear: string[]; flair: string[] }>
   },
 };
 
+// Build the de-duplicated sequence of stack pairs for a task. Each pair is one
+// grounded ("clear") + one expressive ("flair") stack, and NO stack is reused
+// across pairs — so "Two more" never re-offers an option whose title was already
+// shown (stack ↔ friendly_label is 1:1 for relationship stacks). The sequence
+// length is the cap on how many distinct pairs the task can offer.
+function uniquePairsForTask(
+  task: RelationshipTask
+): { stackA: string; stackB: string }[] {
+  const pools = TASK_PAIRS[task] ?? TASK_PAIRS.truth_telling;
+  const clear = [...new Set(pools.clear)];
+  const flair = [...new Set(pools.flair)];
+  const used = new Set<string>();
+  const pairs: { stackA: string; stackB: string }[] = [];
+  for (const a of clear) {
+    if (used.has(a)) continue;
+    // First expressive option not already used and distinct from A.
+    const b = flair.find((f) => !used.has(f) && f !== a);
+    if (!b) break; // no distinct expressive option remains → stop, don't repeat
+    used.add(a);
+    used.add(b);
+    pairs.push({ stackA: a, stackB: b });
+  }
+  return pairs;
+}
+
+// How many distinct (no repeated title) pairs a task can offer — i.e. the first
+// pair plus the number of times "Two more" can show genuinely fresh options.
+export function relationshipPairCount(task: RelationshipTask): number {
+  return uniquePairsForTask(task).length;
+}
+
 function selectStacksByTask(
   task: RelationshipTask,
   rotation: number
 ): { stackA: string; stackB: string } {
-  const pools = TASK_PAIRS[task] ?? TASK_PAIRS.truth_telling;
-  const r = Math.max(0, Math.floor(rotation || 0));
-  // A = the grounded/clear take; B = the more elaborate/expressive take.
-  // Each pool rotates independently so "Two more" cycles both sides.
-  const a = pools.clear[r % pools.clear.length];
-  let b = pools.flair[r % pools.flair.length];
-  if (b === a) b = pools.flair[(r + 1) % pools.flair.length];
-  return { stackA: a, stackB: b };
+  const pairs = uniquePairsForTask(task);
+  if (pairs.length === 0) {
+    const pools = TASK_PAIRS[task] ?? TASK_PAIRS.truth_telling;
+    return { stackA: pools.clear[0], stackB: pools.flair[0] };
+  }
+  // Clamp — never wrap past the last unique pair. The UI disables "Two more" at
+  // that point (via more_available), so a repeated title is never shown.
+  const r = Math.min(Math.max(0, Math.floor(rotation || 0)), pairs.length - 1);
+  return pairs[r];
 }
 
 // ─── Main entry point ─────────────────────────────────────────────────────────
