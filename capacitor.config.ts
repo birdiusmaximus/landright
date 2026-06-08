@@ -17,12 +17,12 @@ const config: CapacitorConfig = {
   appName: "Landright",
   webDir: "native/www", // local fallback shown only before the remote site loads
   server: {
-    // FIRST-RUN TEST: loads your local dev server (`npm run dev`) in the Simulator.
-    // For a real build, point this at your deployment URL over https and set
-    // cleartext back to false. For the App Store build, use a deployment with
-    // NEXT_PUBLIC_BILLING_ENABLED=1 so login + the paywall are active.
-    url: "http://localhost:3100",
-    cleartext: true,
+    // Loads the live deployment in the WebView — currently the FREE web app, so
+    // the iOS app is free here too (great for sharing with friends / TestFlight).
+    // For the paid App Store build, point this at a deployment with
+    // NEXT_PUBLIC_BILLING_ENABLED=1 so login + the paywall (App Store IAP) are on.
+    url: "https://landright-six.vercel.app",
+    cleartext: false,
   },
   ios: {
     contentInset: "always",
