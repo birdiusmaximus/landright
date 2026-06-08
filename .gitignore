@@ -20,6 +20,9 @@
 # production
 /build
 
+# capacitor iOS build output (custom derivedDataPath)
+/ios/build
+
 # misc
 .DS_Store
 *.pem

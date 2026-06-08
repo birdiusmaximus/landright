@@ -17,8 +17,12 @@ const config: CapacitorConfig = {
   appName: "Landright",
   webDir: "native/www", // local fallback shown only before the remote site loads
   server: {
-    url: "https://REPLACE-WITH-YOUR-DEPLOYMENT-URL", // ← REQUIRED before building
-    cleartext: false,
+    // FIRST-RUN TEST: loads your local dev server (`npm run dev`) in the Simulator.
+    // For a real build, point this at your deployment URL over https and set
+    // cleartext back to false. For the App Store build, use a deployment with
+    // NEXT_PUBLIC_BILLING_ENABLED=1 so login + the paywall are active.
+    url: "http://localhost:3100",
+    cleartext: true,
   },
   ios: {
     contentInset: "always",
