@@ -51,6 +51,7 @@ VOICE & CRAFT:
 - Avoid clichés and AI tells (e.g. "I want to take a moment to", "I value our connection", "navigate", "at the end of the day", and leaning on em-dashes as a crutch).
 
 CORE RULES:
+- Write entirely in the SAME language as the user's raw input (English unless their draft is clearly in another language). Never switch languages or scripts mid-message, and never swap a word for its equivalent in another language or script. Use only standard Latin characters and ordinary punctuation.
 - Each output is one paragraph — intentionally structured, humanly staged, and audience-ready
 - The two options must differ in their layered architecture, not just wording
 - Never use manipulation, pseudo-therapy, fabricated authenticity, or false promises
@@ -359,6 +360,19 @@ export interface OptionOutput {
 const MODEL_A = "gpt-5.4-mini";
 const MODEL_B = "gpt-5.5";
 
+// Letters from scripts that shouldn't appear in a Latin-script message — the
+// usual model "code-switch" culprits (Cyrillic, Hebrew, Arabic, Devanagari,
+// Thai, Japanese kana, CJK, Hangul). Catches e.g. a stray "सीधे".
+const NON_LATIN_SCRIPT =
+  /[Ѐ-ӿ֐-׿؀-ۿऀ-ॿ฀-๿぀-ヿ㐀-鿿가-힯]/;
+
+// True when the output uses a non-Latin script the user's input did NOT — so a
+// genuinely non-English draft is left alone, but a stray foreign word dropped
+// into an English message is caught.
+function hasStrayForeignScript(output: string, rawInput: string): boolean {
+  return NON_LATIN_SCRIPT.test(output) && !NON_LATIN_SCRIPT.test(rawInput);
+}
+
 export async function generateOne(
   brief: GenerationBrief,
   packet: SourcePacket,
@@ -414,8 +428,22 @@ export async function generateOne(
   try {
     result = await attempt();
   } catch {
-    result = await attempt(); // one retry
+    result = await attempt(); // one retry on hard failure
   }
+
+  // Code-switch guard: models sometimes drop a foreign-script word into an
+  // otherwise-English message (e.g. a stray "सीधे"). If this output uses a script
+  // the user's input didn't, regenerate once and prefer the clean version —
+  // best-effort, never fail the card over it.
+  if (hasStrayForeignScript(result.segs.map(s => s.text).join(" "), brief.raw_input)) {
+    try {
+      const clean = await attempt();
+      if (!hasStrayForeignScript(clean.segs.map(s => s.text).join(" "), brief.raw_input)) {
+        result = clean;
+      }
+    } catch { /* keep what we have */ }
+  }
+
   const breakdown = result.segs;
   const parsed = { safety_flags: result.safety_flags };
 
