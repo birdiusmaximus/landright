@@ -42,6 +42,16 @@ export function hapticSelect(): void {
   void withHaptics(({ Haptics }) => Haptics.selectionChanged());
 }
 
+/**
+ * Very light tick per keystroke — keyboard-style feedback while typing. Uses the
+ * selection generator (the subtlest cue, what iOS uses for keyboard feedback).
+ * Fires per character; a no-op if the device's own keyboard haptics are already
+ * on is not detectable, so users with that enabled may feel a double tick.
+ */
+export function hapticKeystroke(): void {
+  void withHaptics(({ Haptics }) => Haptics.selectionChanged());
+}
+
 /** Success notification — results landed. */
 export function hapticSuccess(): void {
   void withHaptics(({ Haptics, NotificationType }) => Haptics.notification({ type: NotificationType.Success }));

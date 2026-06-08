@@ -8,7 +8,7 @@ import DEMOS from "@/data/onboarding_demos.json";
 import { usePreviewSafeAuth } from "@/lib/preview-auth";
 import { AUTH_DISABLED } from "@/lib/admin";
 import { getBilling } from "@/lib/billing";
-import { hapticTap, hapticSelect } from "@/lib/haptics";
+import { hapticTap, hapticSelect, hapticKeystroke } from "@/lib/haptics";
 
 // ─── Brand tokens (mirror app/page.tsx, same design system) ───────────────────
 
@@ -925,7 +925,7 @@ export default function Onboarding() {
           <h1 style={{ ...H1, color: INK }}>{branch.tryYours.headline}</h1>
           <p style={{ ...LEAD_INK, color: MUTED, marginTop: 12, marginBottom: 16 }}>Rough is fine. One or two sentences is enough.</p>
           <div className="surface-dark" style={{ border: `2px solid ${INK}`, boxShadow: focused ? `4px 4px 0 ${LIME}` : "none", transition: "box-shadow .1s ease", marginBottom: 12 }}>
-            <textarea className="dark-input" value={userMsg} onChange={e => setUserMsg(e.target.value)} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} placeholder={branch.tryYours.placeholder} rows={4} maxLength={500}
+            <textarea className="dark-input" value={userMsg} onChange={e => { hapticKeystroke(); setUserMsg(e.target.value); }} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} placeholder={branch.tryYours.placeholder} rows={4} maxLength={500}
               style={{ width: "100%", resize: "none", fontFamily: BODY, fontSize: "1.05rem", lineHeight: 1.6, color: "#FFFFFF", caretColor: LIME, backgroundColor: "transparent", border: "none", padding: "16px 18px", outline: "none", borderRadius: 0, display: "block" }} />
           </div>
           <p style={{ fontFamily: BODY, fontSize: "0.82rem", lineHeight: 1.5, color: MUTED, marginBottom: 18 }}>Your message is used to generate your routes. You decide what to copy, save or delete.</p>

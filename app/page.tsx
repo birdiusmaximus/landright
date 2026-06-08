@@ -6,7 +6,7 @@ import { APP_VERSION } from "@/lib/version";
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs";
 import SubscriptionGate from "@/components/SubscriptionGate";
 import { AUTH_DISABLED } from "@/lib/admin";
-import { hapticTap, hapticSelect, hapticSuccess, hapticError } from "@/lib/haptics";
+import { hapticTap, hapticSelect, hapticSuccess, hapticError, hapticKeystroke } from "@/lib/haptics";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1138,7 +1138,7 @@ export default function Home() {
             <textarea
               className="dark-input"
               value={rawInput}
-              onChange={e => setRawInput(e.target.value)}
+              onChange={e => { hapticKeystroke(); setRawInput(e.target.value); }}
               onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) startGenerate(); }}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
