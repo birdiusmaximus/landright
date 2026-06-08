@@ -6,6 +6,7 @@ import { APP_VERSION } from "@/lib/version";
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs";
 import SubscriptionGate from "@/components/SubscriptionGate";
 import { AUTH_DISABLED } from "@/lib/admin";
+import { hapticTap, hapticSelect, hapticSuccess, hapticError } from "@/lib/haptics";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -270,7 +271,7 @@ function Button({
   };
   return (
     <button
-      onClick={onClick}
+      onClick={onClick ? () => { hapticTap(); onClick(); } : undefined}
       disabled={disabled}
       onMouseDown={() => !disabled && setPressed(true)}
       onMouseUp={() => setPressed(false)}
@@ -993,10 +994,12 @@ export default function Home() {
       aOption = da.option;
       setResult({ a: da.option, b: null, bError: null, eventId: da.event_id, brief: da.brief, audience: currentAudience, baseNum, moreAvailable: da.more_available ?? false });
       setAppState("results");
+      hapticSuccess();
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setAppState("error");
+      hapticError();
       setIsGenerating(false);
       return;
     }
@@ -1197,7 +1200,7 @@ export default function Home() {
               return (
                 <button
                   key={a.value}
-                  onClick={() => setAudience(active ? null : a.value)}
+                  onClick={() => { hapticSelect(); setAudience(active ? null : a.value); }}
                   style={{
                     fontFamily: COND,
                     fontWeight: 900,

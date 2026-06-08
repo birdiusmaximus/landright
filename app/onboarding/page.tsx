@@ -8,6 +8,7 @@ import DEMOS from "@/data/onboarding_demos.json";
 import { usePreviewSafeAuth } from "@/lib/preview-auth";
 import { AUTH_DISABLED } from "@/lib/admin";
 import { getBilling } from "@/lib/billing";
+import { hapticTap, hapticSelect } from "@/lib/haptics";
 
 // ─── Brand tokens (mirror app/page.tsx, same design system) ───────────────────
 
@@ -306,7 +307,7 @@ function CTA({ children, onClick, disabled, variant = "primary", onDark = false,
     outline: { bg: "transparent", color: onDark ? "#FFFFFF" : INK, shadow: edge, border: edge },
   }[variant];
   return (
-    <button onClick={onClick} disabled={disabled}
+    <button onClick={onClick ? () => { hapticTap(); onClick(); } : undefined} disabled={disabled}
       onMouseEnter={() => setHovered(true)}
       onMouseDown={() => !disabled && setPressed(true)} onMouseUp={() => setPressed(false)} onMouseLeave={() => { setPressed(false); setHovered(false); }}
       style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", border: `2px solid ${disabled ? MUTED : look.border}`, padding: "16px 26px", width: full ? "100%" : undefined,
@@ -666,6 +667,7 @@ export default function Onboarding() {
   const back = () => setIndex(i => Math.max(i - 1, 0));
 
   function chooseMoment(m: Moment) {
+    hapticSelect();
     const b = BRANCHES[m];
     setMoment(m); setReceiverRisk(b.receiver_risk); setDesiredLanding(b.desired_landing);
     emit("moment_selected", { selected_moment: m, receiver_risk: b.receiver_risk, desired_landing: b.desired_landing });
