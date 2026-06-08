@@ -2,13 +2,12 @@
 
 // Auth surface for the onboarding flow.
 //
-// In the dev preview window Clerk is not mounted — its dev-browser handshake
-// redirects the page to clerk.accounts.dev, which the preview blocks — so we
-// return inert stubs and never call Clerk's hooks. DEV_PREVIEW_BYPASS is a
+// When AUTH_DISABLED (the free web app, or the dev preview) Clerk is not mounted,
+// so we return inert stubs and never call Clerk's hooks. AUTH_DISABLED is a
 // build-time constant, so the branch (and thus the hook-call order) is stable
 // for the lifetime of the app; the real branch always calls the same hooks.
 import { useUser, useClerk } from "@clerk/nextjs";
-import { DEV_PREVIEW_BYPASS } from "@/lib/admin";
+import { AUTH_DISABLED } from "@/lib/admin";
 
 type RedirectOpts = { forceRedirectUrl?: string };
 
@@ -20,7 +19,7 @@ export type PreviewSafeAuth = {
 };
 
 export function usePreviewSafeAuth(): PreviewSafeAuth {
-  if (DEV_PREVIEW_BYPASS) {
+  if (AUTH_DISABLED) {
     return { isSignedIn: false, user: null, openSignIn: () => {}, openSignUp: () => {} };
   }
   // eslint-disable-next-line react-hooks/rules-of-hooks

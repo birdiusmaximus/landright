@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useUser, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { ensurePurchases, RC_ENTITLEMENT } from "@/lib/revenuecat";
-import { isAdminUser, DEV_PREVIEW_BYPASS } from "@/lib/admin";
+import { isAdminUser, AUTH_DISABLED } from "@/lib/admin";
 
 const LIME = "#C6F634";
 const INK = "#111110";
@@ -27,9 +27,9 @@ const BULLETS = [
  * RevenueCat entitlement. Otherwise shows a sign-in prompt or the paywall.
  */
 export default function SubscriptionGate({ children }: { children: React.ReactNode }) {
-  // Local preview: render the app directly, before any Clerk hook — <ClerkProvider>
-  // isn't mounted in the preview, so calling useUser() here would throw.
-  if (DEV_PREVIEW_BYPASS) return <>{children}</>;
+  // Free web app / dev preview: render the app directly, before any Clerk hook —
+  // <ClerkProvider> isn't mounted then, so calling useUser() here would throw.
+  if (AUTH_DISABLED) return <>{children}</>;
   return <PaidGate>{children}</PaidGate>;
 }
 

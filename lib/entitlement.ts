@@ -2,7 +2,7 @@
 // client code), so the RevenueCat secret key stays on the server.
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { isAdminUser, DEV_PREVIEW_BYPASS } from "@/lib/admin";
+import { isAdminUser, AUTH_DISABLED } from "@/lib/admin";
 
 const RC_SECRET = process.env.REVENUECAT_SECRET_KEY ?? "";
 const ENTITLEMENT = "Plus";
@@ -39,9 +39,9 @@ export async function hasActivePlus(appUserId: string): Promise<boolean> {
  * caller, or a ready-to-return NextResponse (401/403) otherwise.
  */
 export async function requirePaid(): Promise<{ userId: string } | { error: NextResponse }> {
-  // Local preview: skip auth + subscription. Checked before auth() because the
-  // preview runs without Clerk middleware, so auth() would throw if called.
-  if (DEV_PREVIEW_BYPASS) return { userId: "dev-preview" };
+  // Free web app / dev preview: skip auth + subscription. Checked before auth()
+  // because there's no Clerk middleware then, so auth() would throw if called.
+  if (AUTH_DISABLED) return { userId: "free" };
   const { userId } = await auth();
   if (!userId) {
     return { error: NextResponse.json({ success: false, error: "Sign in required." }, { status: 401 }) };

@@ -21,3 +21,17 @@ export function isAdminUser(userId: string | null | undefined): boolean {
 export const DEV_PREVIEW_BYPASS =
   process.env.NODE_ENV !== "production" &&
   process.env.NEXT_PUBLIC_DEV_PREVIEW === "1";
+
+// Master switch for login + paywall.
+//   OFF (default) → the app is fully free: no login, no paywall, anyone can use
+//     it. This is how the public WEB app ships, so friends can try it freely.
+//   ON  → login + the RevenueCat paywall are active. Used by the native
+//     iOS/Android (Capacitor) builds, which must charge through the app stores.
+// Turn it on for the native build with NEXT_PUBLIC_BILLING_ENABLED=1.
+export const BILLING_ENABLED = process.env.NEXT_PUBLIC_BILLING_ENABLED === "1";
+
+// True whenever the auth/paywall machinery must be skipped entirely — i.e.
+// billing is off (free web app) OR we're in the Clerk-less dev preview. When
+// true: no ClerkProvider, no SubscriptionGate, no API subscription check, no
+// sign-in UI, and onboarding's trial CTAs lead straight into the free app.
+export const AUTH_DISABLED = !BILLING_ENABLED || DEV_PREVIEW_BYPASS;

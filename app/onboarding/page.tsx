@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 // at their most elaborate. Real user messages still use the live fast/slow hybrid.
 import DEMOS from "@/data/onboarding_demos.json";
 import { usePreviewSafeAuth } from "@/lib/preview-auth";
+import { AUTH_DISABLED } from "@/lib/admin";
 import { ensurePurchases, RC_ENTITLEMENT } from "@/lib/revenuecat";
 
 // ─── Brand tokens (mirror app/page.tsx, same design system) ───────────────────
@@ -674,6 +675,8 @@ export default function Onboarding() {
   const ctx = useCallback(() => ({ selected_moment: moment, receiver_risk: receiverRisk, desired_landing: desiredLanding }), [moment, receiverRisk, desiredLanding]);
   function finish() {
     try { localStorage.setItem("landright_onboarding", JSON.stringify({ done: true, ...ctx(), at: new Date().toISOString() })); } catch { /* ignore */ }
+    // Mark onboarding as seen so the free-app funnel (proxy.ts) lets "/" through.
+    try { document.cookie = "lr_seen_onboarding=1; path=/; max-age=31536000; samesite=lax"; } catch { /* ignore */ }
     router.push("/");
   }
 
@@ -705,6 +708,7 @@ export default function Onboarding() {
 
   function startTrial() {
     fire("trial_started", { paywall_variant: PAYWALL_VARIANT });
+    if (AUTH_DISABLED) { finish(); return; } // free app: straight in, no sign-up / checkout
     if (!isSignedIn) { setPendingTrial(true); openSignUp({}); return; } // sign up, then continue
     beginTrialPurchase();
   }
@@ -744,9 +748,11 @@ export default function Onboarding() {
             <Mark>land right.</Mark>
           </h1>
           <CTA onClick={next} variant="ink">Continue</CTA>
-          <button onClick={() => openSignIn({ forceRedirectUrl: "/" })} style={{ marginTop: 18, alignSelf: "center", background: "none", border: "none", cursor: "pointer", fontFamily: BODY, fontSize: "0.9rem", color: DARK_MUTED }}>
-            Already have an account? <span style={{ color: "#FFFFFF", textDecoration: "underline" }}>Sign in</span>
-          </button>
+          {!AUTH_DISABLED && (
+            <button onClick={() => openSignIn({ forceRedirectUrl: "/" })} style={{ marginTop: 18, alignSelf: "center", background: "none", border: "none", cursor: "pointer", fontFamily: BODY, fontSize: "0.9rem", color: DARK_MUTED }}>
+              Already have an account? <span style={{ color: "#FFFFFF", textDecoration: "underline" }}>Sign in</span>
+            </button>
+          )}
         </div>
       )}
 
@@ -959,7 +965,7 @@ export default function Onboarding() {
       {/* 17 PAYWALL (dark close) */}
       {step === "paywall" && (
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", color: LIME, marginBottom: 14 }}>3 days free</p>
+          <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", color: LIME, marginBottom: 14 }}>{AUTH_DISABLED ? "Free to use" : "3 days free"}</p>
           <h1 style={{ ...H1, color: "#FFFFFF" }}>{PAYWALL.headline}</h1>
           <p style={{ fontFamily: BODY, fontSize: "1.04rem", lineHeight: 1.55, color: "#E8E8E2", marginTop: 14, marginBottom: 22 }}>{PAYWALL.body}</p>
           <div style={{ marginBottom: 26 }}>
@@ -970,8 +976,8 @@ export default function Onboarding() {
               </div>
             ))}
           </div>
-          <CTA onClick={startTrial} disabled={trialBusy} variant="ink">{trialBusy ? "Opening checkout…" : "Start 3-day free trial"}</CTA>
-          <p style={{ fontFamily: BODY, fontSize: "0.8rem", lineHeight: 1.5, color: DARK_MUTED, textAlign: "center", marginTop: 14, marginBottom: 0 }}>{PAYWALL.terms}</p>
+          <CTA onClick={startTrial} disabled={trialBusy} variant="ink">{trialBusy ? "Opening checkout…" : AUTH_DISABLED ? "Start using Landright" : "Start 3-day free trial"}</CTA>
+          {!AUTH_DISABLED && <p style={{ fontFamily: BODY, fontSize: "0.8rem", lineHeight: 1.5, color: DARK_MUTED, textAlign: "center", marginTop: 14, marginBottom: 0 }}>{PAYWALL.terms}</p>}
           {trialError && <p style={{ fontFamily: BODY, fontSize: "0.82rem", lineHeight: 1.5, color: "#FF8A8A", textAlign: "center", marginTop: 10, marginBottom: 0 }}>{trialError}</p>}
         </div>
       )}

@@ -1,15 +1,14 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
-import { isAdminUser, DEV_PREVIEW_BYPASS } from "@/lib/admin";
+import { NextResponse, type NextRequest } from "next/server";
+import { isAdminUser, AUTH_DISABLED } from "@/lib/admin";
 
 // Next.js 16 renamed the `middleware` convention to `proxy` (nodejs runtime).
-// clerkMiddleware() enables `await auth()` in server components and route
-// handlers and keeps Clerk's session cookies fresh on every request.
 //
-// It also runs the acquisition funnel:
+// Billing/login ON — clerkMiddleware() keeps Clerk's session fresh and enables
+// `await auth()` in server code, and runs the acquisition funnel:
 //   • anonymous visitor on "/"          → /onboarding (the marketing pitch)
 //   • signed-in visitor on "/onboarding" → /            (skip the funnel)
-const funnel = clerkMiddleware(async (auth, req) => {
+const clerkFunnel = clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
   const path = req.nextUrl.pathname;
 
@@ -21,10 +20,18 @@ const funnel = clerkMiddleware(async (auth, req) => {
   }
 });
 
-// Local preview: skip Clerk entirely. clerkMiddleware would otherwise drive the
-// dev-browser handshake against clerk.accounts.dev, which the preview blocks
-// (it only allows localhost), leaving the page stranded on a chrome-error page.
-export default DEV_PREVIEW_BYPASS ? () => undefined : funnel;
+// Billing/login OFF (the free web app) — no Clerk at all. We still show the
+// onboarding once: a first-time visitor to "/" is sent to /onboarding, and a
+// cookie set when they enter the app (onboarding's finish()) stops the redirect
+// thereafter. (Also used by the dev preview, which can't reach clerk.accounts.dev.)
+function freeFunnel(req: NextRequest) {
+  if (req.nextUrl.pathname === "/" && !req.cookies.get("lr_seen_onboarding")) {
+    return NextResponse.redirect(new URL("/onboarding", req.url));
+  }
+  return NextResponse.next();
+}
+
+export default AUTH_DISABLED ? freeFunnel : clerkFunnel;
 
 export const config = {
   matcher: [
