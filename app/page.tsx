@@ -7,6 +7,7 @@ import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs";
 import SubscriptionGate from "@/components/SubscriptionGate";
 import { AUTH_DISABLED } from "@/lib/admin";
 import { hapticTap, hapticSelect, hapticSuccess, hapticError, hapticKeystroke } from "@/lib/haptics";
+import { useKeyboardVisible } from "@/lib/keyboard";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -815,6 +816,7 @@ export default function Home() {
   const rotationRef = useRef(0);
 
   const canGenerate = rawInput.trim().length > 0 && !isGenerating;
+  const keyboardVisible = useKeyboardVisible(); // pin the CTA above the keyboard while typing
 
   // One-tap realistic sample for testing, tuned to the selected audience.
   async function generateSample() {
@@ -1223,9 +1225,12 @@ export default function Home() {
             })}
           </div>
 
-          <Button onClick={startGenerate} disabled={!canGenerate} variant="primary" full>
-            {isGenerating ? "Composing…" : "Make it land →"}
-          </Button>
+          {/* While the keyboard is up, pin the CTA just above it so it's never covered. */}
+          <div style={keyboardVisible ? { position: "sticky", bottom: 0, zIndex: 20, background: GROUND, paddingTop: 10, paddingBottom: 10, boxShadow: "0 -1px 0 rgba(17,17,16,0.18)" } : undefined}>
+            <Button onClick={startGenerate} disabled={!canGenerate} variant="primary" full>
+              {isGenerating ? "Composing…" : "Make it land →"}
+            </Button>
+          </div>
 
           {appState === "loading" && <LoadingBar />}
           {!isGenerating && (

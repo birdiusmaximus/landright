@@ -1,4 +1,5 @@
 import type { CapacitorConfig } from "@capacitor/cli";
+import { KeyboardResize } from "@capacitor/keyboard";
 
 // Capacitor wraps the LIVE web app in a native WebView. Almost all of Landright
 // stays a normal web app (built + deployed on Vercel); this native shell only
@@ -28,6 +29,13 @@ const config: CapacitorConfig = {
     // "never" lets the page fill behind the status bar / home indicator; the web
     // app pads its content with env(safe-area-inset-*) so nothing is obscured.
     contentInset: "never",
+  },
+  plugins: {
+    Keyboard: {
+      // Resize the WebView to sit above the keyboard, so the page (and the pinned
+      // "Make it land" button) stay visible while typing.
+      resize: KeyboardResize.Native,
+    },
   },
 };
 
