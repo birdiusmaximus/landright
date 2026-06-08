@@ -25,7 +25,9 @@ const config: CapacitorConfig = {
     cleartext: false,
   },
   ios: {
-    contentInset: "always",
+    // "never" lets the page fill behind the status bar / home indicator; the web
+    // app pads its content with env(safe-area-inset-*) so nothing is obscured.
+    contentInset: "never",
   },
 };
 

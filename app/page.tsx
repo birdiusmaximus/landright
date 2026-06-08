@@ -1050,7 +1050,7 @@ export default function Home() {
   }
 
   return (
-    <main style={{ minHeight: "100vh", padding: "clamp(16px, 4vw, 40px)" }}>
+    <main style={{ minHeight: "100dvh", padding: "clamp(16px, 4vw, 40px)", paddingTop: "calc(clamp(16px, 4vw, 40px) + env(safe-area-inset-top))", paddingBottom: "calc(clamp(16px, 4vw, 40px) + env(safe-area-inset-bottom))" }}>
       {/* Vertical rail */}
       <div className="vrail" style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.2em", textTransform: "uppercase", color: INK }}>
         Landright — Make your message land right

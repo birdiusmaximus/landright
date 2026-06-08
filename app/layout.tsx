@@ -49,6 +49,7 @@ export const viewport: Viewport = {
   themeColor: "#E4E4DF",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover", // let the page fill behind the status bar / home indicator
 };
 
 export default function RootLayout({
