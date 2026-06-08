@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import DEMOS from "@/data/onboarding_demos.json";
 import { usePreviewSafeAuth } from "@/lib/preview-auth";
 import { AUTH_DISABLED } from "@/lib/admin";
-import { ensurePurchases, RC_ENTITLEMENT } from "@/lib/revenuecat";
+import { getBilling } from "@/lib/billing";
 
 // ─── Brand tokens (mirror app/page.tsx, same design system) ───────────────────
 
@@ -689,13 +689,9 @@ export default function Onboarding() {
     if (!user) return;
     setTrialBusy(true); setTrialError(null);
     try {
-      const p = await ensurePurchases(user.id);
-      const offerings = await p.getOfferings();
-      const monthly = offerings.current?.monthly;
-      if (!monthly) throw new Error("No subscription is available right now.");
-      await p.purchase({ rcPackage: monthly, customerEmail: user.primaryEmailAddress?.emailAddress });
-      const info = await p.getCustomerInfo();
-      if (info.entitlements.active[RC_ENTITLEMENT]) finish(); // subscribed → into the app
+      const billing = await getBilling(user.id);
+      const active = await billing.purchaseMonthly(user.primaryEmailAddress?.emailAddress);
+      if (active) finish(); // subscribed → into the app
       else setTrialError("Your subscription didn’t activate. Please try again.");
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);

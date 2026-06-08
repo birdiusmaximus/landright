@@ -6,10 +6,18 @@
     "dev": "next dev -p 3100",
     "build": "next build",
     "start": "next start -p 3100",
-    "lint": "eslint"
+    "lint": "eslint",
+    "native:assets": "node scripts/gen_native_assets.mjs",
+    "cap:add:ios": "cap add ios",
+    "cap:assets": "capacitor-assets generate --ios",
+    "cap:sync": "cap sync ios",
+    "cap:ios": "cap open ios",
+    "cap:doctor": "cap doctor"
   },
   "dependencies": {
+    "@capacitor/core": "^8.4.0",
     "@clerk/nextjs": "^7.4.3",
+    "@revenuecat/purchases-capacitor": "^13.1.5",
     "@revenuecat/purchases-js": "^1.42.1",
     "next": "16.2.3",
     "openai": "^6.34.0",
@@ -17,6 +25,9 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.4.0",
+    "@capacitor/ios": "^8.4.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
