@@ -259,6 +259,9 @@ export interface GenerateResponse {
   brief?: Partial<GenerationBrief>;
   more_available?: boolean; // is a fresh, non-repeating "Two more" pair still available
   error?: string;
+  limit_reached?: boolean; // monthly per-subscriber generation cap hit
+  limit?: number; // the monthly cap
+  resets_at?: string; // ISO date the cap resets
 }
 
 // ─── Analytics ────────────────────────────────────────────────────────────────

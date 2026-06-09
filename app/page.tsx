@@ -66,6 +66,16 @@ const DISPLAY = "var(--font-display), 'Helvetica Neue', Arial, sans-serif";
 const COND = "var(--font-cond), 'Arial Narrow', sans-serif";
 const BODY = "var(--font-body), -apple-system, sans-serif";
 
+// "2026-07-01T00:00:00Z" → "1 July" for the limit-reset message.
+function formatReset(iso: string): string {
+  if (!iso) return "next month";
+  try {
+    return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long" });
+  } catch {
+    return "next month";
+  }
+}
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const AUDIENCES: { value: Audience; label: string }[] = [
@@ -810,6 +820,8 @@ export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState<ResultState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [limitReached, setLimitReached] = useState<{ limit: number; resetsAt: string } | null>(null);
+  const [showLimitModal, setShowLimitModal] = useState(false);
   const [focused, setFocused] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
   // Rotation walks the task's stack pool: 0 for a fresh generate, +1 per "Two more".
@@ -992,7 +1004,16 @@ export default function Home() {
     let aOption: OptionData | null = null;
     try {
       const da = await pa;
-      if (!da.success) throw new Error(da.error || "Generation failed");
+      if (!da.success) {
+        if (da.limit_reached) {
+          setLimitReached({ limit: da.limit ?? 0, resetsAt: da.resets_at ?? "" });
+          setShowLimitModal(true);
+          setAppState("idle");
+          setIsGenerating(false);
+          return; // the parallel "b" call (if any) is ignored
+        }
+        throw new Error(da.error || "Generation failed");
+      }
       aOption = da.option;
       setResult({ a: da.option, b: null, bError: null, eventId: da.event_id, brief: da.brief, audience: currentAudience, baseNum, moreAvailable: da.more_available ?? false });
       setAppState("results");
@@ -1227,18 +1248,48 @@ export default function Home() {
 
           {/* While the keyboard is up, pin the CTA just above it so it's never covered. */}
           <div style={keyboardVisible ? { position: "sticky", bottom: 0, zIndex: 20, background: GROUND, paddingTop: 10, paddingBottom: 10, boxShadow: "0 -1px 0 rgba(17,17,16,0.18)" } : undefined}>
-            <Button onClick={startGenerate} disabled={!canGenerate} variant="primary" full>
-              {isGenerating ? "Composing…" : "Make it land →"}
+            <Button onClick={startGenerate} disabled={!canGenerate || !!limitReached} variant="primary" full>
+              {isGenerating ? "Composing…" : limitReached ? "Monthly limit reached" : "Make it land →"}
             </Button>
           </div>
 
           {appState === "loading" && <LoadingBar />}
-          {!isGenerating && (
+          {!isGenerating && (limitReached ? (
+            <p style={{ textAlign: "center", marginTop: 12, fontFamily: COND, fontWeight: 700, fontSize: "0.82rem", letterSpacing: "0.03em", color: INK, lineHeight: 1.4 }}>
+              You&rsquo;ve used all {limitReached.limit} generations this month — resets {formatReset(limitReached.resetsAt)}.
+            </p>
+          ) : (
             <p style={{ textAlign: "center", marginTop: 12, fontFamily: COND, fontWeight: 600, fontSize: "0.82rem", letterSpacing: "0.03em", color: MUTED, lineHeight: 1.4 }}>
               Line-by-line reasoning. Rooted in relationship communication principles.
             </p>
-          )}
+          ))}
         </section>
+
+        {/* ═══ Monthly limit pop-up ═══ */}
+        {showLimitModal && limitReached && (
+          <div
+            onClick={() => setShowLimitModal(false)}
+            style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(17,17,16,0.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}
+          >
+            <div
+              onClick={e => e.stopPropagation()}
+              className="surface-dark"
+              style={{ border: `2px solid ${INK}`, boxShadow: `6px 6px 0 ${LIME}`, padding: "clamp(24px, 5vw, 36px)", maxWidth: 440, width: "100%" }}
+            >
+              <p style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.78rem", letterSpacing: "0.18em", textTransform: "uppercase", color: LIME, margin: 0 }}>Monthly limit</p>
+              <h2 style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "clamp(1.5rem, 5vw, 2rem)", lineHeight: 1.04, letterSpacing: "-0.02em", textTransform: "uppercase", color: "#FFFFFF", margin: "10px 0 12px" }}>You&rsquo;ve hit your limit for this month.</h2>
+              <p style={{ fontFamily: BODY, fontSize: "1rem", lineHeight: 1.55, color: "#E8E8E2", margin: "0 0 22px" }}>
+                You&rsquo;ve used all {limitReached.limit} generations included with your subscription. It resets on {formatReset(limitReached.resetsAt)}.
+              </p>
+              <button
+                onClick={() => setShowLimitModal(false)}
+                style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "14px 24px", borderRadius: 0, cursor: "pointer", border: `2px solid ${INK}`, backgroundColor: LIME, color: INK, boxShadow: `4px 4px 0 ${INK}`, width: "100%" }}
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* ═══ Error ═══ */}
         {appState === "error" && error && (
