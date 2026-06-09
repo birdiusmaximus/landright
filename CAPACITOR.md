@@ -59,8 +59,17 @@ from the same repo (or a separate environment) with these env vars:
 - `NEXT_PUBLIC_BILLING_ENABLED=1`
 - `NEXT_PUBLIC_REVENUECAT_IOS_KEY=appl_…` (the RevenueCat **Apple** public key)
 - the existing Clerk keys + `REVENUECAT_SECRET_KEY` + `NEXT_PUBLIC_ADMIN_USER_IDS`
+- `MONTHLY_GENERATION_LIMIT` (optional) — per-subscriber generations per calendar
+  month. Defaults to **50**, which keeps cost (~£0.025–0.04 each on gpt-5.4) well
+  under the £2.99 price. Set a different number here to override; admins are
+  exempt. Needs `CLERK_SECRET_KEY` (the count lives in Clerk private metadata).
 
 Point `server.url` at that deployment's URL. The public web app stays free.
+
+> **Monthly limit:** counted once per generation (each "Make it land" / "Two
+> more"), resets on the 1st (UTC). Dormant unless billing is on. When exceeded,
+> `/api/generate` returns `429` and the app shows a "limit reached — resets on
+> <date>" pop-up.
 
 ## Remaining native-IAP steps (when you're ready to charge)
 1. **App Store Connect** → create the app record + an auto-renewing subscription
