@@ -1,20 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  /* ── The Green-inspired palette ── */
+  /* ── The Green palette — light theme (default) ──
+     LIME is the constant accent. INK/GROUND/etc. flip in dark mode (below).
+     --ink-fixed is the exception: text/strokes that sit ON a lime fill must stay
+     ink in both themes, so they read against the bright lime. */
   --lime: #C6F634;
   --lime-deep: #B4E61E;
-  --ink: #111110;
-  --ground: #E4E4DF;
+  --ink: #111110;          /* page foreground: text, borders, hard shadows */
+  --ink-fixed: #111110;    /* on-lime text/strokes — never flips */
+  --ground: #E4E4DF;       /* page background */
   --ground-2: #DBDBD5;
   --ground-3: #D2D2CB;
   --muted: #6E6E66;
   --line: #111110;
+  --surface: #1A1A17;      /* dark inset cards (input box, option cards) */
+  --surface-muted: #9A9A90;
+  /* "selected / active" fill — chip, outline-button hover, the "ink" tag */
+  --sel-bg: #111110;
+  --sel-fg: #C6F634;
+  --sel-shadow: #C6F634;
 
   /* ── Adobe Fonts (Typekit project abe4vwg) ── */
   --font-display: "neue-haas-grotesk-display", "Helvetica Neue", Arial, sans-serif;
   --font-cond: "acumin-pro-extra-condensed", "Arial Narrow", sans-serif;
   --font-body: "neue-haas-grotesk-text", -apple-system, "Helvetica Neue", sans-serif;
+}
+
+/* ── Dark theme — a branded reversal ──
+   The ground drops to ink and the ink lifts to a soft off-white; lime stays the
+   constant pop. Dark cards lift a touch above the page and gain a light edge.
+   "Selected" states invert to a lime fill so they still read as on. */
+html[data-theme="dark"] {
+  --ink: #E8E8E2;
+  --ground: #111110;
+  --ground-2: #2A2A24;
+  --ground-3: #34342C;
+  --muted: #9A9A90;
+  --line: #E8E8E2;
+  --surface: #201F1B;
+  --surface-muted: #9A9A90;
+  --sel-bg: #C6F634;
+  --sel-fg: #111110;
+  --sel-shadow: #E8E8E2;
 }
 
 * {
@@ -53,9 +81,16 @@ body::before {
   z-index: 1;
 }
 
+/* The page grain is a multiply over the light ground; on the dark ground that
+   would vanish, so screen-blend a faint light grain to keep the texture. */
+html[data-theme="dark"] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.05;
+}
+
 ::selection {
   background-color: var(--lime);
-  color: var(--ink);
+  color: var(--ink-fixed);
 }
 
 ::-webkit-scrollbar { width: 8px; }
@@ -70,7 +105,7 @@ button:focus-visible {
 /* ── Dark grain surfaces (inverted text boxes) ── */
 .surface-dark {
   position: relative;
-  background-color: #1A1A17;
+  background-color: var(--surface);
   color: #FFFFFF;
   isolation: isolate;
 }

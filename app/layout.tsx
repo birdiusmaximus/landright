@@ -60,6 +60,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className="min-h-full">
+        {/* Apply the saved dark/light theme before first paint so there's no flash.
+            The toggle lives on the home logomark; preference is per-device. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var t=localStorage.getItem('lr-theme');if(t==='dark'){document.documentElement.dataset.theme='dark';var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content','#111110');}}catch(e){}",
+          }}
+        />
         {/* Adobe Fonts (Typekit) — neue-haas-grotesk-display/text + acumin-pro-extra-condensed.
             React hoists this stylesheet link into <head>. */}
         <link rel="stylesheet" href="https://use.typekit.net/abe4vwg.css" />

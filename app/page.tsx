@@ -7,6 +7,7 @@ import SubscriptionGate from "@/components/SubscriptionGate";
 import { AUTH_DISABLED } from "@/lib/admin";
 import { hapticTap, hapticSelect, hapticSuccess, hapticError, hapticKeystroke } from "@/lib/haptics";
 import { useKeyboardVisible } from "@/lib/keyboard";
+import { shareText } from "@/lib/share";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -54,14 +55,19 @@ function similarity(a: string, b: string): number {
 
 // ─── Brand tokens ─────────────────────────────────────────────────────────────
 
-const LIME = "#C6F634";
-const LIME_DEEP = "#B4E61E"; // pressed/hover state for lime surfaces
-const INK = "#111110";
-const GROUND = "#E4E4DF";
-const GROUND2 = "#DBDBD5";
-const MUTED = "#6E6E66";
-const DARK = "#1A1A17";
-const DARK_MUTED = "#9A9A90";
+// Brand colours route through the CSS variables in globals.css so the dark-mode
+// toggle (tap the logomark) re-themes everything at once. LIME is constant;
+// INK/GROUND/etc. flip between light and dark. ON_LIME is the exception — text
+// and strokes sitting on a lime fill must stay ink in both themes.
+const LIME = "var(--lime)";
+const LIME_DEEP = "var(--lime-deep)"; // pressed/hover state for lime surfaces
+const INK = "var(--ink)";
+const ON_LIME = "var(--ink-fixed)";
+const GROUND = "var(--ground)";
+const GROUND2 = "var(--ground-2)";
+const MUTED = "var(--muted)";
+const DARK = "var(--surface)";
+const DARK_MUTED = "var(--surface-muted)";
 const DISPLAY = "var(--font-display), 'Helvetica Neue', Arial, sans-serif";
 const COND = "var(--font-cond), 'Arial Narrow', sans-serif";
 const BODY = "var(--font-body), -apple-system, sans-serif";
@@ -90,9 +96,9 @@ type TagVariant = "solid" | "outline" | "ink";
 
 function Tag({ children, variant = "solid", size = "sm", shadow = false }: { children: React.ReactNode; variant?: TagVariant; size?: "sm" | "xs"; shadow?: boolean }) {
   const styles: Record<TagVariant, React.CSSProperties> = {
-    solid: { backgroundColor: LIME, color: INK, border: `2px solid ${INK}` },
+    solid: { backgroundColor: LIME, color: ON_LIME, border: `2px solid ${INK}` },
     outline: { backgroundColor: "transparent", color: INK, border: `2px solid ${INK}` },
-    ink: { backgroundColor: INK, color: LIME, border: `2px solid ${INK}` },
+    ink: { backgroundColor: "var(--sel-bg)", color: "var(--sel-fg)", border: `2px solid ${INK}` },
   };
   return (
     <span
@@ -121,7 +127,7 @@ function Mark({ children }: { children: React.ReactNode }) {
     <span
       style={{
         backgroundColor: LIME,
-        color: INK,
+        color: ON_LIME,
         padding: "0.02em 0.16em",
         display: "inline-block",
         transform: "rotate(-1.4deg)",
@@ -148,7 +154,7 @@ function SampleTag({ loading, onClick }: { loading: boolean; onClick: () => void
       onMouseUp={() => setPressed(false)}
       onMouseLeave={() => setPressed(false)}
       style={{
-        backgroundColor: LIME, color: INK, border: `2px solid ${INK}`,
+        backgroundColor: LIME, color: ON_LIME, border: `2px solid ${INK}`,
         fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.07em",
         textTransform: "uppercase", padding: "6px 12px", lineHeight: 1.1, whiteSpace: "nowrap",
         cursor: "pointer", borderRadius: 0, display: "inline-block",
@@ -232,8 +238,8 @@ function MicButton({ active, disabled, onClick }: { active: boolean; disabled?: 
         cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.5 : 1,
       }}
     >
-      <svg width="18" height="20" viewBox="0 0 18 20" fill="none" stroke={active ? INK : LIME} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="6" y="1" width="6" height="10" rx="3" fill={active ? INK : "none"} />
+      <svg width="18" height="20" viewBox="0 0 18 20" fill="none" stroke={active ? ON_LIME : LIME} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="6" y="1" width="6" height="10" rx="3" fill={active ? ON_LIME : "none"} />
         <path d="M3 9a6 6 0 0 0 12 0" />
         <line x1="9" y1="15" x2="9" y2="18.5" />
         <line x1="6" y1="18.5" x2="12" y2="18.5" />
@@ -249,7 +255,7 @@ function Chip({ active, label, onClick }: { active: boolean; label: string; onCl
   const [hovered, setHovered] = useState(false);
   const lifted = hovered && !pressed;
   const boxShadow = active
-    ? (pressed ? `0 0 0 ${LIME}` : lifted ? `5px 5px 0 ${LIME}` : `3px 3px 0 ${LIME}`)
+    ? (pressed ? `0 0 0 var(--sel-shadow)` : lifted ? `5px 5px 0 var(--sel-shadow)` : `3px 3px 0 var(--sel-shadow)`)
     : (pressed ? "none" : lifted ? `3px 3px 0 ${INK}` : "none");
   const transform = pressed ? "translate(2px, 2px)" : lifted ? "translate(-2px, -2px)" : "none";
   return (
@@ -262,7 +268,7 @@ function Chip({ active, label, onClick }: { active: boolean; label: string; onCl
       onPointerCancel={() => setPressed(false)}
       style={{
         fontFamily: COND, fontWeight: 900, fontSize: "0.95rem", letterSpacing: "0.05em", textTransform: "uppercase",
-        border: `2px solid ${INK}`, backgroundColor: active ? INK : (lifted ? GROUND2 : "transparent"), color: active ? LIME : INK,
+        border: `2px solid ${INK}`, backgroundColor: active ? "var(--sel-bg)" : (lifted ? GROUND2 : "transparent"), color: active ? "var(--sel-fg)" : INK,
         padding: "14px 12px", cursor: "pointer", borderRadius: 0, boxShadow, transform,
         transition: "transform 0.13s cubic-bezier(0.34,1.45,0.6,1), box-shadow 0.13s ease, background-color 0.12s ease, color 0.12s ease",
       }}
@@ -291,9 +297,9 @@ function Button({
   // Each stage shifts colour + shadow so the button lifts on hover and slams
   // into its shadow on press.
   const look = {
-    primary: { bg: LIME, color: INK, shadow: INK, hoverBg: LIME_DEEP, hoverColor: INK, pressBg: LIME_DEEP, pressColor: INK },
+    primary: { bg: LIME, color: ON_LIME, shadow: INK, hoverBg: LIME_DEEP, hoverColor: ON_LIME, pressBg: LIME_DEEP, pressColor: ON_LIME },
     cta: { bg: INK, color: LIME, shadow: LIME, hoverBg: "#23231F", hoverColor: LIME, pressBg: INK, pressColor: LIME },
-    outline: { bg: "transparent", color: INK, shadow: INK, hoverBg: INK, hoverColor: LIME, pressBg: INK, pressColor: LIME },
+    outline: { bg: "transparent", color: INK, shadow: INK, hoverBg: "var(--sel-bg)", hoverColor: "var(--sel-fg)", pressBg: "var(--sel-bg)", pressColor: "var(--sel-fg)" },
   }[variant];
   const stage = disabled ? "disabled" : pressed ? "press" : hovered ? "hover" : "rest";
   const bg = stage === "disabled" ? GROUND2 : stage === "press" ? look.pressBg : stage === "hover" ? look.hoverBg : look.bg;
@@ -334,6 +340,71 @@ function Button({
   );
 }
 
+// Shared action button for the dark card (Copy / Share). Lime outline at rest;
+// on a mouse it lifts with a faint lime shadow on hover; on press it fills lime
+// and fires a tap haptic — matching the rest of the app's button feel. `active`
+// forces the filled look (used for the brief "copied" confirmation).
+function CardActionButton({
+  onClick,
+  active = false,
+  title,
+  children,
+}: {
+  onClick: () => void;
+  active?: boolean;
+  title?: string;
+  children: React.ReactNode;
+}) {
+  const [hovered, setHovered] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const filled = active || pressed;
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      onPointerEnter={e => { if (e.pointerType === "mouse") setHovered(true); }}
+      onPointerLeave={() => { setHovered(false); setPressed(false); }}
+      onPointerDown={() => { setPressed(true); hapticTap(); }}
+      onPointerUp={() => setPressed(false)}
+      onPointerCancel={() => setPressed(false)}
+      style={{
+        fontFamily: COND,
+        fontWeight: 900,
+        fontSize: "0.9rem",
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        border: `2px solid ${LIME}`,
+        backgroundColor: filled ? LIME : hovered ? "rgba(198,246,52,0.14)" : "transparent",
+        color: filled ? ON_LIME : LIME,
+        padding: "9px 18px",
+        cursor: "pointer",
+        borderRadius: 0,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 7,
+        boxShadow: pressed ? "0 0 0 transparent" : hovered ? `3px 3px 0 ${LIME}` : "0 0 0 transparent",
+        transform: pressed ? "translate(2px, 2px)" : hovered ? "translate(-1px, -1px)" : "none",
+        transition: "transform 0.12s cubic-bezier(0.34,1.45,0.6,1), box-shadow 0.12s ease, background-color 0.12s ease, color 0.12s ease",
+        WebkitTapHighlightColor: "transparent",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// Share/upload glyph (a box with an arrow rising out of it). Inherits the
+// button's current text colour via `currentColor`.
+function ShareGlyph() {
+  return (
+    <svg width="14" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="square" strokeLinejoin="miter" aria-hidden style={{ marginTop: -1 }}>
+      <path d="M12 15.5 V3" />
+      <path d="M7.5 7 L12 2.5 L16.5 7" />
+      <path d="M6 10 H4 V21.5 H20 V10 H18" />
+    </svg>
+  );
+}
+
 // Copy button styled for the dark card.
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -362,27 +433,29 @@ function CopyButton({ text }: { text: string }) {
     }
   }
   return (
-    <button
-      onClick={copy}
-      style={{
-        fontFamily: COND,
-        fontWeight: 900,
-        fontSize: "0.9rem",
-        letterSpacing: "0.05em",
-        textTransform: "uppercase",
-        border: `2px solid ${LIME}`,
-        backgroundColor: copied ? LIME : "transparent",
-        color: copied ? INK : LIME,
-        padding: "9px 18px",
-        cursor: "pointer",
-        borderRadius: 0,
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 7,
-      }}
-    >
+    <CardActionButton onClick={copy} active={copied} title="Copy this message">
       {copied ? "✓ Copied" : "⧉ Copy text"}
-    </button>
+    </CardActionButton>
+  );
+}
+
+// Share button — opens the native share sheet (Messages, WhatsApp, Mail…) in the
+// app and on mobile web; falls back to copying on desktop browsers.
+function ShareButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  async function onShare() {
+    const outcome = await shareText(text);
+    if (outcome === "copied") {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } else if (outcome === "shared") {
+      hapticSuccess();
+    }
+  }
+  return (
+    <CardActionButton onClick={onShare} active={copied} title="Share this message">
+      {copied ? "✓ Copied to share" : <><ShareGlyph />Share</>}
+    </CardActionButton>
   );
 }
 
@@ -393,7 +466,7 @@ function LogoMark({ size = 26 }: { size?: number }) {
         width: size,
         height: size,
         backgroundColor: LIME,
-        border: `2px solid ${INK}`,
+        border: `2px solid ${ON_LIME}`,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -402,7 +475,7 @@ function LogoMark({ size = 26 }: { size?: number }) {
       }}
     >
       {[0, 1, 2].map(i => (
-        <div key={i} style={{ height: 2, backgroundColor: INK, transform: `skewX(-18deg)` }} />
+        <div key={i} style={{ height: 2, backgroundColor: ON_LIME, transform: `skewX(-18deg)` }} />
       ))}
     </div>
   );
@@ -653,7 +726,7 @@ function OptionCard({
               fontWeight: 900,
               fontSize: "clamp(40px, 10vw, 60px)",
               lineHeight: 0.8,
-              color: isChosen ? INK : LIME,
+              color: isChosen ? ON_LIME : LIME,
               WebkitTextStroke: isChosen ? "0" : `2px ${LIME}`,
               ...(isChosen ? {} : { color: "transparent" }),
             }}
@@ -780,6 +853,7 @@ function OptionCard({
             <>
               <Tag variant="solid">✓ Chosen</Tag>
               <CopyButton text={fullText} />
+              <ShareButton text={fullText} />
             </>
           ) : otherChosen ? null : (
             <Button onClick={onChoose} variant="primary">
@@ -864,6 +938,32 @@ export default function Home() {
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [focused, setFocused] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
+
+  // ── Dark mode ──
+  // Tap the logomark to toggle. The choice is saved per-device and applied to
+  // <html data-theme>, which flips the CSS variables in globals.css across the
+  // whole app. The initial value is also set pre-paint by a small script in
+  // layout.tsx so a saved dark theme never flashes light on load.
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  useEffect(() => {
+    let saved: string | null = null;
+    try { saved = localStorage.getItem("lr-theme"); } catch { /* ignore */ }
+    const initial = saved === "dark" ? "dark" : "light";
+    setTheme(initial);
+    document.documentElement.dataset.theme = initial;
+  }, []);
+  function toggleTheme() {
+    // Read the live <html> attribute as the source of truth, flip it, and apply
+    // the side effects once — keeping the state updater itself pure (so React's
+    // dev double-invoke can't cancel the toggle).
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("lr-theme", next); } catch { /* ignore */ }
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", next === "dark" ? "#111110" : "#E4E4DF");
+    setTheme(next);
+    hapticTap();
+  }
   // Rotation walks the task's stack pool: 0 for a fresh generate, +1 per "Two more".
   const rotationRef = useRef(0);
 
@@ -1127,7 +1227,15 @@ export default function Home() {
         {/* ═══ Meta bar ═══ */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <LogoMark />
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              title={theme === "dark" ? "Light mode" : "Dark mode"}
+              style={{ display: "inline-flex", border: "none", background: "transparent", padding: 8, margin: -8, cursor: "pointer", borderRadius: 0, WebkitTapHighlightColor: "transparent" }}
+            >
+              <LogoMark />
+            </button>
             <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.35rem", letterSpacing: "-0.02em", color: INK }}>
               LANDRIGHT
             </span>
@@ -1143,7 +1251,7 @@ export default function Home() {
                 <button style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "5px 11px", lineHeight: 1.1, border: `2px solid ${INK}`, cursor: "pointer", borderRadius: 0, backgroundColor: "transparent", color: INK }}>Sign in</button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "5px 11px", lineHeight: 1.1, border: `2px solid ${INK}`, cursor: "pointer", borderRadius: 0, backgroundColor: LIME, color: INK }}>Sign up</button>
+                <button style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "5px 11px", lineHeight: 1.1, border: `2px solid ${INK}`, cursor: "pointer", borderRadius: 0, backgroundColor: LIME, color: ON_LIME }}>Sign up</button>
               </SignUpButton>
             </Show>
             <Show when="signed-in">
@@ -1300,7 +1408,7 @@ export default function Home() {
               </p>
               <button
                 onClick={() => setShowLimitModal(false)}
-                style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "14px 24px", borderRadius: 0, cursor: "pointer", border: `2px solid ${INK}`, backgroundColor: LIME, color: INK, boxShadow: `4px 4px 0 ${INK}`, width: "100%" }}
+                style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "14px 24px", borderRadius: 0, cursor: "pointer", border: `2px solid ${INK}`, backgroundColor: LIME, color: ON_LIME, boxShadow: `4px 4px 0 ${INK}`, width: "100%" }}
               >
                 Got it
               </button>

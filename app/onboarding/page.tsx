@@ -546,7 +546,7 @@ function Shell({ stepIndex, dark, onBack, children }: { stepIndex: number; dark:
   const fg = dark ? "#FFFFFF" : INK;
   const edge = dark ? LIME : INK;
   return (
-    <main className={dark ? "surface-dark" : undefined} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", backgroundColor: dark ? DARK : "transparent", color: fg, padding: "clamp(18px, 5vw, 36px)", paddingTop: "calc(clamp(18px, 5vw, 36px) + env(safe-area-inset-top))", paddingBottom: "calc(clamp(18px, 5vw, 36px) + env(safe-area-inset-bottom))" }}>
+    <main className={dark ? "surface-dark" : undefined} style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", backgroundColor: dark ? DARK : GROUND, color: fg, padding: "clamp(18px, 5vw, 36px)", paddingTop: "calc(clamp(18px, 5vw, 36px) + env(safe-area-inset-top))", paddingBottom: "calc(clamp(18px, 5vw, 36px) + env(safe-area-inset-bottom))" }}>
       <div style={{ width: "100%", maxWidth: 560, margin: "0 auto", flex: 1, display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: "clamp(20px, 5vw, 36px)" }}>
           {onBack ? <button onClick={onBack} aria-label="Back" style={{ background: "none", border: "none", cursor: "pointer", color: fg, fontFamily: COND, fontWeight: 900, fontSize: "1.2rem", padding: 0, lineHeight: 1 }}>←</button> : <span style={{ width: 12 }} />}
