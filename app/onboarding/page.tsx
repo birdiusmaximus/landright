@@ -306,13 +306,17 @@ function CTA({ children, onClick, disabled, variant = "primary", onDark = false,
     ink: inkLook,
     outline: { bg: "transparent", color: onDark ? "#FFFFFF" : INK, shadow: edge, border: edge },
   }[variant];
+  const lifted = hovered && !pressed && !disabled;
+  const down = pressed && !disabled;
   return (
-    <button onClick={onClick ? () => { hapticTap(); onClick(); } : undefined} disabled={disabled}
-      onMouseEnter={() => setHovered(true)}
-      onMouseDown={() => !disabled && setPressed(true)} onMouseUp={() => setPressed(false)} onMouseLeave={() => { setPressed(false); setHovered(false); }}
+    <button onClick={onClick} disabled={disabled}
+      onPointerEnter={e => { if (!disabled && e.pointerType === "mouse") setHovered(true); }}
+      onPointerLeave={() => { setPressed(false); setHovered(false); }}
+      onPointerDown={() => { if (!disabled) { setPressed(true); hapticTap(); } }}
+      onPointerUp={() => setPressed(false)} onPointerCancel={() => setPressed(false)}
       style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", border: `2px solid ${disabled ? MUTED : look.border}`, padding: "16px 26px", width: full ? "100%" : undefined,
         cursor: disabled ? "not-allowed" : "pointer", backgroundColor: disabled ? (onDark ? "rgba(120,120,120,0.18)" : GROUND2) : look.bg, color: disabled ? MUTED : look.color,
-        boxShadow: disabled ? "none" : pressed ? `0 0 0 ${look.shadow}` : `4px 4px 0 ${look.shadow}`, transform: pressed ? "translate(4px,4px)" : "none", transition: "transform .1s ease, box-shadow .1s ease, background-color .12s ease, color .12s ease", borderRadius: 0 }}>
+        boxShadow: disabled ? "none" : down ? `0 0 0 ${look.shadow}` : lifted ? `6px 6px 0 ${look.shadow}` : `4px 4px 0 ${look.shadow}`, transform: down ? "translate(4px,4px)" : lifted ? "translate(-2px,-2px)" : "none", transition: "transform .14s cubic-bezier(0.34,1.45,0.6,1), box-shadow .12s ease, background-color .12s ease, color .12s ease", borderRadius: 0 }}>
       {children}
     </button>
   );

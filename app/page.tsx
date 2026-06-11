@@ -56,6 +56,7 @@ function similarity(a: string, b: string): number {
 // ─── Brand tokens ─────────────────────────────────────────────────────────────
 
 const LIME = "#C6F634";
+const LIME_DEEP = "#B4E61E"; // pressed/hover state for lime surfaces
 const INK = "#111110";
 const GROUND = "#E4E4DF";
 const GROUND2 = "#DBDBD5";
@@ -242,6 +243,36 @@ function MicButton({ active, disabled, onClick }: { active: boolean; disabled?: 
   );
 }
 
+// Selectable chip (audience picker). Lifts on hover, presses in on tap with a
+// selection tick; the active one sits filled (ink) with a lime shadow.
+function Chip({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
+  const [pressed, setPressed] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const lifted = hovered && !pressed;
+  const boxShadow = active
+    ? (pressed ? `0 0 0 ${LIME}` : lifted ? `5px 5px 0 ${LIME}` : `3px 3px 0 ${LIME}`)
+    : (pressed ? "none" : lifted ? `3px 3px 0 ${INK}` : "none");
+  const transform = pressed ? "translate(2px, 2px)" : lifted ? "translate(-2px, -2px)" : "none";
+  return (
+    <button
+      onClick={onClick}
+      onPointerEnter={e => { if (e.pointerType === "mouse") setHovered(true); }}
+      onPointerLeave={() => { setPressed(false); setHovered(false); }}
+      onPointerDown={() => { setPressed(true); hapticSelect(); }}
+      onPointerUp={() => setPressed(false)}
+      onPointerCancel={() => setPressed(false)}
+      style={{
+        fontFamily: COND, fontWeight: 900, fontSize: "0.95rem", letterSpacing: "0.05em", textTransform: "uppercase",
+        border: `2px solid ${INK}`, backgroundColor: active ? INK : (lifted ? GROUND2 : "transparent"), color: active ? LIME : INK,
+        padding: "14px 12px", cursor: "pointer", borderRadius: 0, boxShadow, transform,
+        transition: "transform 0.13s cubic-bezier(0.34,1.45,0.6,1), box-shadow 0.13s ease, background-color 0.12s ease, color 0.12s ease",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 function Button({
   children,
   onClick,
@@ -256,13 +287,20 @@ function Button({
   full?: boolean;
 }) {
   const [pressed, setPressed] = useState(false);
-  // primary = lime fill (pops on dark cards); cta = ink fill + lime text
-  // (matches the "01 — Communication Engine" tag); outline = transparent.
+  const [hovered, setHovered] = useState(false);
+  // primary = lime fill; cta = ink fill + lime text; outline = transparent.
+  // Each stage shifts colour + shadow so the button lifts on hover and slams
+  // into its shadow on press.
   const look = {
-    primary: { bg: LIME, color: INK, shadow: INK },
-    cta: { bg: INK, color: LIME, shadow: LIME },
-    outline: { bg: "transparent", color: INK, shadow: INK },
+    primary: { bg: LIME, color: INK, shadow: INK, hoverBg: LIME_DEEP, hoverColor: INK, pressBg: LIME_DEEP, pressColor: INK },
+    cta: { bg: INK, color: LIME, shadow: LIME, hoverBg: "#23231F", hoverColor: LIME, pressBg: INK, pressColor: LIME },
+    outline: { bg: "transparent", color: INK, shadow: INK, hoverBg: INK, hoverColor: LIME, pressBg: INK, pressColor: LIME },
   }[variant];
+  const stage = disabled ? "disabled" : pressed ? "press" : hovered ? "hover" : "rest";
+  const bg = stage === "disabled" ? GROUND2 : stage === "press" ? look.pressBg : stage === "hover" ? look.hoverBg : look.bg;
+  const color = stage === "disabled" ? MUTED : stage === "press" ? look.pressColor : stage === "hover" ? look.hoverColor : look.color;
+  const boxShadow = stage === "disabled" ? "none" : stage === "press" ? `0 0 0 ${look.shadow}` : stage === "hover" ? `6px 6px 0 ${look.shadow}` : `4px 4px 0 ${look.shadow}`;
+  const transform = stage === "press" ? "translate(4px, 4px)" : stage === "hover" ? "translate(-2px, -2px)" : "none";
   const base: React.CSSProperties = {
     fontFamily: COND,
     fontWeight: 900,
@@ -273,20 +311,23 @@ function Button({
     padding: "16px 26px",
     width: full ? "100%" : undefined,
     cursor: disabled ? "not-allowed" : "pointer",
-    backgroundColor: disabled ? GROUND2 : look.bg,
-    color: disabled ? MUTED : look.color,
-    boxShadow: disabled ? "none" : pressed ? `0px 0px 0 ${look.shadow}` : `4px 4px 0 ${look.shadow}`,
-    transform: pressed ? "translate(4px, 4px)" : "none",
-    transition: "transform 0.08s ease, box-shadow 0.08s ease",
+    backgroundColor: bg,
+    color,
+    boxShadow,
+    transform,
+    // Springy ease so it pops back on release.
+    transition: "transform 0.13s cubic-bezier(0.34, 1.45, 0.6, 1), box-shadow 0.13s ease, background-color 0.12s ease, color 0.12s ease",
     borderRadius: 0,
   };
   return (
     <button
-      onClick={onClick ? () => { hapticTap(); onClick(); } : undefined}
+      onClick={onClick}
       disabled={disabled}
-      onMouseDown={() => !disabled && setPressed(true)}
-      onMouseUp={() => setPressed(false)}
-      onMouseLeave={() => setPressed(false)}
+      onPointerEnter={e => { if (!disabled && e.pointerType === "mouse") setHovered(true); }}
+      onPointerLeave={() => { setPressed(false); setHovered(false); }}
+      onPointerDown={() => { if (!disabled) { setPressed(true); hapticTap(); } }}
+      onPointerUp={() => setPressed(false)}
+      onPointerCancel={() => setPressed(false)}
       style={base}
     >
       {children}
@@ -1218,32 +1259,9 @@ export default function Home() {
             <Tag variant="solid" shadow>Who needs to hear this?</Tag>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 30 }}>
-            {AUDIENCES.map(a => {
-              const active = audience === a.value;
-              return (
-                <button
-                  key={a.value}
-                  onClick={() => { hapticSelect(); setAudience(active ? null : a.value); }}
-                  style={{
-                    fontFamily: COND,
-                    fontWeight: 900,
-                    fontSize: "0.95rem",
-                    letterSpacing: "0.05em",
-                    textTransform: "uppercase",
-                    border: `2px solid ${INK}`,
-                    backgroundColor: active ? INK : "transparent",
-                    color: active ? LIME : INK,
-                    padding: "14px 12px",
-                    cursor: "pointer",
-                    borderRadius: 0,
-                    boxShadow: active ? `3px 3px 0 ${LIME}` : "none",
-                    transition: "box-shadow 0.08s ease",
-                  }}
-                >
-                  {a.label}
-                </button>
-              );
-            })}
+            {AUDIENCES.map(a => (
+              <Chip key={a.value} active={audience === a.value} label={a.label} onClick={() => setAudience(audience === a.value ? null : a.value)} />
+            ))}
           </div>
 
           {/* While the keyboard is up, pin the CTA just above it so it's never covered. */}
