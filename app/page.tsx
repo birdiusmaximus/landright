@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import type { Audience, Segment } from "@/lib/types";
-import { APP_VERSION } from "@/lib/version";
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs";
 import SubscriptionGate from "@/components/SubscriptionGate";
 import { AUTH_DISABLED } from "@/lib/admin";
@@ -1155,7 +1154,7 @@ export default function Home() {
         </div>
 
         {/* ═══ Hero ═══ */}
-        <section style={{ marginBottom: "clamp(18px, 3.5vw, 28px)" }}>
+        <section style={{ marginBottom: "clamp(10px, 2.5vw, 16px)" }}>
           <h1
             style={{
               fontFamily: DISPLAY,
@@ -1165,7 +1164,7 @@ export default function Home() {
               letterSpacing: "-0.035em",
               textTransform: "uppercase",
               color: INK,
-              marginBottom: 24,
+              marginBottom: 14,
             }}
           >
             Make your{" "}
@@ -1181,8 +1180,8 @@ export default function Home() {
         {/* ═══ App — gated behind sign-in + an active Plus subscription ═══ */}
         <SubscriptionGate>
         {/* ═══ Input ═══ */}
-        <section style={{ marginBottom: "clamp(28px, 6vw, 44px)" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <section style={{ marginBottom: "clamp(14px, 3vw, 22px)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
             <SampleTag loading={sampling} onClick={generateSample} />
             <span style={{ fontFamily: COND, fontWeight: 600, fontSize: "0.85rem", color: MUTED, fontVariantNumeric: "tabular-nums" }}>
               {rawInput.length}/500
@@ -1196,7 +1195,7 @@ export default function Home() {
               border: `2px solid ${INK}`,
               boxShadow: focused ? `4px 4px 0 ${LIME}` : "none",
               transition: "box-shadow 0.1s ease",
-              marginBottom: 30,
+              marginBottom: 18,
             }}
           >
             <textarea
@@ -1207,7 +1206,7 @@ export default function Home() {
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               placeholder={sampling || listening || transcribing ? "" : "Write the rough version. Messy is fine."}
-              rows={4}
+              rows={3}
               maxLength={500}
               style={{
                 width: "100%",
@@ -1382,19 +1381,6 @@ export default function Home() {
           </section>
         )}
         </SubscriptionGate>
-
-        {/* ═══ Footer ═══ */}
-        <footer style={{ marginTop: "clamp(40px, 8vw, 64px)", borderTop: `2px solid ${INK}`, paddingTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: DISPLAY, fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.02em", color: INK }}>
-            LANDRIGHT
-          </span>
-          {/* Bottom-right version doubles as the onboarding entry (for inspection). */}
-          <a href="/onboarding" aria-label="View onboarding" style={{ textDecoration: "none" }}>
-            <span style={{ fontFamily: COND, fontWeight: 600, fontSize: "0.74rem", letterSpacing: "0.1em", textTransform: "uppercase", color: MUTED, cursor: "pointer" }}>
-              Make your message land right · v{APP_VERSION}
-            </span>
-          </a>
-        </footer>
       </div>
     </main>
   );
