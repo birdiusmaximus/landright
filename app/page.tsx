@@ -459,6 +459,66 @@ function ShareButton({ text }: { text: string }) {
   );
 }
 
+// The "✓ Chosen" pill doubles as an undo control: tap it to clear the choice and
+// bring both options back into play. Mirrors the solid Tag, with a trailing ✕ and
+// a hover lift so it reads as interactive (and a tooltip for good measure).
+function ChosenToggle({ onUnchoose }: { onUnchoose: () => void }) {
+  const [hovered, setHovered] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  return (
+    <button
+      onClick={onUnchoose}
+      title="Chosen — tap to unselect"
+      aria-label="Chosen. Tap to unselect and compare both options again."
+      onPointerEnter={e => { if (e.pointerType === "mouse") setHovered(true); }}
+      onPointerLeave={() => { setHovered(false); setPressed(false); }}
+      onPointerDown={() => { setPressed(true); hapticSelect(); }}
+      onPointerUp={() => setPressed(false)}
+      onPointerCancel={() => setPressed(false)}
+      style={{
+        backgroundColor: LIME,
+        color: ON_LIME,
+        border: `2px solid ${INK}`,
+        fontFamily: COND,
+        fontWeight: 900,
+        fontSize: "0.82rem",
+        letterSpacing: "0.07em",
+        textTransform: "uppercase",
+        padding: "6px 11px",
+        lineHeight: 1.1,
+        whiteSpace: "nowrap",
+        cursor: "pointer",
+        borderRadius: 0,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        boxShadow: pressed ? "0 0 0 transparent" : hovered ? `3px 3px 0 ${INK}` : "0 0 0 transparent",
+        transform: pressed ? "translate(2px, 2px)" : hovered ? "translate(-1px, -1px)" : "none",
+        transition: "transform 0.12s cubic-bezier(0.34,1.45,0.6,1), box-shadow 0.12s ease",
+        WebkitTapHighlightColor: "transparent",
+      }}
+    >
+      <span>✓ Chosen</span>
+      <span
+        aria-hidden
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 15,
+          height: 15,
+          border: `1.5px solid ${ON_LIME}`,
+          fontSize: "0.62rem",
+          opacity: hovered ? 1 : 0.7,
+          transition: "opacity 0.12s ease",
+        }}
+      >
+        ✕
+      </span>
+    </button>
+  );
+}
+
 function LogoMark({ size = 26 }: { size?: number }) {
   return (
     <div
@@ -577,6 +637,7 @@ function OptionCard({
   isChosen,
   otherChosen,
   onChoose,
+  onUnchoose,
   autoDemo = false,
 }: {
   index: string;
@@ -588,6 +649,7 @@ function OptionCard({
   isChosen: boolean;
   otherChosen: boolean;
   onChoose: () => void;
+  onUnchoose: () => void;
   autoDemo?: boolean;
 }) {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -851,7 +913,7 @@ function OptionCard({
         <div style={{ marginTop: 24, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
           {isChosen ? (
             <>
-              <Tag variant="solid">✓ Chosen</Tag>
+              <ChosenToggle onUnchoose={onUnchoose} />
               <CopyButton text={fullText} />
               <ShareButton text={fullText} />
             </>
@@ -1195,6 +1257,11 @@ export default function Home() {
     setResult(prev => (prev ? { ...prev, chosen: choice } : null));
   }
 
+  // Tap "Chosen" again to clear the pick and bring both options back.
+  function handleUnchoose() {
+    setResult(prev => (prev ? { ...prev, chosen: undefined } : null));
+  }
+
   // Fresh generate (button / ⌘Enter): reset rotation to the first stack pair.
   function startGenerate() {
     rotationRef.current = 0;
@@ -1448,6 +1515,7 @@ export default function Home() {
                   isChosen={result.chosen === "a"}
                   otherChosen={result.chosen === "b"}
                   onChoose={() => handleChoose("a")}
+                  onUnchoose={handleUnchoose}
                   autoDemo
                 />
               )}
@@ -1462,6 +1530,7 @@ export default function Home() {
                   isChosen={result.chosen === "b"}
                   otherChosen={result.chosen === "a"}
                   onChoose={() => handleChoose("b")}
+                  onUnchoose={handleUnchoose}
                   autoDemo
                 />
               ) : (
