@@ -96,9 +96,9 @@ type TagVariant = "solid" | "outline" | "ink";
 
 function Tag({ children, variant = "solid", size = "sm", shadow = false }: { children: React.ReactNode; variant?: TagVariant; size?: "sm" | "xs"; shadow?: boolean }) {
   const styles: Record<TagVariant, React.CSSProperties> = {
-    solid: { backgroundColor: LIME, color: ON_LIME, border: `2px solid ${INK}` },
+    solid: { backgroundColor: LIME, color: ON_LIME, border: `2px solid var(--lime-edge)` },
     outline: { backgroundColor: "transparent", color: INK, border: `2px solid ${INK}` },
-    ink: { backgroundColor: "var(--sel-bg)", color: "var(--sel-fg)", border: `2px solid ${INK}` },
+    ink: { backgroundColor: "var(--sel-bg)", color: "var(--sel-fg)", border: `2px solid var(--lime-edge)` },
   };
   return (
     <span
@@ -154,7 +154,7 @@ function SampleTag({ loading, onClick }: { loading: boolean; onClick: () => void
       onMouseUp={() => setPressed(false)}
       onMouseLeave={() => setPressed(false)}
       style={{
-        backgroundColor: LIME, color: ON_LIME, border: `2px solid ${INK}`,
+        backgroundColor: LIME, color: ON_LIME, border: `2px solid var(--lime-edge)`,
         fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.07em",
         textTransform: "uppercase", padding: "6px 12px", lineHeight: 1.1, whiteSpace: "nowrap",
         cursor: "pointer", borderRadius: 0, display: "inline-block",
@@ -268,7 +268,7 @@ function Chip({ active, label, onClick }: { active: boolean; label: string; onCl
       onPointerCancel={() => setPressed(false)}
       style={{
         fontFamily: COND, fontWeight: 900, fontSize: "0.95rem", letterSpacing: "0.05em", textTransform: "uppercase",
-        border: `2px solid ${INK}`, backgroundColor: active ? "var(--sel-bg)" : (lifted ? GROUND2 : "transparent"), color: active ? "var(--sel-fg)" : INK,
+        border: `2px solid ${active ? "var(--lime-edge)" : INK}`, backgroundColor: active ? "var(--sel-bg)" : (lifted ? GROUND2 : "transparent"), color: active ? "var(--sel-fg)" : INK,
         padding: "14px 12px", cursor: "pointer", borderRadius: 0, boxShadow, transform,
         transition: "transform 0.13s cubic-bezier(0.34,1.45,0.6,1), box-shadow 0.13s ease, background-color 0.12s ease, color 0.12s ease",
       }}
@@ -306,13 +306,18 @@ function Button({
   const color = stage === "disabled" ? MUTED : stage === "press" ? look.pressColor : stage === "hover" ? look.hoverColor : look.color;
   const boxShadow = stage === "disabled" ? "none" : stage === "press" ? `0 0 0 ${look.shadow}` : stage === "hover" ? `6px 6px 0 ${look.shadow}` : `4px 4px 0 ${look.shadow}`;
   const transform = stage === "press" ? "translate(4px, 4px)" : stage === "hover" ? "translate(-2px, -2px)" : "none";
+  // A lime fill shouldn't wear a contrasting outline in dark mode: primary is
+  // always lime, and outline fills lime on hover/press. Those use --lime-edge
+  // (ink in light, lime in dark → invisible). Dark/transparent states keep ink.
+  const limeFilled = variant === "primary" || (variant === "outline" && (stage === "hover" || stage === "press"));
+  const edge = disabled ? MUTED : limeFilled ? "var(--lime-edge)" : INK;
   const base: React.CSSProperties = {
     fontFamily: COND,
     fontWeight: 900,
     fontSize: "1rem",
     letterSpacing: "0.05em",
     textTransform: "uppercase",
-    border: `2px solid ${disabled ? MUTED : INK}`,
+    border: `2px solid ${edge}`,
     padding: "16px 26px",
     width: full ? "100%" : undefined,
     cursor: disabled ? "not-allowed" : "pointer",
@@ -478,7 +483,7 @@ function ChosenToggle({ onUnchoose }: { onUnchoose: () => void }) {
       style={{
         backgroundColor: LIME,
         color: ON_LIME,
-        border: `2px solid ${INK}`,
+        border: `2px solid var(--lime-edge)`,
         fontFamily: COND,
         fontWeight: 900,
         fontSize: "0.82rem",
@@ -1318,7 +1323,7 @@ export default function Home() {
                 <button style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "5px 11px", lineHeight: 1.1, border: `2px solid ${INK}`, cursor: "pointer", borderRadius: 0, backgroundColor: "transparent", color: INK }}>Sign in</button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "5px 11px", lineHeight: 1.1, border: `2px solid ${INK}`, cursor: "pointer", borderRadius: 0, backgroundColor: LIME, color: ON_LIME }}>Sign up</button>
+                <button style={{ fontFamily: COND, fontWeight: 900, fontSize: "0.72rem", letterSpacing: "0.07em", textTransform: "uppercase", padding: "5px 11px", lineHeight: 1.1, border: `2px solid var(--lime-edge)`, cursor: "pointer", borderRadius: 0, backgroundColor: LIME, color: ON_LIME }}>Sign up</button>
               </SignUpButton>
             </Show>
             <Show when="signed-in">
@@ -1475,7 +1480,7 @@ export default function Home() {
               </p>
               <button
                 onClick={() => setShowLimitModal(false)}
-                style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "14px 24px", borderRadius: 0, cursor: "pointer", border: `2px solid ${INK}`, backgroundColor: LIME, color: ON_LIME, boxShadow: `4px 4px 0 ${INK}`, width: "100%" }}
+                style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "14px 24px", borderRadius: 0, cursor: "pointer", border: `2px solid var(--lime-edge)`, backgroundColor: LIME, color: ON_LIME, boxShadow: `4px 4px 0 ${INK}`, width: "100%" }}
               >
                 Got it
               </button>

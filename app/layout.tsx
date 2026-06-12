@@ -58,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <body className="min-h-full">
         {/* Apply the saved dark/light theme before first paint so there's no flash.
             The toggle lives on the home logomark; preference is per-device. */}

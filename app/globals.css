@@ -20,6 +20,10 @@
   --sel-bg: #111110;
   --sel-fg: #C6F634;
   --sel-shadow: #C6F634;
+  /* border for lime-filled buttons: an ink edge in light, but lime in dark so it
+     vanishes into the fill — a green button shouldn't wear a white outline. Dark
+     and grey surfaces keep the --ink border. */
+  --lime-edge: #111110;
 
   /* ── Adobe Fonts (Typekit project abe4vwg) ── */
   --font-display: "neue-haas-grotesk-display", "Helvetica Neue", Arial, sans-serif;
@@ -43,6 +47,7 @@ html[data-theme="dark"] {
   --sel-bg: #C6F634;
   --sel-fg: #111110;
   --sel-shadow: #E8E8E2;
+  --lime-edge: #C6F634;
 }
 
 * {
