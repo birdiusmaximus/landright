@@ -37,12 +37,12 @@
    "Selected" states invert to a lime fill so they still read as on. */
 html[data-theme="dark"] {
   --ink: #E8E8E2;
-  --ground: #111110;
-  --ground-2: #2A2A24;
-  --ground-3: #34342C;
+  --ground: #1A1A17;      /* onboarding charcoal-grey, not near-black */
+  --ground-2: #2E2E28;
+  --ground-3: #38382F;
   --muted: #9A9A90;
   --line: #E8E8E2;
-  --surface: #201F1B;
+  --surface: #242420;     /* cards lift a touch above the grey ground */
   --surface-muted: #9A9A90;
   --sel-bg: #C6F634;
   --sel-fg: #111110;

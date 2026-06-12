@@ -1029,7 +1029,7 @@ export default function Home() {
     document.documentElement.dataset.theme = next;
     try { localStorage.setItem("lr-theme", next); } catch { /* ignore */ }
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", next === "dark" ? "#111110" : "#E4E4DF");
+    if (meta) meta.setAttribute("content", next === "dark" ? "#1A1A17" : "#E4E4DF");
     setTheme(next);
     hapticTap();
   }

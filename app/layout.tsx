@@ -65,7 +65,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{var t=localStorage.getItem('lr-theme');if(t==='dark'){document.documentElement.dataset.theme='dark';var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content','#111110');}}catch(e){}",
+              "try{var t=localStorage.getItem('lr-theme');if(t==='dark'){document.documentElement.dataset.theme='dark';var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content','#1A1A17');}}catch(e){}",
           }}
         />
         {/* Adobe Fonts (Typekit) — neue-haas-grotesk-display/text + acumin-pro-extra-condensed.
