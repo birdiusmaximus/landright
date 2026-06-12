@@ -113,7 +113,7 @@ function Tag({ children, variant = "solid", size = "sm", shadow = false }: { chi
         padding: size === "xs" ? "4px 9px" : "6px 12px",
         lineHeight: 1.1,
         whiteSpace: "nowrap",
-        boxShadow: shadow ? `3px 3px 0 ${INK}` : undefined,
+        boxShadow: shadow ? `3px 3px 0 var(--shadow)` : undefined,
       }}
     >
       {children}
@@ -158,7 +158,7 @@ function SampleTag({ loading, onClick }: { loading: boolean; onClick: () => void
         fontFamily: COND, fontWeight: 900, fontSize: "0.82rem", letterSpacing: "0.07em",
         textTransform: "uppercase", padding: "6px 12px", lineHeight: 1.1, whiteSpace: "nowrap",
         cursor: "pointer", borderRadius: 0, display: "inline-block",
-        boxShadow: pressed ? `0 0 0 ${INK}` : `3px 3px 0 ${INK}`,
+        boxShadow: pressed ? `0 0 0 var(--shadow)` : `3px 3px 0 var(--shadow)`,
         transform: pressed ? "translate(3px, 3px)" : "none",
         transition: "transform 0.08s ease, box-shadow 0.08s ease",
       }}
@@ -256,7 +256,7 @@ function Chip({ active, label, onClick }: { active: boolean; label: string; onCl
   const lifted = hovered && !pressed;
   const boxShadow = active
     ? (pressed ? `0 0 0 var(--sel-shadow)` : lifted ? `5px 5px 0 var(--sel-shadow)` : `3px 3px 0 var(--sel-shadow)`)
-    : (pressed ? "none" : lifted ? `3px 3px 0 ${INK}` : "none");
+    : (pressed ? "none" : lifted ? `3px 3px 0 var(--shadow)` : "none");
   const transform = pressed ? "translate(2px, 2px)" : lifted ? "translate(-2px, -2px)" : "none";
   return (
     <button
@@ -297,9 +297,9 @@ function Button({
   // Each stage shifts colour + shadow so the button lifts on hover and slams
   // into its shadow on press.
   const look = {
-    primary: { bg: LIME, color: ON_LIME, shadow: INK, hoverBg: LIME_DEEP, hoverColor: ON_LIME, pressBg: LIME_DEEP, pressColor: ON_LIME },
+    primary: { bg: LIME, color: ON_LIME, shadow: "var(--shadow)", hoverBg: LIME_DEEP, hoverColor: ON_LIME, pressBg: LIME_DEEP, pressColor: ON_LIME },
     cta: { bg: INK, color: LIME, shadow: LIME, hoverBg: "#23231F", hoverColor: LIME, pressBg: INK, pressColor: LIME },
-    outline: { bg: "transparent", color: INK, shadow: INK, hoverBg: "var(--sel-bg)", hoverColor: "var(--sel-fg)", pressBg: "var(--sel-bg)", pressColor: "var(--sel-fg)" },
+    outline: { bg: "transparent", color: INK, shadow: "var(--shadow)", hoverBg: "var(--sel-bg)", hoverColor: "var(--sel-fg)", pressBg: "var(--sel-bg)", pressColor: "var(--sel-fg)" },
   }[variant];
   const stage = disabled ? "disabled" : pressed ? "press" : hovered ? "hover" : "rest";
   const bg = stage === "disabled" ? GROUND2 : stage === "press" ? look.pressBg : stage === "hover" ? look.hoverBg : look.bg;
@@ -497,7 +497,7 @@ function ChosenToggle({ onUnchoose }: { onUnchoose: () => void }) {
         display: "inline-flex",
         alignItems: "center",
         gap: 8,
-        boxShadow: pressed ? "0 0 0 transparent" : hovered ? `3px 3px 0 ${INK}` : "0 0 0 transparent",
+        boxShadow: pressed ? "0 0 0 transparent" : hovered ? `3px 3px 0 var(--shadow)` : "0 0 0 transparent",
         transform: pressed ? "translate(2px, 2px)" : hovered ? "translate(-1px, -1px)" : "none",
         transition: "transform 0.12s cubic-bezier(0.34,1.45,0.6,1), box-shadow 0.12s ease",
         WebkitTapHighlightColor: "transparent",
@@ -1482,7 +1482,7 @@ export default function Home() {
               </p>
               <button
                 onClick={() => setShowLimitModal(false)}
-                style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "14px 24px", borderRadius: 0, cursor: "pointer", border: `2px solid var(--lime-edge)`, backgroundColor: LIME, color: ON_LIME, boxShadow: `4px 4px 0 ${INK}`, width: "100%" }}
+                style={{ fontFamily: COND, fontWeight: 900, fontSize: "1.02rem", letterSpacing: "0.05em", textTransform: "uppercase", padding: "14px 24px", borderRadius: 0, cursor: "pointer", border: `2px solid var(--lime-edge)`, backgroundColor: LIME, color: ON_LIME, boxShadow: `4px 4px 0 var(--shadow)`, width: "100%" }}
               >
                 Got it
               </button>

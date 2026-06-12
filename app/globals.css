@@ -20,6 +20,8 @@
   --sel-bg: #111110;
   --sel-fg: #C6F634;
   --sel-shadow: #C6F634;
+  /* brutalist hard offset shadow — ink in light, jet black in dark */
+  --shadow: #111110;
   /* border for lime-filled buttons: an ink edge in light, but lime in dark so it
      vanishes into the fill — a green button shouldn't wear a white outline. Dark
      and grey surfaces keep the --ink border. */
@@ -46,8 +48,9 @@ html[data-theme="dark"] {
   --surface-muted: #9A9A90;
   --sel-bg: #C6F634;
   --sel-fg: #111110;
-  --sel-shadow: #E8E8E2;
+  --sel-shadow: #000000;
   --lime-edge: #C6F634;
+  --shadow: #000000;
 }
 
 * {
