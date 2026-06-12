@@ -861,7 +861,9 @@ function OptionCard({
                   onClick={e => { demoCancelled.current = true; demoRunning.current = false; if (hovered === i) { setHovered(null); } else { onHover(i, e.currentTarget); } }}
                   style={{
                     position: "relative",
-                    color: on ? INK : "#FFFFFF",
+                    // On the lime highlight the text must be ink in BOTH themes —
+                    // ON_LIME doesn't flip, so it stays black on green in dark mode.
+                    color: on ? ON_LIME : "#FFFFFF",
                     // lime fill grows its last 20% on appear (animated via WAAPI); text doesn't move
                     backgroundImage: on ? `linear-gradient(${LIME}, ${LIME})` : "none",
                     backgroundRepeat: "no-repeat",
